@@ -111,6 +111,52 @@ describe("appStateReducer", () => {
     expect(state).toBe(initialState);
   });
 
+  it("принимает граничные model settings 0/3 и sensitivity 0.5/1.5", () => {
+    const lowerState = appStateReducer(createDefaultAppState(), {
+      type: "modelSettings/update",
+      payload: {
+        sensitivity: 0.5,
+        weights: { missing_carrot: 0 },
+      },
+    });
+    const upperState = appStateReducer(lowerState, {
+      type: "modelSettings/update",
+      payload: {
+        sensitivity: 1.5,
+        weights: { missing_carrot: 3 },
+      },
+    });
+
+    expect(lowerState.modelSettings.sensitivity).toBe(0.5);
+    expect(lowerState.modelSettings.weights.missing_carrot).toBe(0);
+    expect(upperState.modelSettings.sensitivity).toBe(1.5);
+    expect(upperState.modelSettings.weights.missing_carrot).toBe(3);
+  });
+
+  it("model mutation сбрасывает active scenario и сохраняет signals с intro preference", () => {
+    const withIntro = appStateReducer(createDefaultAppState(), {
+      type: "ui/introSeen",
+      payload: true,
+    });
+    const withPreview = appStateReducer(withIntro, {
+      type: "scenario/updateObservations",
+      payload: {
+        signals: withIntro.signals.map((signal, index) =>
+          index === 1 ? { ...signal, intensity: 10 } : signal,
+        ),
+      },
+    });
+    const configured = appStateReducer(withPreview, {
+      type: "modelSettings/update",
+      payload: { sensitivity: 1.5 },
+    });
+
+    expect(configured.scenarioPreview).toBeNull();
+    expect(configured.signals).toEqual(initialSignals);
+    expect(configured.uiPreferences.hasSeenIntro).toBe(true);
+    expect(configured.modelSettings.sensitivity).toBe(1.5);
+  });
+
   it("держит scenario preview изолированным от основного state", () => {
     const initialState = createDefaultAppState();
     const previewState = appStateReducer(initialState, {

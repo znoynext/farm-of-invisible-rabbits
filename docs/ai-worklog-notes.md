@@ -335,3 +335,25 @@ Outcome:
 **Validation performed:** Focused recommendations/domain/What-if suite — 3 файла и 19 тестов PASS. Для Audit #3 новый regression test сначала воспроизвёл `aria-pressed="true"` на initial Map и после fix прошёл; focused What-if suite — 6 тестов PASS, focused Playwright — 1 тест PASS. Signals focused suite — 4 файла и 41 тест PASS; CRUD E2E journey — PASS. Финальные `npm run lint` — PASS; `npm run test` — 20 файлов и 129 тестов PASS; `npm run build` — PASS; Playwright — 15 тестов PASS, включая neutral initial selection, observation-only preview/apply/reload, полный CRUD/reload/empty/restore journey, пять responsive widths и reduced motion. Recommendations ранее реально отрендерены и просмотрены в default и preview на 1440 px, empty на 1280 px и default на 390 px; remediation states Map/Evidence/What-if реально отрендерены и проверены до и после slider interaction на 1440 и 390 px. Signals list, add/edit form, empty state и long-location state реально проверены на 1440, 1280, 1024 и 390 px. `design-quality-review`: Critical — нет; найденная High impact focus-проблема исправлена.
 
 **Outcome:** Основной analytical flow завершён: пользователь управляет исходными наблюдениями, видит пространство сигналов, понимает причины оценки, проверяет гипотезу и получает до трёх детерминированных действий. Default What-if selection больше не выглядит как пользовательский выбор на Map/Evidence; connected state появляется только после осмысленного взаимодействия. Preview согласованно меняет весь Overview, но не затрагивает persistent observations и model settings до явного Apply; CRUD безопасно делает изменённые persisted signals единственным новым base source. Новые зависимости, backend, database, authentication и runtime LLM не добавлялись.
+
+## Checkpoint: Прозрачная настройка модели без stale scenario
+
+**Stage:** Реализация управления интерпретацией observations.
+
+**Task:** Создать объяснимый раздел «Модель оценки» с sensitivity, весами сигналов, live analytics, persistence и безопасным взаимодействием с active What-if preview.
+
+**Prompt summary:** Дать пользователю диапазоны sensitivity `0.5–1.5` и weights `0–3`, сохранить canonical defaults и confidence invariants, пересчитывать связанные analytics, объяснить эвристическую формулу и не допустить stale scenario state при model mutation.
+
+**AI suggestion:** Считать model setting изменением базовой модели: сначала сбрасывать observation preview, затем применять валидированную mutation через существующий reducer. Не хранить analytics в state и не менять shared selection, если observations и её ссылки остаются валидными.
+
+**Decision taken:** UI отправляет ordered `scenario/reset` → `modelSettings/update` или `modelSettings/reset`; reducer повторно гарантирует scenario cleanup и валидирует значения через Zod. Signals и intro preference сохраняются, явная Map/Evidence selection не очищается и новая selection не создаётся. Все live значения приходят из общего `deriveAnalytics` path.
+
+**Reason:** Scenario preview содержит снимок observations и model settings; его сохранение после изменения базовой модели создало бы два несогласованных источника результата. Поскольку model mutation не удаляет observations, существующая явная selection остаётся валидной и не требует скрытого изменения.
+
+**What changed:** Placeholder `#model` заменён full-width responsive разделом с live estimate, dominant evidence, неизменным confidence, sensitivity, четырьмя signal-weight controls, qualitative influence, reset feedback, прозрачной цепочкой расчёта и двумя disclaimers. Добавлены UI, reducer и E2E tests для boundaries, analytics, persistence/reload, reset и scenario causality.
+
+**Problem found:** Первый desktop render сохранил базовую двухколоночную app-shell сетку и сжал Model в левую колонку; добавлен отдельный full-width contract `content-frame--model`. Focused E2E также выявил неверное ожидание теста: после усиления веса моркови default What-if корректно меняется на другое самое impactful observation; проверка заменена на настоящий контракт отсутствующего preview и disabled Apply.
+
+**Validation performed:** Focused suite — 10 файлов и 89 тестов PASS. Реально отрендерены default 1440/1024/768/390, changed sensitivity, changed weights и reset; после исправления `design-quality-review`: Critical — нет, High impact — нет. Финальные `npm run lint` — PASS; `npm run test` — 21 файл и 138 тестов PASS два последовательных раза; `npm run build` — PASS; Playwright — 16 тестов PASS, включая Model journey, persistence, scenario reset, пять responsive widths и reduced motion; focused propagation recheck Hero/Map/Evidence/Recommendations — 1 тест PASS.
+
+**Outcome:** Пользователь может прозрачно настраивать интерпретацию наблюдений без изменения формул или confidence semantics. Model Settings сохраняются локально, согласованно пересчитывают продукт и не оставляют stale What-if state. Новые зависимости, backend, database, authentication и runtime LLM не добавлялись.

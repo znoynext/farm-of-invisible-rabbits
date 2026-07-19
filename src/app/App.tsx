@@ -14,6 +14,7 @@ import {
 } from "../data/navigation";
 import { IntroExperience } from "../features/intro/IntroExperience";
 import { PrimaryNavigation } from "../features/navigation/PrimaryNavigation";
+import { ModelSettingsSection } from "../features/model/ModelSettingsSection";
 import { Overview } from "../features/overview/Overview";
 import { SignalsSection } from "../features/signals/SignalsSection";
 import { useHashNavigation } from "../hooks/useHashNavigation";
@@ -88,7 +89,9 @@ function RadarApp({ aboutButtonRef, onOpenIntro }: RadarAppProps) {
   }
 
   const isFullWidthSection =
-    activeSection.id === "overview" || activeSection.id === "signals";
+    activeSection.id === "overview" ||
+    activeSection.id === "signals" ||
+    activeSection.id === "model";
 
   return (
     <motion.div
@@ -172,6 +175,8 @@ function RadarApp({ aboutButtonRef, onOpenIntro }: RadarAppProps) {
               <Overview />
             ) : activeSection.id === "signals" ? (
               <SignalsSection />
+            ) : activeSection.id === "model" ? (
+              <ModelSettingsSection />
             ) : (
               <Surface
                 className="section-stage placeholder-surface"

@@ -330,6 +330,119 @@ test("управляет сигналами и согласованно пере
   );
 });
 
+test("настраивает прозрачную модель и сбрасывает active What-if без потери данных", async ({
+  page,
+}) => {
+  await openRadar(page);
+
+  const scenarioSlider = page
+    .locator("#scenario-lab")
+    .getByRole("slider", { name: "Интенсивность наблюдения" });
+  await scenarioSlider.scrollIntoViewIfNeeded();
+  await scenarioSlider.focus();
+  await page.keyboard.press("End");
+  await expect(
+    page.getByRole("heading", { level: 1, name: "6 предполагаемых кроликов" }),
+  ).toBeAttached();
+
+  await page.getByRole("link", { name: "Модель" }).click();
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Модель оценки" }),
+  ).toBeVisible();
+
+  const sensitivity = page.getByRole("slider", {
+    name: "Чувствительность модели",
+  });
+  await sensitivity.focus();
+  await page.keyboard.press("End");
+  await expect(sensitivity).toHaveValue("1.5");
+  await expect(page.getByRole("region", { name: "Текущий результат модели" })).toContainText("7");
+  await expect(page.getByRole("region", { name: "Текущий результат модели" })).toContainText("73%");
+
+  const motionWeight = page.getByRole("slider", { name: "Вес: Движение" });
+  await motionWeight.focus();
+  await page.keyboard.press("Home");
+  await expect(motionWeight).toHaveValue("0");
+  await expect(page.getByText("Не учитывается")).toBeVisible();
+
+  const carrotWeight = page.getByRole("slider", {
+    name: "Вес: Пропавшая морковь",
+  });
+  await carrotWeight.focus();
+  await page.keyboard.press("End");
+  await expect(carrotWeight).toHaveValue("3");
+  await expect(page.getByRole("region", { name: "Текущий результат модели" })).toContainText("Пропавшая морковь");
+
+  await expect.poll(async () =>
+    page.evaluate(() => {
+      const raw = window.localStorage.getItem("farm-of-invisible-rabbits:v1");
+      return raw ? JSON.parse(raw).signals[1].intensity : null;
+    }),
+  ).toBe(7);
+
+  await page.getByRole("link", { name: "Обзор" }).click();
+  await expect(
+    page.getByRole("heading", { level: 1, name: "12 предполагаемых кроликов" }),
+  ).toBeVisible();
+  await expect(page.locator(".overview-confidence")).toHaveText(
+    "Уверенность в оценке · 73%",
+  );
+  await expect(
+    page.getByText(/Основной источник активности — пропавшая морковь/),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", {
+      name: "Огород: Высокая активность, 1 наблюдение",
+    }),
+  ).toBeVisible();
+  await expect(page.getByTestId("evidence-item-missing_carrot")).toContainText(
+    "75%",
+  );
+  await expect(
+    page.locator("#recommendations").getByText("Усилить защиту урожая"),
+  ).toBeVisible();
+  await expect(page.locator("#scenario-lab")).toHaveAttribute(
+    "data-preview-active",
+    "false",
+  );
+  await expect(
+    page.locator("#scenario-lab").getByRole("button", {
+      name: "Применить к данным",
+    }),
+  ).toBeDisabled();
+
+  await page.getByRole("link", { name: "Модель" }).click();
+  await page.getByRole("button", { name: "Вернуть стандартные настройки" }).click();
+  await expect(page.getByText("Стандартные настройки восстановлены")).toBeVisible();
+  await expect(sensitivity).toHaveValue("1");
+
+  expect(
+    await page.evaluate(() => {
+      const state = JSON.parse(
+        window.localStorage.getItem("farm-of-invisible-rabbits:v1") ?? "null",
+      );
+      const preferences = JSON.parse(
+        window.localStorage.getItem("farm-of-invisible-rabbits:ui:v1") ?? "null",
+      );
+      return {
+        hasSeenIntro: preferences?.hasSeenIntro,
+        signalCount: state?.signals?.length,
+      };
+    }),
+  ).toEqual({ hasSeenIntro: true, signalCount: 3 });
+
+  await page.reload();
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Модель оценки" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("slider", { name: "Чувствительность модели" }),
+  ).toHaveValue("1");
+  await expect(
+    page.getByRole("slider", { name: "Вес: Движение" }),
+  ).toHaveValue("2");
+});
+
 test("сохраняет touch-safe зоны в отдельной mobile-композиции карты", async ({ page }) => {
   await page.setViewportSize({ height: 844, width: 390 });
   await openRadar(page);
@@ -477,6 +590,24 @@ for (const viewport of targetViewports) {
       const box = await addSignalButton.boundingBox();
       expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
     }
+
+    await page.getByRole("link", { name: "Модель" }).click();
+    await expect(
+      page.getByRole("heading", { level: 1, name: "Модель оценки" }),
+    ).toBeVisible();
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
+      ),
+    ).toBe(false);
+
+    if (viewport.width <= 768) {
+      const sensitivity = page.getByRole("slider", {
+        name: "Чувствительность модели",
+      });
+      const box = await sensitivity.boundingBox();
+      expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
+    }
   });
 }
 
@@ -487,7 +618,7 @@ test("сохраняет навигацию при reduced motion", async ({ pag
   await page.getByRole("link", { name: "Модель" }).click();
 
   await expect(
-    page.getByRole("heading", { level: 2, name: "Управление моделью" }),
+    page.getByRole("heading", { level: 1, name: "Модель оценки" }),
   ).toBeVisible();
   expect(
     await page.evaluate(() => getComputedStyle(document.documentElement).scrollBehavior),

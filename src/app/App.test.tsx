@@ -322,5 +322,14 @@ describe("App", () => {
       ).toBeInTheDocument();
     });
     expect(window.location.hash).toBe("#signals");
+
+    await user.click(screen.getByRole("link", { name: "Модель" }));
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("heading", { level: 1, name: "Модель оценки" }),
+      ).toBeInTheDocument();
+    });
+    expect(window.location.hash).toBe("#model");
   });
 });
