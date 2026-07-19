@@ -179,3 +179,25 @@ Outcome:
 **Validation performed:** Перед публикацией `npm run lint` — PASS; `npm run test` — 11 файлов и 77 тестов PASS; `npm run build` — PASS; canonical estimate `5` и confidence `73` подтверждены тестами. Проверка staged files не нашла секретов и незапланированных artifacts. GitHub подтвердил visibility `PUBLIC`, default branch `main` и доступность commit. GitHub Actions run `29688198881` завершён PASS: `npm ci`, lint, test и build прошли.
 
 **Outcome:** Первый стабильный architecture milestone доступен в публичном GitHub repository, автоматический CI активен. GitHub Pages, deployment и новая UI-разработка не выполнялись.
+
+## Checkpoint: Повторная сверка требований перед UI
+
+**Stage:** Assignment requirements alignment перед началом крупных UI-этапов.
+
+**Task:** Повторно сверить проект с MOX assignment перед UI-разработкой и создать явный assignment-level acceptance contract.
+
+**Prompt summary:** Зафиксировать выбранный Scenario 2, обязательную интерактивность, clear primary output, AI Worklog внутри UI, deliverables и evaluation criteria; подключить эти требования к product guardrails, QA и CI без изменения business logic.
+
+**AI suggestion:** Вынести assignment requirements в отдельный source of truth и добавить assignment QA gate, сохранив product brief компактным и не смешивая продуктовые предупреждения с release-статусами.
+
+**Decision taken / Human decision:** Не менять одобренную архитектуру и domain model; усилить repository guardrails до начала UI и оставить все ещё не реализованные assignment checks незаполненными.
+
+**Reason:** До изменения требования задания были распределены между product brief, QA и рабочими правилами, поэтому выбранный сценарий, clear output и submission contract нельзя было проверить как единый acceptance contract.
+
+**What changed:** Добавлен `docs/assignment-requirements.md`; обновлены product brief, `AGENTS.md`, `product-guardrails` и assignment-секция QA checklist. В CI команда тестов приведена к принятому release contract `npm run test:run` без изменения test semantics.
+
+**Problem found:** Явный assignment-level source of truth и отдельный assignment compliance gate отсутствовали. Ошибок в одобренной domain model или архитектуре не выявлено.
+
+**Validation performed:** Docs review подтвердил 20 обязательных assignment clauses, 16 незаполненных QA checks, корректные ссылки, YAML/front matter и scoped diff без изменений `src`. `npm run lint` — PASS; `npm run test` — 11 файлов и 77 тестов PASS; `npm run build` — PASS. GitHub Actions run `29688877554` для commit `2df0138` завершён PASS с `npm run test:run`.
+
+**Outcome:** Repository sources of truth синхронизированы с MOX assignment до начала UI. Design System, UI, domain formulas, зависимости и GitHub Pages не изменялись.
