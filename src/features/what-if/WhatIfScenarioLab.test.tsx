@@ -92,20 +92,6 @@ describe("WhatIfScenarioLab", () => {
     });
   });
 
-  it("обновляет рекомендации по scenario analytics", () => {
-    renderScenarioLab();
-    const recommendations = screen.getByRole("region", {
-      name: "Рекомендации по сценарию",
-    });
-
-    expect(recommendations).toHaveTextContent("обнаружена новая ямка высокой интенсивности");
-
-    setScenarioIntensity(1);
-
-    expect(recommendations).not.toHaveTextContent("обнаружена новая ямка высокой интенсивности");
-    expect(recommendations).toHaveTextContent("зафиксировано интенсивное движение");
-  });
-
   it("связывает выбор observation с соответствующими Map и Evidence", async () => {
     const user = userEvent.setup();
     renderScenarioLab();

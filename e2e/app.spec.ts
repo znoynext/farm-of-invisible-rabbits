@@ -143,7 +143,9 @@ test("связывает выбор зоны на карте с аналитич
 
   await expect(garden).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByText("Закреплённая зона")).toBeVisible();
-  await expect(page.getByRole("heading", { level: 3, name: "Огород" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { exact: true, level: 3, name: "Огород" }),
+  ).toBeVisible();
 
   const barn = page.getByRole("button", {
     name: "Сарай: Высокая активность, 1 наблюдение",
@@ -152,13 +154,16 @@ test("связывает выбор зоны на карте с аналитич
   await page.keyboard.press("Enter");
 
   await expect(barn).toHaveAttribute("aria-pressed", "true");
-  await expect(page.getByRole("heading", { level: 3, name: "Сарай" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { exact: true, level: 3, name: "Сарай" }),
+  ).toBeVisible();
 });
 
 test("проверяет observation-only гипотезу и сохраняет её только после применения", async ({ page }) => {
   await openRadar(page);
 
   const lab = page.locator("#scenario-lab");
+  const recommendations = page.locator("#recommendations");
   await lab.scrollIntoViewIfNeeded();
   await expect(lab.getByRole("heading", { level: 2, name: "Проверить гипотезу" })).toBeVisible();
   await expect(lab.getByRole("radio", { name: /Новые ямки/ })).toBeChecked();
@@ -185,8 +190,9 @@ test("проверяет observation-only гипотезу и сохраняет
   ).toBe(7);
 
   await page.keyboard.press("Home");
-  await expect(lab.getByText(/обнаружена новая ямка высокой интенсивности/)).toHaveCount(0);
-  await expect(lab.getByText(/зафиксировано интенсивное движение/)).toBeVisible();
+  await expect(recommendations).toContainText("Предпросмотр: действия обновлены для сценария");
+  await expect(recommendations.getByText(/Проверить зону «У забора»/)).toHaveCount(0);
+  await expect(recommendations.getByText(/Проверить место срабатывания «Сарай»/)).toBeVisible();
 
   await page.keyboard.press("End");
   await lab.getByRole("button", { name: "Применить к данным" }).click();

@@ -12,7 +12,6 @@ import { SignalTypeMark } from "../../components/SignalTypeMark";
 import { Button, Slider, Surface } from "../../components/ui";
 import {
   findMostImpactfulObservation,
-  type Recommendation,
   type SignalEvent,
   type SignalType,
 } from "../../domain";
@@ -240,8 +239,6 @@ export function WhatIfScenarioLab() {
             ) : null}
           </div>
         </div>
-
-        <ScenarioRecommendations recommendations={scenarioAnalytics.recommendations} />
       </div>
     </Surface>
   );
@@ -280,29 +277,6 @@ function ScenarioResult({
         </div>
       </dl>
     </div>
-  );
-}
-
-function ScenarioRecommendations({
-  recommendations,
-}: {
-  readonly recommendations: readonly Recommendation[];
-}) {
-  return (
-    <section aria-labelledby="scenario-recommendations-title" className="scenario-recommendations">
-      <header>
-        <p className="eyebrow">Следующий шаг</p>
-        <h3 id="scenario-recommendations-title">Рекомендации по сценарию</h3>
-      </header>
-      <ol>
-        {recommendations.map((recommendation, index) => (
-          <li key={recommendation.id}>
-            <span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-            <p>{recommendation.message}</p>
-          </li>
-        ))}
-      </ol>
-    </section>
   );
 }
 

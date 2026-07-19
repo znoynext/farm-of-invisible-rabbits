@@ -18,6 +18,8 @@ export type RecommendationKind =
 export interface Recommendation {
   readonly id: string;
   readonly kind: RecommendationKind;
+  readonly action: string;
+  readonly reason: string;
   readonly message: string;
   readonly location?: string;
 }
@@ -103,7 +105,9 @@ export function buildRecommendations(
       {
         id: "continue-observation",
         kind: "continue_observation",
-        message: "Значимых сигналов нет — продолжить наблюдение.",
+        action: "Начните с наблюдения",
+        reason: "Добавьте первый сигнал, чтобы система предложила следующий шаг.",
+        message: "Начните с наблюдения: добавьте первый сигнал.",
       },
     ];
   }
@@ -120,6 +124,8 @@ export function buildRecommendations(
       id: `inspect-new-hole:${location}`,
       kind: "inspect_new_hole",
       location,
+      action: `Проверить зону «${location}»`,
+      reason: "Обнаружена новая ямка высокой интенсивности.",
       message: `Проверить зону «${location}»: обнаружена новая ямка высокой интенсивности.`,
     }),
   );
@@ -133,6 +139,8 @@ export function buildRecommendations(
       id: `inspect-motion:${location}`,
       kind: "inspect_motion",
       location,
+      action: `Проверить место срабатывания «${location}»`,
+      reason: "Зафиксировано интенсивное движение.",
       message: `Проверить место срабатывания «${location}»: зафиксировано интенсивное движение.`,
     }),
   );
@@ -146,6 +154,8 @@ export function buildRecommendations(
       id: `increase-observation:${location}`,
       kind: "increase_observation",
       location,
+      action: `Усилить наблюдение в зоне «${location}»`,
+      reason: "Пропало не менее пяти морковок.",
       message: `Усилить наблюдение в зоне «${location}»: пропало не менее пяти морковок.`,
     }),
   );
@@ -159,6 +169,8 @@ export function buildRecommendations(
         {
           id: "collect-observations",
           kind: "collect_observations",
+          action: "Собрать дополнительные наблюдения",
+          reason: "Уверенность в оценке ниже 50%.",
           message: "Собрать дополнительные наблюдения для более надёжной оценки.",
         },
         50 - confidence,
@@ -172,6 +184,8 @@ export function buildRecommendations(
         {
           id: "protect-crops",
           kind: "protect_crops",
+          action: "Усилить защиту урожая",
+          reason: "Оценка достигла восьми кроликов.",
           message: "Усилить защиту урожая: оценка достигла восьми кроликов.",
         },
         estimatedRabbits,
@@ -184,6 +198,8 @@ export function buildRecommendations(
       {
         id: "continue-observation",
         kind: "continue_observation",
+        action: "Продолжить наблюдение",
+        reason: "Текущие сигналы не требуют дополнительных действий.",
         message: "Значимых сигналов нет — продолжить наблюдение.",
       },
     ];

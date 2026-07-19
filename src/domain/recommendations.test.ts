@@ -13,6 +13,10 @@ describe("recommendations", () => {
         { kind: "increase_observation", location: "Огород" },
       ]);
     expect(recommendations[0]?.message).toContain("новая ямка");
+    expect(recommendations[0]).toMatchObject({
+      action: "Проверить зону «У забора»",
+      reason: "Обнаружена новая ямка высокой интенсивности.",
+    });
   });
 
   it("рекомендует собрать данные при confidence ниже 50", () => {
@@ -47,7 +51,10 @@ describe("recommendations", () => {
 
   it("возвращает fallback без значимых сигналов", () => {
     expect(buildRecommendations([])).toEqual([
-      expect.objectContaining({ kind: "continue_observation" }),
+      expect.objectContaining({
+        action: "Начните с наблюдения",
+        kind: "continue_observation",
+      }),
     ]);
   });
 
