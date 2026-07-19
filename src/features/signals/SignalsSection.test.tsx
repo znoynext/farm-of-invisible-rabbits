@@ -2,14 +2,18 @@ import { fireEvent, render, screen, waitFor, within } from "@testing-library/rea
 import userEvent from "@testing-library/user-event";
 
 import { App } from "../../app/App";
+import { UiSelectionProvider, useUiSelection } from "../../app/selection";
 import {
   AppStateProvider,
   createDefaultPersistedState,
   PERSISTED_STATE_KEY,
   type StorageAdapter,
   UI_PREFERENCES_KEY,
+  useAppState,
 } from "../../app/state";
-import type { SignalType } from "../../domain";
+import { initialSignals } from "../../data/initialSignals";
+import type { SignalEvent, SignalType } from "../../domain";
+import { SignalsSection } from "./SignalsSection";
 
 class MemoryStorage implements StorageAdapter {
   private readonly values = new Map<string, string>();
@@ -81,6 +85,111 @@ function readPersistedState(storage: MemoryStorage) {
   return JSON.parse(storage.getItem(PERSISTED_STATE_KEY) ?? "null") as ReturnType<
     typeof createDefaultPersistedState
   >;
+}
+
+const customRestoreSignal: SignalEvent = {
+  id: "evt_restore_custom",
+  event: "barn_rustling",
+  location: "Северное поле",
+  count: 4,
+  intensity: 6,
+  time: "12:00",
+};
+
+function createRestoreStorage() {
+  const storage = new MemoryStorage();
+  storage.setItem(
+    PERSISTED_STATE_KEY,
+    JSON.stringify({
+      ...createDefaultPersistedState(),
+      signals: [...initialSignals, customRestoreSignal],
+      modelSettings: {
+        ...createDefaultPersistedState().modelSettings,
+        sensitivity: 1.2,
+      },
+    }),
+  );
+  storage.setItem(UI_PREFERENCES_KEY, JSON.stringify({ hasSeenIntro: true }));
+  return storage;
+}
+
+function RestoreStateProbe() {
+  const { dispatch, state } = useAppState();
+  const {
+    selectedLocation,
+    selectedSignalType,
+    setSelectedLocation,
+    setSelectedSignalType,
+  } = useUiSelection();
+
+  return (
+    <div>
+      <output aria-label="Статус сценария">
+        {state.scenarioPreview ? "Активен" : "Не активен"}
+      </output>
+      <output aria-label="Выбранная локация">
+        {selectedLocation ?? "Нет"}
+      </output>
+      <output aria-label="Выбранный тип сигнала">
+        {selectedSignalType ?? "Нет"}
+      </output>
+      <output aria-label="Текущая чувствительность">
+        {state.modelSettings.sensitivity}
+      </output>
+      <output aria-label="Статус Intro">
+        {state.uiPreferences.hasSeenIntro ? "Просмотрено" : "Не просмотрено"}
+      </output>
+      <button
+        onClick={() =>
+          dispatch({
+            type: "scenario/updateObservations",
+            payload: {
+              signals: state.signals.map((signal) =>
+                signal.id === customRestoreSignal.id
+                  ? { ...signal, intensity: 10 }
+                  : signal,
+              ),
+            },
+          })
+        }
+        type="button"
+      >
+        Активировать тестовый сценарий
+      </button>
+      <button
+        onClick={() => {
+          setSelectedLocation(customRestoreSignal.location);
+          setSelectedSignalType(customRestoreSignal.event);
+        }}
+        type="button"
+      >
+        Выбрать временный сигнал
+      </button>
+      <button
+        onClick={() => {
+          setSelectedLocation("Огород");
+          setSelectedSignalType("missing_carrot");
+        }}
+        type="button"
+      >
+        Выбрать канонический сигнал
+      </button>
+    </div>
+  );
+}
+
+function renderRestoreHarness(storage = createRestoreStorage()) {
+  return {
+    storage,
+    ...render(
+      <AppStateProvider storage={storage}>
+        <UiSelectionProvider>
+          <SignalsSection />
+          <RestoreStateProbe />
+        </UiSelectionProvider>
+      </AppStateProvider>,
+    ),
+  };
 }
 
 describe("SignalsSection", () => {
@@ -288,49 +397,173 @@ describe("SignalsSection", () => {
     expect(screen.getByText("Начните с наблюдения")).toBeInTheDocument();
   });
 
-  it("восстанавливает только initial signals и сохраняет model settings и intro preference", async () => {
+  it("не меняет signals, preview, settings и selection при открытии и отмене Restore", async () => {
     const user = userEvent.setup();
-    const storage = new MemoryStorage();
-    storage.setItem(
-      PERSISTED_STATE_KEY,
-      JSON.stringify({
-        ...createDefaultPersistedState(),
-        signals: [],
-        modelSettings: {
-          ...createDefaultPersistedState().modelSettings,
-          sensitivity: 1.2,
-        },
-      }),
-    );
-    renderSignalsApp(storage);
+    const { storage } = renderRestoreHarness();
 
     await user.click(
+      screen.getByRole("button", { name: "Активировать тестовый сценарий" }),
+    );
+    await user.click(
+      screen.getByRole("button", { name: "Выбрать временный сигнал" }),
+    );
+    const trigger = screen.getByRole("button", {
+      name: "Восстановить исходные данные",
+    });
+    await user.click(trigger);
+
+    const dialog = screen.getByRole("dialog", {
+      name: "Восстановить исходные данные?",
+    });
+    expect(dialog).toHaveAccessibleDescription(
+      "Текущие наблюдения будут заменены стартовым набором. Добавленные и изменённые наблюдения будут потеряны.",
+    );
+    expect(within(dialog).getByRole("button", { name: "Закрыть" })).toHaveFocus();
+    expect(screen.getByText("4 наблюдения")).toBeInTheDocument();
+    expect(screen.getByLabelText("Статус сценария")).toHaveTextContent("Активен");
+    expect(screen.getByLabelText("Выбранная локация")).toHaveTextContent(
+      "Северное поле",
+    );
+    expect(screen.getByLabelText("Выбранный тип сигнала")).toHaveTextContent(
+      "barn_rustling",
+    );
+    expect(readPersistedState(storage).signals).toHaveLength(4);
+
+    await user.click(within(dialog).getByRole("button", { name: "Отмена" }));
+    await waitFor(() => {
+      expect(
+        screen.queryByRole("dialog", { name: "Восстановить исходные данные?" }),
+      ).not.toBeInTheDocument();
+    });
+
+    expect(trigger).toHaveFocus();
+    expect(screen.getByText("4 наблюдения")).toBeInTheDocument();
+    expect(screen.getByLabelText("Статус сценария")).toHaveTextContent("Активен");
+    expect(screen.getByLabelText("Текущая чувствительность")).toHaveTextContent(
+      "1.2",
+    );
+    expect(screen.getByLabelText("Выбранная локация")).toHaveTextContent(
+      "Северное поле",
+    );
+  });
+
+  it("закрывает Restore по Escape без mutation и возвращает focus на trigger", async () => {
+    const user = userEvent.setup();
+    const { storage } = renderRestoreHarness();
+
+    await user.click(
+      screen.getByRole("button", { name: "Активировать тестовый сценарий" }),
+    );
+    const trigger = screen.getByRole("button", {
+      name: "Восстановить исходные данные",
+    });
+    await user.click(trigger);
+    await user.keyboard("{Escape}");
+
+    await waitFor(() => {
+      expect(
+        screen.queryByRole("dialog", { name: "Восстановить исходные данные?" }),
+      ).not.toBeInTheDocument();
+    });
+    expect(trigger).toHaveFocus();
+    expect(screen.getByText("4 наблюдения")).toBeInTheDocument();
+    expect(screen.getByLabelText("Статус сценария")).toHaveTextContent("Активен");
+    expect(readPersistedState(storage).signals).toHaveLength(4);
+  });
+
+  it("после Confirm восстанавливает initial signals, сбрасывает preview и очищает invalid selection", async () => {
+    const user = userEvent.setup();
+    const { storage, unmount } = renderRestoreHarness();
+
+    await user.click(
+      screen.getByRole("button", { name: "Активировать тестовый сценарий" }),
+    );
+    await user.click(
+      screen.getByRole("button", { name: "Выбрать временный сигнал" }),
+    );
+    await user.click(
       screen.getByRole("button", { name: "Восстановить исходные данные" }),
+    );
+    const dialog = screen.getByRole("dialog", {
+      name: "Восстановить исходные данные?",
+    });
+    await user.click(
+      within(dialog).getByRole("button", {
+        name: "Восстановить исходные данные",
+      }),
+    );
+
+    expect(screen.getByText("3 наблюдения")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        document.querySelector('[data-signal-id="evt_restore_custom"]'),
+      ).not.toBeInTheDocument();
+    });
+    expect(screen.getByLabelText("Статус сценария")).toHaveTextContent(
+      "Не активен",
+    );
+    expect(screen.getByLabelText("Выбранная локация")).toHaveTextContent("Нет");
+    expect(screen.getByLabelText("Выбранный тип сигнала")).toHaveTextContent(
+      "Нет",
+    );
+    expect(screen.getByLabelText("Текущая чувствительность")).toHaveTextContent(
+      "1.2",
+    );
+    expect(screen.getByLabelText("Статус Intro")).toHaveTextContent(
+      "Просмотрено",
     );
 
     await waitFor(() => {
       const persisted = readPersistedState(storage);
-      expect(persisted.signals).toHaveLength(3);
+      expect(persisted.signals).toEqual(initialSignals);
       expect(persisted.modelSettings.sensitivity).toBe(1.2);
       expect(JSON.parse(storage.getItem(UI_PREFERENCES_KEY) ?? "null")).toEqual({
         hasSeenIntro: true,
       });
     });
 
-    await user.click(screen.getByRole("link", { name: "Обзор" }));
-    expect(
-      await screen.findByRole("heading", {
-        level: 1,
-        name: "6 предполагаемых кроликов",
+    unmount();
+    renderRestoreHarness(storage);
+    expect(screen.getByText("3 наблюдения")).toBeInTheDocument();
+    expect(screen.getByLabelText("Текущая чувствительность")).toHaveTextContent(
+      "1.2",
+    );
+    expect(screen.getByLabelText("Статус Intro")).toHaveTextContent(
+      "Просмотрено",
+    );
+  });
+
+  it("после Confirm сохраняет shared selection, если она валидна для initial signals", async () => {
+    const user = userEvent.setup();
+    renderRestoreHarness();
+
+    await user.click(
+      screen.getByRole("button", { name: "Активировать тестовый сценарий" }),
+    );
+    await user.click(
+      screen.getByRole("button", { name: "Выбрать канонический сигнал" }),
+    );
+    await user.click(
+      screen.getByRole("button", { name: "Восстановить исходные данные" }),
+    );
+    const dialog = screen.getByRole("dialog", {
+      name: "Восстановить исходные данные?",
+    });
+    await user.click(
+      within(dialog).getByRole("button", {
+        name: "Восстановить исходные данные",
       }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        (_content, element) =>
-          element?.classList.contains("overview-confidence") === true &&
-          element.textContent === "Уверенность в оценке · 73%",
-      ),
-    ).toBeInTheDocument();
+    );
+
+    expect(screen.getByLabelText("Статус сценария")).toHaveTextContent(
+      "Не активен",
+    );
+    expect(screen.getByLabelText("Выбранная локация")).toHaveTextContent(
+      "Огород",
+    );
+    expect(screen.getByLabelText("Выбранный тип сигнала")).toHaveTextContent(
+      "missing_carrot",
+    );
   });
 
   it("закрывает add sheet по Escape и возвращает focus на CTA", async () => {

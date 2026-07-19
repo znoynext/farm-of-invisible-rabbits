@@ -255,7 +255,8 @@
 }
 
 .dialog-panel__close {
-  width: 2.75rem;
+  width: 3rem;
+  min-height: 3rem;
   padding-inline: 0;
 }
 

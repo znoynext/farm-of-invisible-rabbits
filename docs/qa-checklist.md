@@ -29,6 +29,8 @@
 - [ ] delete
 - [ ] delete all
 - [ ] reset
+- [ ] restore initial data requires explicit confirmation before replacing changed observations
+- [ ] cancel/escape restore leaves signals and active scenario unchanged
 - [ ] sensitivity
 - [ ] weights
 - [ ] what-if preview

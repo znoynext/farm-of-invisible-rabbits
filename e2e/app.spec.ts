@@ -344,6 +344,12 @@ test("управляет сигналами и согласованно пере
   await page
     .getByRole("button", { name: "Восстановить исходные данные" })
     .click();
+  dialog = page.getByRole("dialog", {
+    name: "Восстановить исходные данные?",
+  });
+  await dialog
+    .getByRole("button", { name: "Восстановить исходные данные" })
+    .click();
   await page.getByRole("link", { name: "Обзор" }).click();
   await expect(
     page.getByRole("heading", {
@@ -354,6 +360,131 @@ test("управляет сигналами и согласованно пере
   await expect(page.locator(".overview-confidence")).toHaveText(
     "Уверенность в оценке · 73%",
   );
+});
+
+test("подтверждает destructive Restore без скрытой потери scenario и model settings", async ({
+  page,
+}) => {
+  await openRadar(page);
+
+  await page.getByRole("link", { name: "Модель" }).click();
+  const sensitivity = page.getByRole("slider", {
+    name: "Чувствительность модели",
+  });
+  await sensitivity.focus();
+  await page.keyboard.press("End");
+  await expect(sensitivity).toHaveValue("1.5");
+
+  await page.getByRole("link", { name: "Сигналы" }).click();
+  await page.getByRole("button", { name: "Добавить сигнал" }).click();
+  let dialog = page.getByRole("dialog", { name: "Добавить сигнал" });
+  await dialog
+    .getByRole("combobox", { name: "Что произошло?" })
+    .selectOption("barn_rustling");
+  await dialog
+    .getByRole("textbox", { name: "Где это произошло?" })
+    .fill("Северное поле");
+  await dialog.getByRole("spinbutton", { name: "Количество" }).fill("4");
+  const addIntensity = dialog.getByRole("slider", {
+    name: "Насколько сильным был сигнал?",
+  });
+  await addIntensity.focus();
+  await page.keyboard.press("Home");
+  await dialog.getByLabel("Время").fill("12:00");
+  await dialog.getByRole("button", { name: "Добавить наблюдение" }).click();
+  await expect(page.getByText("4 наблюдения")).toBeVisible();
+
+  await page.getByRole("link", { name: "Обзор" }).click();
+  await page
+    .getByRole("radio", { name: /Шорох.*Северное поле/ })
+    .click();
+  const scenarioLab = page.locator("#scenario-lab");
+  const scenarioSlider = scenarioLab.getByRole("slider", {
+    name: "Интенсивность наблюдения",
+  });
+  await scenarioSlider.focus();
+  await page.keyboard.press("End");
+  await expect(scenarioLab).toHaveAttribute("data-preview-active", "true");
+  await expect(
+    scenarioLab.getByRole("button", { name: "Применить к данным" }),
+  ).toBeEnabled();
+
+  await page.getByRole("link", { name: "Сигналы" }).click();
+  const restoreTrigger = page.getByRole("button", {
+    name: "Восстановить исходные данные",
+  });
+  await restoreTrigger.click();
+  dialog = page.getByRole("dialog", {
+    name: "Восстановить исходные данные?",
+  });
+  await expect(dialog).toBeVisible();
+  await expect(dialog).toContainText(
+    "Текущие наблюдения будут заменены стартовым набором. Добавленные и изменённые наблюдения будут потеряны.",
+  );
+  await expect(dialog.getByRole("button", { name: "Закрыть" })).toBeFocused();
+  for (const button of await dialog.getByRole("button").all()) {
+    const box = await button.boundingBox();
+    expect(box?.width ?? 0).toBeGreaterThanOrEqual(44);
+    expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
+  }
+  await expect(page.getByText("4 наблюдения")).toBeVisible();
+  await expect.poll(async () =>
+    page.evaluate(() => {
+      const raw = window.localStorage.getItem("farm-of-invisible-rabbits:v1");
+      return raw ? JSON.parse(raw).signals.length : null;
+    }),
+  ).toBe(4);
+
+  await dialog.getByRole("button", { name: "Отмена" }).click();
+  await expect(dialog).toBeHidden();
+  await expect(restoreTrigger).toBeFocused();
+  await expect(page.getByText("Северное поле")).toBeVisible();
+
+  await page.getByRole("link", { name: "Обзор" }).click();
+  await expect(scenarioLab).toHaveAttribute("data-preview-active", "true");
+  await expect(
+    scenarioLab.getByRole("button", { name: "Применить к данным" }),
+  ).toBeEnabled();
+
+  await page.getByRole("link", { name: "Сигналы" }).click();
+  await restoreTrigger.click();
+  dialog = page.getByRole("dialog", {
+    name: "Восстановить исходные данные?",
+  });
+  await dialog
+    .getByRole("button", { name: "Восстановить исходные данные" })
+    .click();
+  await expect(dialog).toBeHidden();
+  await expect(page.getByText("3 наблюдения")).toBeVisible();
+  await expect(page.getByText("Северное поле")).toBeHidden();
+
+  await page.getByRole("link", { name: "Обзор" }).click();
+  await expect(scenarioLab).toHaveAttribute("data-preview-active", "false");
+  await expect(
+    scenarioLab.getByRole("button", { name: "Применить к данным" }),
+  ).toBeDisabled();
+
+  await page.getByRole("link", { name: "Модель" }).click();
+  await expect(sensitivity).toHaveValue("1.5");
+  expect(
+    await page.evaluate(() => {
+      const state = JSON.parse(
+        window.localStorage.getItem("farm-of-invisible-rabbits:v1") ?? "null",
+      );
+      return {
+        ids: state?.signals?.map(({ id }: { id: string }) => id),
+        sensitivity: state?.modelSettings?.sensitivity,
+      };
+    }),
+  ).toEqual({
+    ids: ["evt_001", "evt_002", "evt_003"],
+    sensitivity: 1.5,
+  });
+
+  await page.reload();
+  await expect(
+    page.getByRole("slider", { name: "Чувствительность модели" }),
+  ).toHaveValue("1.5");
 });
 
 test("настраивает прозрачную модель и сбрасывает active What-if без потери данных", async ({

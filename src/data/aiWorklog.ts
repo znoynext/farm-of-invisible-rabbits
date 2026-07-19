@@ -113,11 +113,11 @@ export const publicAiWorklogCheckpoints = [
     aiSuggestion:
       "Использовать единый derived analytics path, pure helper для самого impactful observation и существующие scenario actions; recommendation thresholds оставить только в domain.",
     humanDecision:
-      "Не создавать отдельный persisted store для What-if. Default observation оставить внутренним состоянием Lab, а shared selection менять только после явного действия пользователя; CRUD mutation должна сначала сбрасывать stale preview.",
+      "Не создавать отдельное сохраняемое состояние для What-if. Связанный выбор менять только после явного действия пользователя; изменения сигналов должны сбрасывать устаревший сценарий, а восстановление исходных данных — выполняться только после явного подтверждения.",
     changed:
-      "Map, Evidence, What-if, Recommendations и Signals CRUD соединены общими analytics и temporary selection. Remediation Audit #3 убрала mount-time подсветку, которая выглядела как пользовательский выбор.",
+      "Карта, объяснение, What-if, рекомендации и управление сигналами соединены общей аналитикой и временным выбором. Audit #3 убрал скрытую стартовую подсветку, а Audit #4 добавил подтверждение перед заменой пользовательских наблюдений.",
     validation:
-      "Regression test сначала воспроизвёл ошибочное aria-pressed на карте, затем подтвердил исправление. Финально прошли lint, 129 тестов, build и 15 E2E; desktop и 390 px состояния были реально отрендерены и проверены.",
+      "Регрессионные тесты подтвердили исправления Audit #3 и #4: отмена и Escape не меняют состояние, подтверждение сбрасывает сценарий и сохраняет настройки. Диалог проверен на 1440 и 390 px; число публичных записей осталось в заданном диапазоне.",
     emphasis: "audit",
   },
 ] as const satisfies readonly PublicAiWorklogCheckpoint[];

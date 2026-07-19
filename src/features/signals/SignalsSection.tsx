@@ -27,6 +27,7 @@ export function SignalsSection() {
   const prefersReducedMotion = useReducedMotion();
   const [formMode, setFormMode] = useState<SignalFormMode>(null);
   const [isDeleteAllOpen, setIsDeleteAllOpen] = useState(false);
+  const [isRestoreOpen, setIsRestoreOpen] = useState(false);
 
   function reconcileSelection(nextSignals: readonly SignalEvent[]) {
     if (
@@ -83,6 +84,7 @@ export function SignalsSection() {
   function restoreInitialSignals() {
     const nextSignals = initialSignals.map((signal) => ({ ...signal }));
     applySignalMutation({ type: "signals/reset" }, nextSignals);
+    setIsRestoreOpen(false);
   }
 
   return (
@@ -106,7 +108,7 @@ export function SignalsSection() {
           Добавить сигнал
         </Button>
         <div className="signals-toolbar__secondary">
-          <Button onClick={restoreInitialSignals} variant="quiet">
+          <Button onClick={() => setIsRestoreOpen(true)} variant="quiet">
             <RotateCcw aria-hidden="true" size={17} strokeWidth={1.8} />
             Восстановить исходные данные
           </Button>
@@ -218,6 +220,26 @@ export function SignalsSection() {
           {...(formMode.kind === "edit" ? { signal: formMode.signal } : {})}
         />
       ) : null}
+
+      <Dialog
+        description="Текущие наблюдения будут заменены стартовым набором. Добавленные и изменённые наблюдения будут потеряны."
+        eyebrow="Необратимо для текущего списка"
+        onOpenChange={setIsRestoreOpen}
+        open={isRestoreOpen}
+        title="Восстановить исходные данные?"
+      >
+        <div className="signal-confirm">
+          <Button
+            className="signal-confirm__restore"
+            onClick={restoreInitialSignals}
+          >
+            Восстановить исходные данные
+          </Button>
+          <Button onClick={() => setIsRestoreOpen(false)} variant="quiet">
+            Отмена
+          </Button>
+        </div>
+      </Dialog>
 
       <Dialog
         description="Текущая оценка перейдёт в пустое состояние. Исходные данные можно будет восстановить."
