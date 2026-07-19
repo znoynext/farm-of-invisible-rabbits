@@ -52,8 +52,24 @@ describe("App", () => {
       screen.getByText("Farm of Invisible Rabbits"),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: "Открыть радар" }),
+      screen.getByRole("button", { name: "Посмотреть текущую оценку" }),
     ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { level: 2, name: "Как это работает" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Посмотрите оценку")).toBeInTheDocument();
+    expect(screen.getByText("Измените условия")).toBeInTheDocument();
+    expect(screen.getByText("Сравните результат")).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", {
+        level: 2,
+        name: "Что находится во вкладках",
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Обзор")).toBeInTheDocument();
+    expect(screen.getByText("Сигналы")).toBeInTheDocument();
+    expect(screen.getByText("Модель")).toBeInTheDocument();
+    expect(screen.getByText("AI Worklog")).toBeInTheDocument();
     expect(
       screen.queryByRole("navigation", { name: "Основная навигация" }),
     ).not.toBeInTheDocument();
@@ -63,7 +79,9 @@ describe("App", () => {
     const user = userEvent.setup();
     const { storage } = renderApp();
 
-    await user.click(screen.getByRole("button", { name: "Открыть радар" }));
+    await user.click(
+      screen.getByRole("button", { name: "Посмотреть текущую оценку" }),
+    );
 
     expect(
       await screen.findByRole("navigation", { name: "Основная навигация" }),
@@ -136,6 +154,48 @@ describe("App", () => {
     expect(evidence).toHaveAccessibleName("Что повлияло на оценку");
     await waitFor(() => expect(evidence).toHaveFocus());
     expect(document.getElementById("overview-evidence-summary")).toBeInTheDocument();
+  });
+
+  it("показывает три следующих действия и ведёт к существующим разделам", async () => {
+    const user = userEvent.setup();
+    const storage = new MemoryStorage();
+    storage.setItem(UI_PREFERENCES_KEY, JSON.stringify({ hasSeenIntro: true }));
+    renderApp(storage);
+
+    expect(
+      screen.getByRole("heading", {
+        level: 2,
+        name: "Что можно сделать дальше",
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Открыть сигналы" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Проверить гипотезу" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Открыть модель" })).toBeInTheDocument();
+
+    await user.click(screen.getByRole("link", { name: "Проверить гипотезу" }));
+    expect(window.location.hash).toBe("#scenario-lab");
+    await waitFor(() => {
+      expect(
+        screen.getByRole("heading", { level: 2, name: "Проверить гипотезу" }),
+      ).toHaveFocus();
+    });
+
+    await user.click(screen.getByRole("link", { name: "Открыть сигналы" }));
+    await waitFor(() => {
+      expect(
+        screen.getByRole("heading", { level: 1, name: "Сигналы" }),
+      ).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole("link", { name: "Обзор" }));
+    await user.click(
+      await screen.findByRole("link", { name: "Открыть модель" }),
+    );
+    await waitFor(() => {
+      expect(
+        screen.getByRole("heading", { level: 1, name: "Модель оценки" }),
+      ).toBeInTheDocument();
+    });
   });
 
   it("показывает canonical aggregated contributions и отдельную формулу события", async () => {
@@ -301,7 +361,9 @@ describe("App", () => {
       await screen.findByRole("dialog", { name: "Farm of Invisible Rabbits" }),
     ).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: "Открыть радар" }));
+    await user.click(
+      screen.getByRole("button", { name: "Посмотреть текущую оценку" }),
+    );
 
     await waitFor(() => {
       expect(screen.getByRole("button", { name: "О проекте" })).toHaveFocus();
@@ -332,11 +394,11 @@ describe("App", () => {
     });
     expect(window.location.hash).toBe("#model");
 
-    await user.click(screen.getByRole("link", { name: "Работа с ИИ" }));
+    await user.click(screen.getByRole("link", { name: "AI Worklog" }));
 
     await waitFor(() => {
       expect(
-        screen.getByRole("heading", { level: 1, name: "Как я работал с ИИ" }),
+        screen.getByRole("heading", { level: 1, name: "AI Worklog" }),
       ).toBeInTheDocument();
     });
     expect(window.location.hash).toBe("#ai-worklog");

@@ -18,6 +18,14 @@ describe("AiWorklogSection", () => {
   it("показывает семь отобранных реальных checkpoints", () => {
     render(<AiWorklogSection />);
 
+    expect(
+      screen.getByRole("heading", {
+        level: 2,
+        name: "От первой задачи до финальной проверки",
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Как был сформулирован стартовый запрос к AI.")).toBeInTheDocument();
+    expect(screen.getByText("Какие проблемы нашли проверки и внешние аудиты и как их исправили.")).toBeInTheDocument();
     expect(screen.getAllByTestId("ai-worklog-checkpoint")).toHaveLength(7);
     expect(publicAiWorklogCheckpoints.length).toBeGreaterThanOrEqual(5);
     expect(publicAiWorklogCheckpoints.length).toBeLessThanOrEqual(7);
@@ -34,7 +42,7 @@ describe("AiWorklogSection", () => {
     const user = userEvent.setup();
     render(<AiWorklogSection />);
 
-    const trigger = screen.getAllByRole("button", { name: "Показать запрос" })[0]!;
+    const trigger = screen.getAllByRole("button", { name: "Показать исходный запрос" })[0]!;
     const promptId = trigger.getAttribute("aria-controls");
 
     expect(trigger).toHaveAttribute("aria-expanded", "false");
@@ -49,7 +57,7 @@ describe("AiWorklogSection", () => {
       publicAiWorklogCheckpoints[0].promptSummary,
     );
 
-    await user.click(screen.getByRole("button", { name: "Скрыть запрос" }));
+    await user.click(screen.getByRole("button", { name: "Скрыть исходный запрос" }));
     expect(trigger).toHaveAttribute("aria-expanded", "false");
   });
 

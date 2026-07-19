@@ -14,22 +14,58 @@ export function AiWorklogSection() {
       <header className="worklog-hero">
         <div>
           <p className="eyebrow">AI Worklog</p>
-          <h1 id="section-title">Как я работал с ИИ</h1>
+          <h1 id="section-title">AI Worklog</h1>
         </div>
         <div className="worklog-hero__introduction">
           <p>
-            Отобранные решения, в которых ИИ предлагал подход, человек определял
-            границы, а результат проходил проверку.
+            Как проект создавался с помощью ИИ, какие решения принимал человек и
+            как результат проходил проверку.
           </p>
           <p>
-            Это не стенограмма и не скрытые рассуждения — только отобранные
-            факты из рабочего журнала проекта.
+            Здесь нет скрытых рассуждений или полной переписки — только важные
+            решения, изменения и результаты проверок.
           </p>
         </div>
       </header>
 
+      <section
+        aria-labelledby="worklog-questions-title"
+        className="worklog-questions"
+      >
+        <div>
+          <p className="eyebrow">Что показывает журнал</p>
+          <h2 id="worklog-questions-title">От первой задачи до финальной проверки</h2>
+        </div>
+        <ol>
+          <li>
+            <strong>Первая задача</strong>
+            <span>Как был сформулирован стартовый запрос к AI.</span>
+          </li>
+          <li>
+            <strong>Помощь AI</strong>
+            <span>Какие варианты структуры, архитектуры и интерфейса предложил AI.</span>
+          </li>
+          <li>
+            <strong>Решение человека</strong>
+            <span>Что было принято, изменено или отклонено.</span>
+          </li>
+          <li>
+            <strong>Доработка продукта</strong>
+            <span>Как менялись логика, UX/UI и поведение интерфейса.</span>
+          </li>
+          <li>
+            <strong>Слабые места</strong>
+            <span>Какие проблемы нашли проверки и внешние аудиты и как их исправили.</span>
+          </li>
+          <li>
+            <strong>Проверка результата</strong>
+            <span>Какие тесты и ручные проверки подтвердили итог.</span>
+          </li>
+        </ol>
+      </section>
+
       <div aria-label="Принцип работы" className="worklog-process">
-        <span>Предложение ИИ</span>
+        <span>Предложение AI</span>
         <span aria-hidden="true">→</span>
         <span>Решение человека</span>
         <span aria-hidden="true">→</span>
@@ -41,8 +77,8 @@ export function AiWorklogSection() {
       <div className="worklog-selection-note">
         <span>{String(publicAiWorklogCheckpoints.length).padStart(2, "0")}</span>
         <p>
-          отобранных checkpoints из полного рабочего журнала — без выдуманных
-          результатов и без публикации приватных данных.
+          ключевых этапов из полного рабочего журнала — только реальные решения
+          и проверки, без приватных данных.
         </p>
       </div>
 
@@ -70,12 +106,15 @@ export function AiWorklogSection() {
                   <h2 id={`worklog-title-${checkpoint.id}`}>
                     {checkpoint.sourceTitle}
                   </h2>
-                  <p className="worklog-entry__task">{checkpoint.task}</p>
+                  <p className="worklog-entry__task">
+                    <span className="worklog-label">Задача этапа</span>
+                    {checkpoint.task}
+                  </p>
                 </header>
 
                 <div className="worklog-decision-flow">
-                  <section aria-label="Предложение ИИ">
-                    <p className="worklog-label">Что предложил ИИ</p>
+                  <section aria-label="Предложение AI">
+                    <p className="worklog-label">Что предложил AI</p>
                     <p>{checkpoint.aiSuggestion}</p>
                   </section>
                   <span aria-hidden="true" className="worklog-decision-flow__arrow">
@@ -89,7 +128,11 @@ export function AiWorklogSection() {
 
                 <dl className="worklog-result">
                   <div>
-                    <dt>Что изменилось</dt>
+                    <dt>
+                      {checkpoint.emphasis === "audit"
+                        ? "Что было не так и что исправили"
+                        : "Что изменилось"}
+                    </dt>
                     <dd>{checkpoint.changed}</dd>
                   </div>
                   <div>
@@ -107,7 +150,11 @@ export function AiWorklogSection() {
                     }
                     type="button"
                   >
-                    <span>{isExpanded ? "Скрыть запрос" : "Показать запрос"}</span>
+                    <span>
+                      {isExpanded
+                        ? "Скрыть исходный запрос"
+                        : "Показать исходный запрос"}
+                    </span>
                     <ChevronDown aria-hidden="true" size={18} strokeWidth={1.8} />
                   </button>
 
@@ -125,7 +172,9 @@ export function AiWorklogSection() {
                           ease: [0.2, 0, 0, 1],
                         }}
                       >
-                        <p className="worklog-label">Краткий запрос к ИИ</p>
+                        <p className="worklog-label">
+                          Как была сформулирована задача для AI
+                        </p>
                         <p>{checkpoint.promptSummary}</p>
                       </motion.div>
                     ) : null}

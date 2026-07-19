@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { createDefaultAppState, deriveAnalytics } from "../../app/state";
@@ -19,11 +19,11 @@ describe("FarmMap", () => {
       />,
     );
 
-    expect(
-      screen.getByRole("button", {
+    const garden = screen.getByRole("button", {
         name: "Огород: Умеренная активность, 1 наблюдение",
-      }),
-    ).toHaveAttribute("data-activity", "moderate");
+      });
+    expect(garden).toHaveAttribute("data-activity", "moderate");
+    expect(within(garden).getByText("Умеренная")).toBeInTheDocument();
     expect(
       screen.getByRole("button", {
         name: "У забора: Высокая активность, 1 наблюдение",
@@ -36,6 +36,10 @@ describe("FarmMap", () => {
     ).toHaveAttribute("data-activity", "high");
     expect(screen.getByRole("heading", { level: 3, name: "У забора" })).toBeInTheDocument();
     expect(screen.getByText("1,96")).toBeInTheDocument();
+    const legend = screen.getByRole("list", { name: "Уровни активности" });
+    expect(within(legend).getByText("Низкая")).toBeInTheDocument();
+    expect(within(legend).getByText("Умеренная")).toBeInTheDocument();
+    expect(within(legend).getByText("Высокая")).toBeInTheDocument();
   });
 
   it("показывает зону при hover/focus и закрепляет выбор по click", async () => {
@@ -137,7 +141,7 @@ describe("FarmMap", () => {
     );
 
     expect(screen.getByText("Пока нет наблюдений для карты")).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Карта ждёт первого сигнала" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Добавьте первое наблюдение" })).toBeInTheDocument();
     expect(screen.queryAllByRole("button")).toHaveLength(0);
   });
 

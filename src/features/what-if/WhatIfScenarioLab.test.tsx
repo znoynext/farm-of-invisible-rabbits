@@ -177,7 +177,7 @@ describe("WhatIfScenarioLab", () => {
 
     const lab = document.getElementById("scenario-lab");
     expect(lab).toHaveAccessibleName("Проверить гипотезу");
-    expect(lab).toHaveTextContent("Для сценария нужно хотя бы одно наблюдение");
+    expect(lab).toHaveTextContent("Сначала добавьте хотя бы одно наблюдение");
     expect(within(lab as HTMLElement).queryByText("Сейчас")).not.toBeInTheDocument();
   });
 });

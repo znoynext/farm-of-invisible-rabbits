@@ -25,7 +25,7 @@
 .model-section__header h1 {
   max-width: 10ch;
   margin: var(--space-4) 0 0;
-  font-size: clamp(3rem, 6vw, 6.25rem);
+  font-size: clamp(2.5rem, 4.3vw, 4.2rem);
 }
 
 .model-section__introduction {
@@ -74,7 +74,7 @@
 }
 
 .model-live-result__answer strong {
-  font-size: clamp(4rem, 8vw, 7rem);
+  font-size: clamp(3.2rem, 5.7vw, 4.8rem);
   font-weight: 510;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.07em;
@@ -137,7 +137,7 @@
 .model-weights h2,
 .model-explanation h2 {
   margin: var(--space-3) 0 var(--space-4);
-  font-size: clamp(2rem, 3.2vw, 3.5rem);
+  font-size: clamp(1.85rem, 2.8vw, 2.95rem);
   font-weight: 540;
   letter-spacing: -0.05em;
   line-height: var(--line-height-heading);
@@ -171,7 +171,7 @@
 }
 
 .model-sensitivity__readout strong {
-  font-size: clamp(4rem, 7vw, 6.5rem);
+  font-size: clamp(3.1rem, 5vw, 4.45rem);
   font-weight: 520;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.07em;
@@ -403,7 +403,7 @@
 
   .model-section__header h1 {
     margin-top: var(--space-3);
-    font-size: clamp(2.8rem, 15vw, 4.25rem);
+    font-size: clamp(2.35rem, 10.5vw, 3.1rem);
   }
 
   .model-section__introduction p:first-child {
@@ -416,7 +416,7 @@
   }
 
   .model-live-result__answer strong {
-    font-size: 4.75rem;
+    font-size: 3.9rem;
   }
 
   .model-live-result__context,
@@ -440,7 +440,7 @@
   }
 
   .model-sensitivity__readout strong {
-    font-size: 4.75rem;
+    font-size: 3.9rem;
   }
 
   .model-weight {

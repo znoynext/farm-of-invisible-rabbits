@@ -60,8 +60,8 @@ export function EvidenceSection() {
           <p className="eyebrow">Причины оценки</p>
           <h2 id="evidence-title">Пока нечего анализировать</h2>
           <p>
-            Когда появятся наблюдения, здесь будет видно их вклад, локации и
-            воспроизводимый расчёт влияния.
+            Добавьте наблюдение — здесь появятся его вклад, место и понятный
+            разбор расчёта.
           </p>
         </div>
       </Surface>
@@ -92,11 +92,11 @@ export function EvidenceSection() {
         </div>
         <div className="evidence-section__intro">
           <p>
-            Вклад объединён по типам сигналов. Откройте наблюдение, чтобы
-            проверить вес, интенсивность и итоговое влияние.
+            Сигналы одного типа собраны вместе. Откройте строку, чтобы увидеть,
+            как количество, интенсивность и вес дали итоговый вклад.
           </p>
           <p className="evidence-section__total">
-            Суммарное влияние · <strong>{formatNumber(analytics.estimate.totalEvidence)}</strong>
+            Общий вклад сигналов · <strong>{formatNumber(analytics.estimate.totalEvidence)}</strong>
           </p>
         </div>
       </header>
@@ -235,7 +235,7 @@ function EvidenceEvent({
           {formatNumber(detail.intensityFactor)} = {formatNumber(detail.impact)}
         </code>
         <span>
-          эффективное количество × вес × коэффициент интенсивности ·{" "}
+          учтённое количество × вес × доля интенсивности ·{" "}
           {formatDecimalPercent(detail.contribution)}% общего влияния
         </span>
       </div>

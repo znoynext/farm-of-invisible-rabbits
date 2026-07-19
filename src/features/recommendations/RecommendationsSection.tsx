@@ -27,8 +27,8 @@ export function RecommendationsSection() {
           <h2 id="recommendations-title">Что стоит сделать</h2>
         </div>
         <p>
-          Практические шаги следуют из тех же наблюдений, что формируют оценку.
-          Порядок учитывает важность и силу сигналов.
+          Эти действия основаны на текущих наблюдениях. Сначала показаны самые
+          полезные шаги.
         </p>
       </header>
 
@@ -37,7 +37,7 @@ export function RecommendationsSection() {
           <span aria-hidden="true" />
           <p aria-live="polite">
             {isPreviewActive
-              ? "Предпросмотр: действия обновлены для сценария"
+              ? "Для временного сценария"
               : "По текущим наблюдениям"}
           </p>
         </div>

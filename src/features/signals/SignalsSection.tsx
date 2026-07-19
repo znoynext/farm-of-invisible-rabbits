@@ -91,11 +91,11 @@ export function SignalsSection() {
     <Surface className="section-stage signals-section">
       <header className="signals-section__header">
         <div>
-          <p className="eyebrow">Доказательная база</p>
+          <p className="eyebrow">Данные для расчёта</p>
           <h1 id="section-title">Сигналы</h1>
         </div>
         <div className="signals-section__intro">
-          <p>Наблюдения, на которых строится текущая оценка.</p>
+          <p>Наблюдения, по которым система оценивает количество кроликов.</p>
           <p aria-live="polite" className="signals-section__count">
             {formatObservationCount(state.signals.length)}
           </p>

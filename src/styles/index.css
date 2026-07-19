@@ -13,6 +13,7 @@
 
 @layer base {
   :root {
+    color-scheme: only light;
     color: var(--color-text);
     background: var(--color-background);
     font-family: var(--font-family-sans);

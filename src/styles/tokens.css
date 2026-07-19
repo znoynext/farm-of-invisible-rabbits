@@ -40,8 +40,8 @@
   --font-size-sm: 0.875rem;
   --font-size-body: 1rem;
   --font-size-body-lg: 1.125rem;
-  --font-size-title: clamp(2rem, 3.2vw, 3.75rem);
-  --font-size-display: clamp(3.5rem, 6vw, 6.75rem);
+  --font-size-title: clamp(1.8rem, 2.8vw, 3.15rem);
+  --font-size-display: clamp(3rem, 5.2vw, 5.6rem);
 
   --line-height-tight: 0.92;
   --line-height-heading: 1.04;

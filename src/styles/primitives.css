@@ -241,7 +241,7 @@
 .dialog-panel__header h2 {
   max-width: 12ch;
   margin: var(--space-3) 0 var(--space-4);
-  font-size: clamp(2rem, 6vw, 3.25rem);
+  font-size: clamp(1.85rem, 5vw, 2.75rem);
   font-weight: 540;
   letter-spacing: -0.05em;
   line-height: var(--line-height-heading);

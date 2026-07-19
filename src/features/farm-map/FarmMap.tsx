@@ -17,6 +17,12 @@ const activityLabels: Record<LocationActivityLevel, string> = {
   high: "Высокая активность",
 };
 
+const activityShortLabels: Record<LocationActivityLevel, string> = {
+  low: "Низкая",
+  moderate: "Умеренная",
+  high: "Высокая",
+};
+
 const signalLabels: Record<SignalType, string> = {
   missing_carrot: "Пропавшая морковь",
   new_hole: "Новые ямки",
@@ -70,8 +76,8 @@ export function FarmMap({
           <h2 id="farm-map-title">Где остаются следы</h2>
         </div>
         <p>
-          Размер и тон отметки показывают активность зоны. Выберите её, чтобы
-          увидеть состав наблюдений и суммарное влияние.
+          Схема показывает, где замечены следы. Чем крупнее отметка, тем сильнее
+          влияние зоны. Нажмите на отметку, чтобы увидеть подробности.
         </p>
       </header>
 
@@ -84,9 +90,11 @@ export function FarmMap({
         >
           <DesktopFarmDiagram />
           <MobileFarmDiagram />
-          <span aria-hidden="true" className="farm-map__other-label">
-            Другие участки
-          </span>
+          <ul aria-label="Уровни активности" className="farm-map__legend">
+            <li><span data-activity="low" />Низкая</li>
+            <li><span data-activity="moderate" />Умеренная</li>
+            <li><span data-activity="high" />Высокая</li>
+          </ul>
 
           {locations.map((location) => {
             const placement = resolveFarmMapPlacement(location.location);
@@ -124,7 +132,10 @@ export function FarmMap({
                 <span aria-hidden="true" className="farm-map__beacon">
                   <SignalTypeMark type={location.strongestSignal.event} />
                 </span>
-                <span className="farm-map__zone-label">{location.location}</span>
+                <span className="farm-map__zone-label">
+                  <strong>{location.location}</strong>
+                  <span>{activityShortLabels[location.activityLevel]}</span>
+                </span>
               </button>
             );
           })}
@@ -159,11 +170,11 @@ function MapDetails({
   if (!activeLocation) {
     return (
       <aside className="farm-map__details farm-map__details--empty">
-        <p className="farm-map__details-index">Нет данных</p>
-        <h3>Карта ждёт первого сигнала</h3>
+        <p className="farm-map__details-index">Пока пусто</p>
+        <h3>Добавьте первое наблюдение</h3>
         <p>
-          Когда появится наблюдение, зона и её влияние отобразятся здесь без
-          случайного размещения.
+          После этого на карте появится зона, а здесь — её активность и вклад в
+          оценку.
         </p>
       </aside>
     );
@@ -197,7 +208,7 @@ function MapDetails({
           <dd>{activeLocation.eventCount}</dd>
         </div>
         <div>
-          <dt>Влияние</dt>
+          <dt>Вклад в оценку</dt>
           <dd>{formatImpact(activeLocation.totalImpact)}</dd>
         </div>
       </dl>
@@ -215,7 +226,7 @@ function MapDetails({
       </div>
 
       <div className="farm-map__strongest">
-        <p>Сильнейшее наблюдение</p>
+        <p>Главный сигнал</p>
         <strong>{formatStrongestSignal(activeLocation.strongestSignal)}</strong>
       </div>
     </motion.aside>
@@ -238,6 +249,8 @@ function DesktopFarmDiagram() {
       <path className="farm-map__boundary" d="m54 302 381-208 519 219" />
       <path className="farm-map__fence" d="m474 117 403 172" />
       <path className="farm-map__fence-posts" d="m507 108-7 35m77-9-8 39m83-9-8 39m82-10-8 40m85-10-8 40" />
+      <text className="farm-map__place-label" x="128" y="325">ОГОРОД</text>
+      <text className="farm-map__place-label" x="690" y="105">ЛИНИЯ ЗАБОРА</text>
       <g className="farm-map__barn">
         <path d="m655 373 128-70 111 47-128 71Z" />
         <path d="m655 373 111 48v112l-111-49Z" />
@@ -245,7 +258,9 @@ function DesktopFarmDiagram() {
         <path className="farm-map__barn-roof" d="m640 367 142-81 128 55-144 80Z" />
         <path className="farm-map__barn-door" d="m811 441 42-23v70l-42 23Z" />
       </g>
+      <text className="farm-map__place-label farm-map__place-label--barn" x="786" y="514">САРАЙ</text>
       <path className="farm-map__other-band" d="m79 475 454 87 236-18-460-92Z" />
+      <text className="farm-map__place-label" x="128" y="535">ПРОЧИЕ УЧАСТКИ</text>
     </svg>
   );
 }
@@ -259,6 +274,10 @@ function MobileFarmDiagram() {
       <path className="farm-map__mobile-fence" d="m198 31 122 62" />
       <path className="farm-map__mobile-barn" d="m202 175 69-36 60 30-69 38Z" />
       <path className="farm-map__mobile-other" d="M31 251h298" />
+      <text className="farm-map__mobile-label" x="18" y="164">ОГОРОД</text>
+      <text className="farm-map__mobile-label" x="277" y="42">ЗАБОР</text>
+      <text className="farm-map__mobile-label" x="270" y="222">САРАЙ</text>
+      <text className="farm-map__mobile-label" x="31" y="275">ПРОЧИЕ УЧАСТКИ</text>
     </svg>
   );
 }

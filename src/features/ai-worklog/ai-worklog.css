@@ -22,7 +22,7 @@
 .worklog-hero h1 {
   max-width: 10ch;
   margin: var(--space-4) 0 0;
-  font-size: clamp(3rem, 6vw, 6.25rem);
+  font-size: clamp(2.5rem, 4.3vw, 4.2rem);
 }
 
 .worklog-hero__introduction {
@@ -41,6 +41,61 @@
 .worklog-hero__introduction p:first-child {
   color: var(--color-text);
   font-size: clamp(1.15rem, 1.7vw, 1.45rem);
+  line-height: 1.45;
+}
+
+.worklog-questions {
+  display: grid;
+  grid-template-columns: minmax(15rem, 0.72fr) minmax(0, 1.28fr);
+  gap: var(--space-7);
+  padding-block: var(--space-7);
+  border-block: 1px solid var(--color-border-strong);
+}
+
+.worklog-questions h2 {
+  max-width: 16ch;
+  margin: var(--space-3) 0 0;
+  font-size: clamp(1.65rem, 2.5vw, 2.55rem);
+  line-height: 1.06;
+}
+
+.worklog-questions ol {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 var(--space-6);
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--color-border-subtle);
+  list-style: none;
+  counter-reset: worklog-question;
+}
+
+.worklog-questions li {
+  display: grid;
+  grid-template-columns: 1.4rem minmax(0, 1fr);
+  gap: var(--space-2) var(--space-3);
+  min-width: 0;
+  padding-block: var(--space-4);
+  border-bottom: 1px solid var(--color-border-subtle);
+  counter-increment: worklog-question;
+}
+
+.worklog-questions li::before {
+  grid-row: 1 / span 2;
+  color: var(--color-terracotta-text);
+  font-size: 0.625rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 740;
+  content: counter(worklog-question, decimal-leading-zero);
+}
+
+.worklog-questions strong {
+  font-size: var(--font-size-sm);
+}
+
+.worklog-questions span {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
   line-height: 1.45;
 }
 
@@ -75,7 +130,7 @@
 
 .worklog-selection-note > span {
   color: var(--color-terracotta-text);
-  font-size: clamp(3.25rem, 6vw, 5.75rem);
+  font-size: clamp(2.8rem, 5vw, 4.55rem);
   font-weight: 500;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.06em;
@@ -153,7 +208,7 @@
 
 .worklog-entry__header h2 {
   margin: 0;
-  font-size: clamp(2rem, 3.2vw, 3.65rem);
+  font-size: clamp(1.85rem, 2.8vw, 3rem);
   font-weight: 535;
   letter-spacing: -0.052em;
   line-height: 1.02;
@@ -166,6 +221,11 @@
   color: var(--color-text-secondary);
   font-size: var(--font-size-body-lg);
   line-height: 1.58;
+}
+
+.worklog-entry__task .worklog-label {
+  display: block;
+  margin-bottom: var(--space-2);
 }
 
 .worklog-decision-flow {
@@ -297,6 +357,11 @@
     justify-self: start;
   }
 
+  .worklog-questions {
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+  }
+
   .worklog-entry__header {
     grid-template-columns: minmax(10rem, 0.55fr) minmax(0, 1.45fr);
     gap: var(--space-4) var(--space-6);
@@ -318,11 +383,19 @@
 
   .worklog-hero h1 {
     max-width: 8ch;
-    font-size: clamp(3.1rem, 15vw, 4.45rem);
+    font-size: clamp(2.35rem, 10.5vw, 3.1rem);
   }
 
   .worklog-hero__introduction p:first-child {
     font-size: var(--font-size-body-lg);
+  }
+
+  .worklog-questions {
+    padding-block: var(--space-6);
+  }
+
+  .worklog-questions ol {
+    grid-template-columns: 1fr;
   }
 
   .worklog-process {
@@ -342,7 +415,7 @@
   }
 
   .worklog-selection-note > span {
-    font-size: 3.5rem;
+    font-size: 3rem;
   }
 
   .worklog-entry {
@@ -378,7 +451,7 @@
   }
 
   .worklog-entry__header h2 {
-    font-size: clamp(2rem, 10vw, 2.8rem);
+    font-size: clamp(1.8rem, 8.5vw, 2.4rem);
   }
 
   .worklog-entry__task {

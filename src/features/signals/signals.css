@@ -23,7 +23,7 @@
 .signals-section__header h1 {
   max-width: none;
   margin: var(--space-4) 0 0;
-  font-size: clamp(4.5rem, 9vw, 8.5rem);
+  font-size: clamp(3.4rem, 6.2vw, 5.5rem);
   line-height: 0.82;
 }
 
@@ -318,7 +318,7 @@
   }
 
   .signals-section__header h1 {
-    font-size: clamp(4rem, 22vw, 5.5rem);
+    font-size: clamp(3rem, 15vw, 3.9rem);
   }
 
   .signals-section__intro {

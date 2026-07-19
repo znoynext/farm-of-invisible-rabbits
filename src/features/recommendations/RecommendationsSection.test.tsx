@@ -132,7 +132,7 @@ describe("RecommendationsSection", () => {
       { target: { value: "1" } },
     );
 
-    expect(section).toHaveTextContent("Предпросмотр: действия обновлены для сценария");
+    expect(section).toHaveTextContent("Для временного сценария");
     expect(section).not.toHaveTextContent("Проверить зону «У забора»");
     expect(section).toHaveTextContent("Проверить место срабатывания «Сарай»");
 

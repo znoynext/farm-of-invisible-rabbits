@@ -159,16 +159,16 @@ function RadarApp({ aboutButtonRef, onOpenIntro }: RadarAppProps) {
           <section aria-labelledby="product-title" className="intro-column">
             <p className="status-line">
               <span aria-hidden="true" className="status-dot" />
-              Система готова к наблюдению
+              Готово к анализу
             </p>
             <h1 id="product-title">Farm of Invisible Rabbits</h1>
             <p className="subtitle">
               Система наблюдения за невидимыми кроликами
             </p>
             <div aria-label="Принципы системы" className="intro-facts">
-              <span>Локальная модель</span>
+              <span>Расчёт в браузере</span>
               <span>Косвенные сигналы</span>
-              <span>Объяснимый результат</span>
+              <span>Понятный результат</span>
             </div>
           </section>
         )}
@@ -192,8 +192,8 @@ function RadarApp({ aboutButtonRef, onOpenIntro }: RadarAppProps) {
       </main>
 
       <footer className="site-footer">
-        <span>Детерминированная модель</span>
-        <span>Локальные данные</span>
+        <span>Повторяемые расчёты</span>
+        <span>Данные в этом браузере</span>
         <span>Расчёты без ИИ</span>
       </footer>
 

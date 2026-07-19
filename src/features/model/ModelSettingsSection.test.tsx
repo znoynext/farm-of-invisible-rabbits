@@ -59,7 +59,7 @@ describe("ModelSettingsSection", () => {
       screen.getByRole("heading", { level: 1, name: "Модель оценки" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText("Настройте, как система интерпретирует наблюдения с фермы."),
+      screen.getByText("Настройте, насколько сильно система учитывает разные сигналы."),
     ).toBeInTheDocument();
     expect(screen.getByRole("slider", { name: "Чувствительность модели" })).toHaveValue("1");
     expect(screen.getByRole("slider", { name: "Вес: Пропавшая морковь" })).toHaveValue("0.7");
@@ -70,10 +70,10 @@ describe("ModelSettingsSection", () => {
       screen.getByRole("button", { name: "Вернуть стандартные настройки" }),
     ).toBeDisabled();
     expect(
-      screen.getByText(/Уверенность отражает качество и разнообразие/),
+      screen.getByText(/Уверенность показывает качество и разнообразие/),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/Она не является статистически обученной/),
+      screen.getByText(/не обучалась на реальных данных/),
     ).toBeInTheDocument();
   });
 

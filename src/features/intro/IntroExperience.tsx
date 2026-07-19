@@ -106,8 +106,8 @@ export function IntroExperience({
           </ul>
 
           <p className="product-intro__prompt">
-            Меняйте наблюдения, проверяйте гипотезы и смотрите, как система
-            объясняет результат.
+            Начните с текущей оценки. Затем измените наблюдения или настройки и
+            сравните, как меняются вывод и рекомендации.
           </p>
 
           <div className="product-intro__actions">
@@ -116,7 +116,7 @@ export function IntroExperience({
               onClick={onComplete}
               ref={actionRef}
             >
-              Открыть радар
+              Посмотреть текущую оценку
               <span aria-hidden="true">↗</span>
             </Button>
             <p className="product-intro__trust">
@@ -124,6 +124,62 @@ export function IntroExperience({
               Все расчёты прозрачны и воспроизводимы
             </p>
           </div>
+
+          <section
+            aria-labelledby="intro-guide-title"
+            className="product-intro__guide"
+          >
+            <h2 id="intro-guide-title">Как это работает</h2>
+            <ol>
+              <li>
+                <span aria-hidden="true">01</span>
+                <div>
+                  <strong>Посмотрите оценку</strong>
+                  <p>Узнайте количество кроликов и уверенность.</p>
+                </div>
+              </li>
+              <li>
+                <span aria-hidden="true">02</span>
+                <div>
+                  <strong>Измените условия</strong>
+                  <p>Попробуйте данные, проверку гипотезы или модель.</p>
+                </div>
+              </li>
+              <li>
+                <span aria-hidden="true">03</span>
+                <div>
+                  <strong>Сравните результат</strong>
+                  <p>Проверьте вывод, объяснение и рекомендации.</p>
+                </div>
+              </li>
+            </ol>
+          </section>
+
+          <section
+            aria-labelledby="intro-sections-title"
+            className="product-intro__sections"
+          >
+            <h2 id="intro-sections-title">Что находится во вкладках</h2>
+            <dl>
+              <div>
+                <dt>Обзор</dt>
+                <dd>Текущая оценка, её причины и проверка гипотезы.</dd>
+              </div>
+              <div>
+                <dt>Сигналы</dt>
+                <dd>Наблюдения, на которых строится расчёт.</dd>
+              </div>
+              <div>
+                <dt>Модель</dt>
+                <dd>Настройки того, как учитываются сигналы.</dd>
+              </div>
+              <div>
+                <dt>AI Worklog</dt>
+                <dd>Решения, исправления и проверки проекта.</dd>
+              </div>
+            </dl>
+          </section>
+
         </section>
 
         <IntroTraceField />

@@ -30,6 +30,7 @@ export function WhatIfScenarioLab() {
   const currentAnalytics = useAppAnalytics();
   const scenarioAnalytics = useScenarioAnalytics();
   const prefersReducedMotion = useReducedMotion();
+  useScenarioLabAnchorFocus(Boolean(prefersReducedMotion));
   const {
     setSelectedLocation,
     setSelectedSignalType,
@@ -131,11 +132,11 @@ export function WhatIfScenarioLab() {
       <header className="scenario-lab__header">
         <div>
           <p className="eyebrow">Эксперимент</p>
-          <h2 id="scenario-lab-title">Проверить гипотезу</h2>
+          <h2 id="scenario-lab-title" tabIndex={-1}>Проверить гипотезу</h2>
         </div>
         <p>
-          Измените интенсивность одного наблюдения. До применения исходные данные
-          останутся прежними, а весь обзор покажет сценарий.
+          Временно измените силу одного наблюдения. Обзор сразу покажет новый
+          результат, но сохранённые данные не изменятся до применения.
         </p>
       </header>
 
@@ -186,8 +187,8 @@ export function WhatIfScenarioLab() {
             prefersReducedMotion={Boolean(prefersReducedMotion)}
           />
           <p className="scenario-comparison__note">
-            Интенсивность влияет и на оценку, и на уверенность через среднюю силу
-            наблюдений.
+            Сила наблюдения меняет оценку и уверенность, потому что система
+            учитывает среднюю интенсивность всех сигналов.
           </p>
         </section>
 
@@ -210,7 +211,7 @@ export function WhatIfScenarioLab() {
             valueText={`${previewSignal.intensity} из 10`}
           />
           <p id="scenario-intensity-hint">
-            Исходное значение · {selectedSignal.intensity} из 10
+            Было в данных · {selectedSignal.intensity} из 10
           </p>
         </div>
 
@@ -284,9 +285,38 @@ function ScenarioEmptyState() {
       </div>
       <div>
         <p className="eyebrow">Эксперимент</p>
-        <h2 id="scenario-lab-title">Проверить гипотезу</h2>
-        <p>Для сценария нужно хотя бы одно наблюдение. Добавьте сигнал в разделе данных.</p>
+        <h2 id="scenario-lab-title" tabIndex={-1}>Проверить гипотезу</h2>
+        <p>Сначала добавьте хотя бы одно наблюдение в разделе «Сигналы».</p>
       </div>
     </Surface>
   );
+}
+
+function useScenarioLabAnchorFocus(prefersReducedMotion: boolean) {
+  useEffect(() => {
+    let frame = 0;
+
+    const focusScenarioLab = () => {
+      if (window.location.hash !== "#scenario-lab") {
+        return;
+      }
+
+      frame = window.requestAnimationFrame(() => {
+        const target = document.getElementById("scenario-lab-title");
+        target?.scrollIntoView?.({
+          behavior: prefersReducedMotion ? "auto" : "smooth",
+          block: "start",
+        });
+        target?.focus({ preventScroll: true });
+      });
+    };
+
+    focusScenarioLab();
+    window.addEventListener("hashchange", focusScenarioLab);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("hashchange", focusScenarioLab);
+    };
+  }, [prefersReducedMotion]);
 }

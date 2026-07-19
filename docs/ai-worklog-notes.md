@@ -423,3 +423,25 @@ Outcome:
 **Validation performed:** До и после release-конфигурации `npm run lint` — PASS; `npm run test:run` — 22 файла и 145/145 тестов PASS; `npm run test:e2e` — 20/20 PASS; `npm run build` — PASS. Локальный production preview подтвердил `#overview`, `#signals`, `#model`, `#ai-worklog`, reload, JS/CSS assets и отсутствие console/request errors. CI run `29705280773` для `8b44a46635f42711a696a6181c42ca9e2c4cba6b` — PASS. Pages run `29705280781`, включая build artifact и deploy job, — PASS; deployment environment вернул `https://znoynext.github.io/farm-of-invisible-rabbits/`. Production smoke подтвердил HTTP `200`, canonical `5 / 73%`, Intro, Map/Evidence, What-if preview, Recommendations, Signals dialog, Model hash/reload, семь public AI Worklog checkpoints, keyboard skip/disclosure/dialog behavior, отсутствие runtime errors и 4xx, а на 390 px — отсутствие horizontal overflow, navigation touch targets не меньше 53,59 px и Map targets 64 × 81,78 px.
 
 **Outcome:** Публичная production-версия доступна и проверена, Repository и Live Demo links подтверждены. Feature freeze сохранён; product features, domain formulas, architecture, dependencies и публичная выборка AI Worklog не менялись.
+
+## Checkpoint: Понятный первый пользовательский путь
+
+**Stage:** Post-release UX clarity remediation по обратной связи пользователя.
+
+**Task:** Объяснить назначение продукта и разделов до входа в приложение, сделать основной путь понятнее, улучшить читаемость Farm Map, упростить язык и уменьшить избыточный масштаб интерфейса без новых функций и изменения расчётов.
+
+**Prompt summary:** Перестроить README вокруг быстрого знакомства с продуктом; дополнить Intro коротким сценарием и описанием вкладок; дать на Overview три понятных следующих действия; переименовать пользовательский раздел в AI Worklog; сделать карту контрастной и подписанной; упростить тексты во всех разделах. Отдельно показать в AI Worklog исходную задачу, помощь AI, решение человека, доработки, найденные проблемы и реальные проверки.
+
+**AI suggestion:** Использовать progressive guidance внутри существующего потока: конкретный CTA во вступлении, три шага без отдельного onboarding-фреймворка, спокойный блок следующих действий после главного результата и явные подписи прямо на карте. Для AI Worklog сохранить семь реальных checkpoints, но добавить над ними краткую схему того, на какие вопросы отвечает журнал.
+
+**Decision taken:** Не добавлять новый tutorial, состояние или зависимость. Вступление объясняет продукт, три шага и четыре вкладки; Overview ведёт к наблюдениям, проверке гипотезы и модели; карта получила читаемые зоны, легенду активности и отдельные детали. Публичные записи AI Worklog сохранены по происхождению, их формулировки упрощены, а структура явно разделяет задачу, предложение AI, решение человека, изменение, найденную проблему и проверку.
+
+**Reason:** Обратная связь и реальные screenshots показали, что прежнее вступление не объясняло путь пользователя, декоративная схема обрезала подписи, Farm Map была слишком малоконтрастной, а крупная типографика и технические формулировки затрудняли чтение. Локальные изменения закрывают причины без расширения функционального scope.
+
+**What changed:** README начинается с Live Demo, минутного сценария и карты разделов. Intro получил новый CTA, трёхшаговое объяснение и описание вкладок; «Работа с ИИ» переименована в AI Worklog. Overview получил три следующих действия. Farm Map стала светлее и контрастнее, показывает названия зон, уровень активности и крупные touch-safe отметки. Размеры крупных заголовков уменьшены, тексты основных разделов и семи публичных checkpoints переписаны более простым русским языком. Для hash-перехода к проверке гипотезы добавлен корректный focus/scroll contract.
+
+**Problem found:** Первый E2E после добавления ссылок следующих действий выявил неоднозначные role-локаторы: «Сигналы» и «Модель» совпадали с «Открыть сигналы» и «Открыть модель». Навигационные проверки уточнены через exact names. Следующий E2E нашёл одно устаревшее ожидание текста empty state; оно синхронизировано с фактической пользовательской формулировкой. Первый production build также выявил nullable значение `useReducedMotion` в новом anchor-focus hook; значение безопасно приведено к boolean.
+
+**Validation performed:** Реальный render review выполнен на 1440 и 390 px для Intro, Overview, Farm Map, Signals, Model и AI Worklog; проверены карта на desktop/mobile, описание вкладок, семь публичных checkpoints, раскрытие исходного запроса, touch targets зон 112–124 px по ширине и более 105 px по высоте, отсутствие horizontal overflow и загрузка production assets под repository subpath. `npm run lint` — PASS; `npm run test:run` — 22 файла и 146/146 тестов PASS; `npm run test:e2e` — 22/22 PASS; `npm run build` — PASS. Локальный production preview подтвердил Intro, Overview и AI Worklog без runtime-навигационных сбоев.
+
+**Outcome:** Первый пользовательский путь стал понятнее, карта — читаемее, а интерфейс — компактнее и проще по языку. Новые функции, зависимости, domain formulas, state architecture и число публичных AI Worklog checkpoints не менялись.

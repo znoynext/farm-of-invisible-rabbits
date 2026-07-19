@@ -392,7 +392,7 @@ describe("SignalsSection", () => {
     expect(screen.getByText("Пока нет наблюдений для карты")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Пока нечего анализировать" })).toBeInTheDocument();
     expect(
-      screen.getByText(/Для сценария нужно хотя бы одно наблюдение/),
+      screen.getByText(/Сначала добавьте хотя бы одно наблюдение/),
     ).toBeInTheDocument();
     expect(screen.getByText("Начните с наблюдения")).toBeInTheDocument();
   });
