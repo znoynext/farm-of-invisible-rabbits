@@ -1,0 +1,7 @@
+interface:
+  display_name: "QA Release Gate"
+  short_description: "Assess milestone and release readiness"
+  default_prompt: "Use $qa-release-gate to assess this milestone with evidence-based statuses."
+
+policy:
+  allow_implicit_invocation: true

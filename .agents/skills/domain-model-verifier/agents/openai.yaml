@@ -1,0 +1,7 @@
+interface:
+  display_name: "Domain Model Verifier"
+  short_description: "Verify model calculations and invariants"
+  default_prompt: "Use $domain-model-verifier to verify this domain-model change and its invariants."
+
+policy:
+  allow_implicit_invocation: true

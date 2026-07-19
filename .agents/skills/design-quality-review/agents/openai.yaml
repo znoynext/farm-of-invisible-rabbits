@@ -1,0 +1,7 @@
+interface:
+  display_name: "Design Quality Review"
+  short_description: "Review interface and UX quality"
+  default_prompt: "Use $design-quality-review to review the latest UI changes by impact."
+
+policy:
+  allow_implicit_invocation: true

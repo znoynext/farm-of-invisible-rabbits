@@ -1,0 +1,34 @@
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+.vite/
+
+# Environment and credentials
+*.local
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*
+
+# Audit and temporary visual artifacts
+*audit*.zip
+*audit*.7z
+*audit*.tar.gz
+screenshots/
+tmp/
+temp/
+
+# Editor and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo

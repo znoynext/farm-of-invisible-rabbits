@@ -1,0 +1,7 @@
+interface:
+  display_name: "Product Guardrails"
+  short_description: "Review product scope and requirements"
+  default_prompt: "Use $product-guardrails to review this product change against project scope and requirements."
+
+policy:
+  allow_implicit_invocation: true

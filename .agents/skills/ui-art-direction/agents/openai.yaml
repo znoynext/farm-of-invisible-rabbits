@@ -1,0 +1,7 @@
+interface:
+  display_name: "UI Art Direction"
+  short_description: "Plan major product UI before implementation"
+  default_prompt: "Use $ui-art-direction to create a concise UI specification before implementing this major screen."
+
+policy:
+  allow_implicit_invocation: true

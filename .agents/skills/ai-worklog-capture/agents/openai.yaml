@@ -1,0 +1,7 @@
+interface:
+  display_name: "AI Worklog Capture"
+  short_description: "Capture factual AI-first checkpoints"
+  default_prompt: "Use $ai-worklog-capture to record a factual checkpoint for this completed stage."
+
+policy:
+  allow_implicit_invocation: true
