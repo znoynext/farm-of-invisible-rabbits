@@ -167,6 +167,14 @@ test("проверяет observation-only гипотезу и сохраняет
   await lab.scrollIntoViewIfNeeded();
   await expect(lab.getByRole("heading", { level: 2, name: "Проверить гипотезу" })).toBeVisible();
   await expect(lab.getByRole("radio", { name: /Новые ямки/ })).toBeChecked();
+  await expect(page.getByText("Закреплённая зона")).toHaveCount(0);
+  await expect(page.getByTestId("evidence-item-new_hole")).toHaveAttribute(
+    "data-selected",
+    "false",
+  );
+  for (const zone of await page.getByTestId("farm-map-diagram").getByRole("button").all()) {
+    await expect(zone).toHaveAttribute("aria-pressed", "false");
+  }
 
   const slider = lab.getByRole("slider", { name: "Интенсивность наблюдения" });
   await slider.focus();

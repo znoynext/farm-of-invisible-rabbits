@@ -52,15 +52,6 @@ export function WhatIfScenarioLab() {
     previewSignals.find(({ id }) => id === selectedSignal?.id) ?? selectedSignal;
   const hasPreview = state.scenarioPreview !== null;
 
-  useEffect(() => {
-    if (!selectedSignal) {
-      return;
-    }
-
-    setSelectedLocation(selectedSignal.location);
-    setSelectedSignalType(selectedSignal.event);
-  }, [selectedSignal, setSelectedLocation, setSelectedSignalType]);
-
   useEffect(
     () => () => {
       if (confirmationTimer.current !== null) {
@@ -76,6 +67,8 @@ export function WhatIfScenarioLab() {
 
   const selectedSignalId = selectedSignal.id;
   const selectedSignalIntensity = selectedSignal.intensity;
+  const selectedSignalLocation = selectedSignal.location;
+  const selectedSignalEvent = selectedSignal.event;
 
   function selectObservation(signal: SignalEvent) {
     dispatch({ type: "scenario/reset" });
@@ -87,6 +80,8 @@ export function WhatIfScenarioLab() {
 
   function updateIntensity(intensity: number) {
     setShowAppliedConfirmation(false);
+    setSelectedLocation(selectedSignalLocation);
+    setSelectedSignalType(selectedSignalEvent);
 
     if (intensity === selectedSignalIntensity) {
       dispatch({ type: "scenario/reset" });

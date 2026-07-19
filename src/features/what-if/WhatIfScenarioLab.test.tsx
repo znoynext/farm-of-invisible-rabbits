@@ -49,12 +49,22 @@ function readPersistedState(storage: MemoryStorage) {
 }
 
 describe("WhatIfScenarioLab", () => {
-  it("по умолчанию выбирает самое impactful событие event-level", () => {
+  it("оставляет default observation локальным и не создаёт shared selection при загрузке", () => {
     renderScenarioLab();
 
     expect(screen.getByRole("radio", { name: /Новые ямки/ })).toBeChecked();
     expect(screen.getByRole("radio", { name: /Движение/ })).not.toBeChecked();
     expect(screen.getByRole("slider", { name: "Интенсивность наблюдения" })).toHaveValue("7");
+
+    const map = screen.getByTestId("farm-map-diagram");
+    for (const zone of within(map).getAllByRole("button")) {
+      expect(zone).toHaveAttribute("aria-pressed", "false");
+    }
+    expect(within(map).queryByText("Закреплённая зона")).not.toBeInTheDocument();
+    expect(screen.getByTestId("evidence-item-new_hole")).toHaveAttribute(
+      "data-selected",
+      "false",
+    );
   });
 
   it("держит preview изолированным и распространяет его в Hero, Map и Evidence", async () => {
