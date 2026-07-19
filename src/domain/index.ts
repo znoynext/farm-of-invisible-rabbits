@@ -6,5 +6,6 @@ export * from "./evidence";
 export * from "./estimation";
 export * from "./locations";
 export * from "./recommendations";
+export * from "./scenario";
 export * from "./types";
 export * from "./validation";

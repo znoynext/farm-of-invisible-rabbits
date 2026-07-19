@@ -3,7 +3,7 @@ import { motion, useReducedMotion } from "motion/react";
 
 import { Surface } from "../../components/ui";
 import type { OverallActivityLevel, SignalType } from "../../domain";
-import { useAppAnalytics, useAppState } from "../../app/state";
+import { useAppState, useScenarioAnalytics } from "../../app/state";
 
 const activityLabels: Record<OverallActivityLevel, string> = {
   none: "Активность не подтверждена",
@@ -21,10 +21,11 @@ const signalEvidenceLabels: Record<SignalType, string> = {
 
 export function OverviewHero() {
   const { state } = useAppState();
-  const analytics = useAppAnalytics();
+  const analytics = useScenarioAnalytics();
   const prefersReducedMotion = useReducedMotion();
+  const displayedSignals = state.scenarioPreview?.signals ?? state.signals;
 
-  if (state.signals.length === 0) {
+  if (displayedSignals.length === 0) {
     return <OverviewEmptyState />;
   }
 

@@ -5,6 +5,7 @@
 @import "../features/overview/overview.css";
 @import "../features/farm-map/farm-map.css";
 @import "../features/evidence/evidence.css";
+@import "../features/what-if/what-if.css";
 
 @layer base {
   :root {

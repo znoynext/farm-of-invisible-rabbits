@@ -3,7 +3,7 @@ import { ChevronDown } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 import { useUiSelection } from "../../app/selection";
-import { useAppAnalytics, useAppState } from "../../app/state";
+import { useAppState, useScenarioAnalytics } from "../../app/state";
 import { SignalTypeMark } from "../../components/SignalTypeMark";
 import { Surface } from "../../components/ui";
 import type {
@@ -28,8 +28,9 @@ const influenceLabels: Record<EvidenceStrength, string> = {
 
 export function EvidenceSection() {
   const { state } = useAppState();
-  const analytics = useAppAnalytics();
+  const analytics = useScenarioAnalytics();
   const prefersReducedMotion = useReducedMotion();
+  const displayedSignals = state.scenarioPreview?.signals ?? state.signals;
   const {
     selectedLocation,
     selectedSignalType,
@@ -42,7 +43,7 @@ export function EvidenceSection() {
 
   useEvidenceAnchorFocus(Boolean(prefersReducedMotion));
 
-  if (state.signals.length === 0) {
+  if (displayedSignals.length === 0) {
     return (
       <Surface
         aria-labelledby="evidence-title"

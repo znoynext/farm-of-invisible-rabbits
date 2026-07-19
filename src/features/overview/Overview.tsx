@@ -1,5 +1,6 @@
 import { EvidenceSection } from "../evidence/EvidenceSection";
 import { OverviewFarmMap } from "../farm-map/OverviewFarmMap";
+import { WhatIfScenarioLab } from "../what-if/WhatIfScenarioLab";
 import { OverviewHero } from "./OverviewHero";
 
 export function Overview() {
@@ -8,6 +9,7 @@ export function Overview() {
       <OverviewHero />
       <OverviewFarmMap />
       <EvidenceSection />
+      <WhatIfScenarioLab />
     </div>
   );
 }

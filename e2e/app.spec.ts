@@ -155,6 +155,59 @@ test("связывает выбор зоны на карте с аналитич
   await expect(page.getByRole("heading", { level: 3, name: "Сарай" })).toBeVisible();
 });
 
+test("проверяет observation-only гипотезу и сохраняет её только после применения", async ({ page }) => {
+  await openRadar(page);
+
+  const lab = page.locator("#scenario-lab");
+  await lab.scrollIntoViewIfNeeded();
+  await expect(lab.getByRole("heading", { level: 2, name: "Проверить гипотезу" })).toBeVisible();
+  await expect(lab.getByRole("radio", { name: /Новые ямки/ })).toBeChecked();
+
+  const slider = lab.getByRole("slider", { name: "Интенсивность наблюдения" });
+  await slider.focus();
+  await page.keyboard.press("End");
+
+  await expect(slider).toHaveValue("10");
+  await expect(
+    page.getByRole("heading", { level: 1, name: "6 предполагаемых кроликов" }),
+  ).toBeAttached();
+  await expect(lab.getByText("76%")).toBeVisible();
+  await expect(page.getByTestId("evidence-item-new_hole")).toContainText("48%");
+  await expect(
+    page.getByRole("button", { name: /У забора: Высокая активность, 1 наблюдение/ }),
+  ).toHaveAttribute("aria-pressed", "true");
+
+  expect(
+    await page.evaluate(() => {
+      const raw = window.localStorage.getItem("farm-of-invisible-rabbits:v1");
+      return raw ? JSON.parse(raw).signals[1].intensity : null;
+    }),
+  ).toBe(7);
+
+  await page.keyboard.press("Home");
+  await expect(lab.getByText(/обнаружена новая ямка высокой интенсивности/)).toHaveCount(0);
+  await expect(lab.getByText(/зафиксировано интенсивное движение/)).toBeVisible();
+
+  await page.keyboard.press("End");
+  await lab.getByRole("button", { name: "Применить к данным" }).click();
+  await expect(lab.getByText("Данные обновлены")).toBeVisible();
+
+  await expect.poll(async () =>
+    page.evaluate(() => {
+      const raw = window.localStorage.getItem("farm-of-invisible-rabbits:v1");
+      return raw ? JSON.parse(raw).signals[1].intensity : null;
+    }),
+  ).toBe(10);
+
+  await page.reload();
+  await expect(
+    page.getByRole("heading", { level: 1, name: "6 предполагаемых кроликов" }),
+  ).toBeVisible();
+  await expect(page.locator("#scenario-lab").getByRole("slider", {
+    name: "Интенсивность наблюдения",
+  })).toHaveValue("10");
+});
+
 test("сохраняет touch-safe зоны в отдельной mobile-композиции карты", async ({ page }) => {
   await page.setViewportSize({ height: 844, width: 390 });
   await openRadar(page);

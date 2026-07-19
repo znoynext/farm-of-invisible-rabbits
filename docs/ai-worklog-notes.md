@@ -311,3 +311,25 @@ Outcome:
 **Validation performed:** Реально отрендерены и проверены Evidence default/expanded на 1440 px, mobile 390 px, map-linked и empty состояния. `design-quality-review`: Critical — нет; найденные High impact языковая и linked-detail проблемы исправлены. `npm run lint` — PASS; `npm run test` — 16 файлов и 106 тестов PASS; `npm run build` — PASS; Playwright — 13 тестов PASS, включая реальный CTA target/focus, canonical contributions, формулу, unique IDs, Evidence ↔ Farm Map, empty state, пять responsive widths и reduced motion.
 
 **Outcome:** Evidence стал главным explainability layer и закрыл оба MEDIUM замечания Audit #2. Canonical Hero и подробный анализ согласованно называют новые ямки dominant source, а multi-location сценарии не получают ложную единственную location. Новые зависимости, backend, database, authentication и runtime LLM не добавлялись.
+
+## Checkpoint: What-if Scenario Lab и связанный causal preview
+
+**Stage:** Реализация интерактивного experiment layer в Overview flow.
+
+**Task:** Дать пользователю observation-only сценарий изменения intensity одного существующего события и до применения показать причинное изменение Hero, Farm Map, Evidence и rule-based рекомендаций.
+
+**Prompt summary:** По умолчанию выбрать самое impactful event-level наблюдение, сравнить «Сейчас → Сценарий» для estimate и confidence, не менять model settings и persistent signals до Apply, связать выбор с Map/Evidence, поддержать reset, inline confirmation, desktop/mobile композиции и persistence после применения.
+
+**AI suggestion:** Переиспользовать уже проверенные `scenario/updateObservations` и `scenario/applyObservations`, а default event определить pure domain helper по `eventImpact`. Base analytics оставить источником колонки «Сейчас», scenario analytics передать всем отображаемым downstream-областям; рекомендации вычислять теми же domain rules, а не отдельной UI-логикой.
+
+**Decision taken:** What-if не получил собственного persisted store и не изменяет `modelSettings`. Выбор event хранится локально, tie разрешается детерминированно по `id`; изменение slider создаёт preview-копию observations. Hero, Farm Map и Evidence читают scenario analytics, пока preview активен, а Apply переносит только observations в основной state. На mobile порядок изменён на выбор → вертикальное сравнение → intensity → действия → рекомендации.
+
+**Reason:** Один derived analytics path исключает расхождение между экспериментом и основным Overview. Observation-only reducer contract сохраняет независимость весов и sensitivity, а явное разделение base/scenario позволяет честно показать текущий результат рядом с гипотезой и не записывать preview в localStorage.
+
+**What changed:** Добавлены pure helper `findMostImpactfulObservation`, domain contract What-if, responsive `WhatIfScenarioLab`, comparison, event selection, slider, scenario recommendations, inline Apply confirmation и empty state. Overview Hero, Farm Map и Evidence подключены к preview analytics; unit/UI/E2E tests проверяют propagation, connected selection, reset, apply и persistence.
+
+**Problem found:** Полный UI suite обнаружил второй одинаковый CTA «Добавить сигнал» в empty Overview после добавления Lab. Лишнее действие удалено: основным empty-state CTA остался Hero. Первый production build также выявил nullable narrowing внутри обработчика intensity; выбранный event id и исходная intensity зафиксированы после empty guard без изменения runtime-семантики.
+
+**Validation performed:** Focused domain/UI suite — 2 файла и 11 тестов PASS. Финальные `npm run lint` — PASS; `npm run test` — 18 файлов и 117 тестов PASS; `npm run build` — PASS; Playwright — 14 тестов PASS, включая observation-only preview/apply/reload, keyboard slider, пять responsive widths и reduced motion. Реально отрендерены и просмотрены default, modified и applied состояния на 1440 px и modified mobile на 390 px; `design-quality-review`: Critical — нет, High impact — нет.
+
+**Outcome:** Scenario Lab стал основным experiment layer: preview детерминированно и согласованно меняет весь Overview, но не затрагивает persistent observations и model settings до явного Apply. После применения обновлённые observations сохраняются локально; новые зависимости, backend, database, authentication и runtime LLM не добавлялись.

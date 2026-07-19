@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 
 import { useUiSelection } from "../../app/selection";
-import { useAppAnalytics } from "../../app/state";
+import { useScenarioAnalytics } from "../../app/state";
 import { FarmMap } from "./FarmMap";
 
 export function OverviewFarmMap() {
-  const analytics = useAppAnalytics();
+  const analytics = useScenarioAnalytics();
   const {
     selectedLocation,
     selectedSignalType,
