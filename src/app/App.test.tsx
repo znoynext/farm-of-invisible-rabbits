@@ -318,7 +318,7 @@ describe("App", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByRole("heading", { level: 2, name: "Сигналы фермы" }),
+        screen.getByRole("heading", { level: 1, name: "Сигналы" }),
       ).toBeInTheDocument();
     });
     expect(window.location.hash).toBe("#signals");

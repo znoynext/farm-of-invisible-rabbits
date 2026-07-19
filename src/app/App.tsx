@@ -15,6 +15,7 @@ import {
 import { IntroExperience } from "../features/intro/IntroExperience";
 import { PrimaryNavigation } from "../features/navigation/PrimaryNavigation";
 import { Overview } from "../features/overview/Overview";
+import { SignalsSection } from "../features/signals/SignalsSection";
 import { useHashNavigation } from "../hooks/useHashNavigation";
 import { UiSelectionProvider } from "./selection";
 import { useAppState } from "./state";
@@ -86,6 +87,9 @@ function RadarApp({ aboutButtonRef, onOpenIntro }: RadarAppProps) {
     return null;
   }
 
+  const isFullWidthSection =
+    activeSection.id === "overview" || activeSection.id === "signals";
+
   return (
     <motion.div
       animate={{ opacity: 1, scale: 1 }}
@@ -130,10 +134,10 @@ function RadarApp({ aboutButtonRef, onOpenIntro }: RadarAppProps) {
       </header>
 
       <main
-        className={`content-frame${activeSection.id === "overview" ? " content-frame--overview" : ""}`}
+        className={`content-frame${isFullWidthSection ? ` content-frame--${activeSection.id}` : ""}`}
         id="main-content"
       >
-        {activeSection.id === "overview" ? null : (
+        {isFullWidthSection ? null : (
           <section aria-labelledby="product-title" className="intro-column">
             <p className="status-line">
               <span aria-hidden="true" className="status-dot" />
@@ -166,6 +170,8 @@ function RadarApp({ aboutButtonRef, onOpenIntro }: RadarAppProps) {
           >
             {activeSection.id === "overview" ? (
               <Overview />
+            ) : activeSection.id === "signals" ? (
+              <SignalsSection />
             ) : (
               <Surface
                 className="section-stage placeholder-surface"

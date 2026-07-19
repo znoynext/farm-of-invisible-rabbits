@@ -89,7 +89,7 @@ test("открывает app shell и переключает раздел", asyn
 
   await expect(page).toHaveURL(/#signals$/);
   await expect(
-    page.getByRole("heading", { level: 2, name: "Сигналы фермы" }),
+    page.getByRole("heading", { level: 1, name: "Сигналы" }),
   ).toBeVisible();
   expect(runtimeErrors).toEqual([]);
 });
@@ -220,6 +220,114 @@ test("проверяет observation-only гипотезу и сохраняет
   await expect(page.locator("#scenario-lab").getByRole("slider", {
     name: "Интенсивность наблюдения",
   })).toHaveValue("10");
+});
+
+test("управляет сигналами и согласованно пересчитывает весь продукт", async ({
+  page,
+}) => {
+  await openRadar(page);
+  await page.getByRole("link", { name: "Сигналы" }).click();
+
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Сигналы" }),
+  ).toBeVisible();
+  await expect(page.getByText("3 наблюдения")).toBeVisible();
+
+  await page.getByRole("button", { name: "Добавить сигнал" }).click();
+  let dialog = page.getByRole("dialog", { name: "Добавить сигнал" });
+  await dialog
+    .getByRole("combobox", { name: "Что произошло?" })
+    .selectOption("barn_rustling");
+  await dialog
+    .getByRole("textbox", { name: "Где это произошло?" })
+    .fill("Северное поле");
+  await dialog.getByRole("spinbutton", { name: "Количество" }).fill("4");
+  const addIntensity = dialog.getByRole("slider", {
+    name: "Насколько сильным был сигнал?",
+  });
+  await addIntensity.focus();
+  await page.keyboard.press("End");
+  await dialog.getByLabel("Время").fill("12:00");
+  await dialog.getByRole("button", { name: "Добавить наблюдение" }).click();
+
+  await expect(page.getByText("4 наблюдения")).toBeVisible();
+  await expect(page.getByText("Северное поле")).toBeVisible();
+
+  await page.getByRole("link", { name: "Обзор" }).click();
+  await expect(
+    page.getByRole("heading", {
+      level: 1,
+      name: "9 предполагаемых кроликов",
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", {
+      name: "Северное поле: Высокая активность, 1 наблюдение",
+    }),
+  ).toBeVisible();
+
+  await page.reload();
+  await expect(
+    page.getByRole("heading", {
+      level: 1,
+      name: "9 предполагаемых кроликов",
+    }),
+  ).toBeVisible();
+
+  await page.getByRole("link", { name: "Сигналы" }).click();
+  await page
+    .getByRole("button", { name: "Изменить сигнал: Шорох, Северное поле" })
+    .click();
+  dialog = page.getByRole("dialog", { name: "Изменить сигнал" });
+  await dialog.getByRole("spinbutton", { name: "Количество" }).fill("1");
+  const editIntensity = dialog.getByRole("slider", {
+    name: "Насколько сильным был сигнал?",
+  });
+  await editIntensity.focus();
+  await page.keyboard.press("Home");
+  await dialog.getByRole("button", { name: "Сохранить изменения" }).click();
+
+  await page.getByRole("link", { name: "Обзор" }).click();
+  await expect(
+    page.getByRole("heading", {
+      level: 1,
+      name: "5 предполагаемых кроликов",
+    }),
+  ).toBeVisible();
+
+  await page.getByRole("link", { name: "Сигналы" }).click();
+  await page.getByRole("button", { name: "Удалить все сигналы" }).click();
+  dialog = page.getByRole("dialog", { name: "Удалить все сигналы?" });
+  await dialog.getByRole("button", { name: "Удалить все сигналы" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Список сигналов пуст" }),
+  ).toBeVisible();
+
+  await page.getByRole("link", { name: "Обзор" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Пока недостаточно данных" }),
+  ).toBeVisible();
+  await expect(page.getByText("Пока нет наблюдений для карты")).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Пока нечего анализировать" }),
+  ).toBeVisible();
+  await expect(page.getByText(/Для сценария нужно хотя бы одно наблюдение/)).toBeVisible();
+  await expect(page.getByText("Начните с наблюдения")).toBeVisible();
+
+  await page.getByRole("link", { name: "Сигналы" }).click();
+  await page
+    .getByRole("button", { name: "Восстановить исходные данные" })
+    .click();
+  await page.getByRole("link", { name: "Обзор" }).click();
+  await expect(
+    page.getByRole("heading", {
+      level: 1,
+      name: "5 предполагаемых кроликов",
+    }),
+  ).toBeVisible();
+  await expect(page.locator(".overview-confidence")).toHaveText(
+    "Уверенность в оценке · 73%",
+  );
 });
 
 test("сохраняет touch-safe зоны в отдельной mobile-композиции карты", async ({ page }) => {
@@ -353,6 +461,22 @@ for (const viewport of targetViewports) {
     );
 
     expect(hasHorizontalOverflow).toBe(false);
+
+    await page.getByRole("link", { name: "Сигналы" }).click();
+    await expect(
+      page.getByRole("heading", { level: 1, name: "Сигналы" }),
+    ).toBeVisible();
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
+      ),
+    ).toBe(false);
+
+    if (viewport.width <= 768) {
+      const addSignalButton = page.getByRole("button", { name: "Добавить сигнал" });
+      const box = await addSignalButton.boundingBox();
+      expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
+    }
   });
 }
 

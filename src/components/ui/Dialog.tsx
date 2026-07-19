@@ -18,6 +18,7 @@ const focusableSelector = [
 type DialogProps = {
   children: ReactNode;
   description?: string;
+  eyebrow?: string;
   onOpenChange: (open: boolean) => void;
   open: boolean;
   title: string;
@@ -26,6 +27,7 @@ type DialogProps = {
 export function Dialog({
   children,
   description,
+  eyebrow = "Принцип работы",
   onOpenChange,
   open,
   title,
@@ -136,7 +138,7 @@ export function Dialog({
           >
             <div className="dialog-panel__header">
               <div>
-                <p className="eyebrow">Принцип работы</p>
+                <p className="eyebrow">{eyebrow}</p>
                 <h2 id={titleId}>{title}</h2>
                 {description ? (
                   <p className="dialog-panel__description" id={descriptionId}>
