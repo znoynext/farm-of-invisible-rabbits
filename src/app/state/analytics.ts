@@ -5,19 +5,21 @@ import {
   calculateEstimate,
   calculateEventContributions,
   calculateSignalContributions,
+  buildSignalEvidenceGroups,
   classifyOverallActivity,
+  findDominantEvidence,
   findLatestObservation,
-  findStrongestEvidence,
 } from "../../domain";
 import type {
+  DominantEvidence,
   EstimationResult,
   EventContribution,
   LocationActivity,
   OverallActivityLevel,
   Recommendation,
   SignalContribution,
+  SignalEvidenceGroup,
   SignalEvent,
-  StrongestEvidence,
 } from "../../domain";
 import type { AppState, ModelSettings, ScenarioPreview } from "./types";
 
@@ -28,11 +30,12 @@ export interface DerivedAnalytics {
   readonly confidence: number;
   readonly eventContributions: readonly EventContribution[];
   readonly signalContributions: readonly SignalContribution[];
+  readonly evidenceGroups: readonly SignalEvidenceGroup[];
   readonly recommendations: readonly Recommendation[];
   readonly locationActivity: readonly LocationActivity[];
   readonly overallActivity: OverallActivityLevel;
   readonly latestObservation: SignalEvent | null;
-  readonly strongestEvidence: StrongestEvidence | null;
+  readonly dominantEvidence: DominantEvidence | null;
 }
 
 function estimationOptions(modelSettings: ModelSettings) {
@@ -57,6 +60,10 @@ export function deriveAnalytics(source: AnalyticsSource): DerivedAnalytics {
       source.signals,
       source.modelSettings.weights,
     ),
+    evidenceGroups: buildSignalEvidenceGroups(
+      source.signals,
+      source.modelSettings.weights,
+    ),
     recommendations: buildRecommendations(source.signals, options),
     locationActivity: aggregateLocationActivity(
       source.signals,
@@ -64,7 +71,7 @@ export function deriveAnalytics(source: AnalyticsSource): DerivedAnalytics {
     ),
     overallActivity: classifyOverallActivity(estimate.estimatedRabbits),
     latestObservation: findLatestObservation(source.signals),
-    strongestEvidence: findStrongestEvidence(
+    dominantEvidence: findDominantEvidence(
       source.signals,
       source.modelSettings.weights,
     ),

@@ -92,6 +92,41 @@ describe("FarmMap", () => {
     expect(onSelectedLocationChange).toHaveBeenCalledWith("Сарай");
   });
 
+  it("подсвечивает все связанные зоны и показывает их primary detail для Evidence", () => {
+    const state = createDefaultAppState();
+    const locations = deriveAnalytics({
+      modelSettings: state.modelSettings,
+      signals: [
+        { ...initialSignals[1]!, id: "hole_north", location: "Север" },
+        { ...initialSignals[1]!, id: "hole_south", location: "Юг" },
+        initialSignals[0]!,
+      ],
+    }).locationActivity;
+
+    render(
+      <FarmMap
+        locations={locations}
+        onSelectedLocationChange={() => undefined}
+        selectedLocation={null}
+        selectedSignalType="new_hole"
+      />,
+    );
+
+    expect(screen.getByRole("button", { name: /Север:/ })).toHaveAttribute(
+      "data-related",
+      "true",
+    );
+    expect(screen.getByRole("button", { name: /Юг:/ })).toHaveAttribute(
+      "data-related",
+      "true",
+    );
+    expect(screen.getByRole("button", { name: /Огород:/ })).toHaveAttribute(
+      "data-related",
+      "false",
+    );
+    expect(screen.getByRole("heading", { level: 3, name: "Север" })).toBeInTheDocument();
+  });
+
   it("показывает тихое empty state без ложной активности", () => {
     render(
       <FarmMap

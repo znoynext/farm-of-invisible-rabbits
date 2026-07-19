@@ -18,7 +18,15 @@ describe("derived analytics", () => {
     expect(analytics.confidence).toBe(73);
     expect(analytics.overallActivity).toBe("moderate");
     expect(analytics.latestObservation?.id).toBe("evt_003");
-    expect(analytics.strongestEvidence?.signal.id).toBe("evt_002");
+    expect(analytics.dominantEvidence).toMatchObject({
+      signalType: "new_hole",
+      strongestLocation: "У забора",
+    });
+    expect(analytics.evidenceGroups.map(({ signalType }) => signalType)).toEqual([
+      "new_hole",
+      "motion_sensor",
+      "missing_carrot",
+    ]);
     expect(
       analytics.signalContributions.reduce(
         (total, contribution) => total + contribution.contribution,
@@ -55,6 +63,7 @@ describe("derived analytics", () => {
     expect(analytics.eventContributions).toEqual([]);
     expect(analytics.locationActivity).toEqual([]);
     expect(analytics.latestObservation).toBeNull();
-    expect(analytics.strongestEvidence).toBeNull();
+    expect(analytics.dominantEvidence).toBeNull();
+    expect(analytics.evidenceGroups).toEqual([]);
   });
 });

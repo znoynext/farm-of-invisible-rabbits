@@ -35,26 +35,35 @@ export interface FarmMapProps {
   readonly locations: readonly LocationActivity[];
   readonly onSelectedLocationChange: (location: string | null) => void;
   readonly selectedLocation: string | null;
+  readonly selectedSignalType?: SignalType | null;
 }
 
 export function FarmMap({
   locations,
   onSelectedLocationChange,
   selectedLocation,
+  selectedSignalType = null,
 }: FarmMapProps) {
   const [transientLocation, setTransientLocation] = useState<string | null>(null);
   const prefersReducedMotion = useReducedMotion();
   const fallbackLocation = locations[0]?.location ?? null;
+  const linkedLocation = selectedSignalType
+    ? locations.find(({ signalTypes }) => signalTypes.includes(selectedSignalType))
+        ?.location ?? null
+    : null;
   const activeLocationName =
     transientLocation ??
     (locations.some(({ location }) => location === selectedLocation)
       ? selectedLocation
-      : fallbackLocation);
+      : linkedLocation ?? fallbackLocation);
   const activeLocation =
     locations.find(({ location }) => location === activeLocationName) ?? null;
 
   return (
-    <Surface className={`farm-map${locations.length === 0 ? " farm-map--empty" : ""}`}>
+    <Surface
+      className={`farm-map${locations.length === 0 ? " farm-map--empty" : ""}`}
+      data-linked-signal={selectedSignalType ?? undefined}
+    >
       <header className="farm-map__header">
         <div>
           <p className="eyebrow">КАРТИНА НАБЛЮДЕНИЙ</p>
@@ -83,6 +92,9 @@ export function FarmMap({
             const placement = resolveFarmMapPlacement(location.location);
             const isSelected = selectedLocation === location.location;
             const isActive = activeLocationName === location.location;
+            const isRelated = selectedSignalType
+              ? location.signalTypes.includes(selectedSignalType)
+              : false;
             const style: ZoneStyle = {
               "--zone-x": `${placement.x}%`,
               "--zone-y": `${placement.y}%`,
@@ -99,6 +111,7 @@ export function FarmMap({
                 data-activity={location.activityLevel}
                 data-location={location.location}
                 data-placement={placement.kind}
+                data-related={isRelated}
                 key={location.location}
                 onBlur={() => setTransientLocation(null)}
                 onClick={() => onSelectedLocationChange(location.location)}

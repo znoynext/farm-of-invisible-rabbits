@@ -289,3 +289,25 @@ Outcome:
 **Validation performed:** Реальные состояния default 1440, selected 1024, mobile 390 и empty 1440 отрендерены и визуально проверены. `design-quality-review`: Critical — нет; High impact после уточнения explainability — нет. `npm run lint` — PASS; `npm run test` — 16 файлов и 99 тестов PASS; `npm run build` — PASS; Playwright — 12 тестов PASS, включая selection, keyboard, mobile touch targets, empty state, пять responsive widths и reduced motion. Существующие domain tests сохранили canonical estimate `5`, confidence `73` и исходные impact calculations.
 
 **Outcome:** Farm Map стала основным spatial-слоем Overview и готова к будущей связи с Evidence и What-if без изменения persisted state или domain formulas. Новые зависимости, backend, database, authentication и runtime LLM не добавлялись.
+
+## Checkpoint: Explainability и remediation Audit #2
+
+**Stage:** Реализация подробного Evidence и устранение двух замечаний внешнего Audit #2.
+
+**Task:** Объяснить вклад типов сигналов, места и формулу каждого события; передать `#evidence` полноценному разделу, исключить semantic contradiction между Hero и агрегированным Evidence и связать выбор с Farm Map.
+
+**Prompt summary:** Создать editorial analytical composition без таблицы или bar-chart-first UI, раскрывать raw-derived event details по click/tap/focus, поддержать empty state и двустороннюю Evidence ↔ Farm Map связь. Hero и Evidence должны использовать единый deterministic dominant aggregated signal contract.
+
+**AI suggestion:** Определять dominant evidence в pure domain layer по суммарному impact типа, сохранять raw precision и строить отдельные группы с формулой каждого события. Локацию в кратком выводе показывать только при явном лидерстве; временный выбор типа расширить в существующем неперсистентном UI context.
+
+**Decision taken:** `dominantEvidence` использует агрегированный impact с фиксированным tie-breaking. Relevant location добавляется при единственной локации либо при доле не менее 60% и преимуществе минимум в 1,5 раза над следующей. Hero summary получил `overview-evidence-summary`, подробный раздел владеет `evidence`; hash-переход переводит focus на этот target. Evidence показывает устойчивые роли dominant/strong/supporting, а события одного типа рассчитываются и объясняются отдельно.
+
+**Reason:** Один domain contract устраняет противоречие между кратким ответом и подробным анализом, не переносит вычисления в React и не выдаёт сопоставимые multi-location данные за одну точную локацию. Shared UI selection сохраняет связь областей без добавления временного состояния в persistence.
+
+**What changed:** Добавлены `findDominantEvidence`, `buildSignalEvidenceGroups`, domain tests и контракт в `docs/domain-model.md`; создан responsive Evidence section с custom signal marks, raw-derived formula details, русскими объяснениями и empty state. Hero, analytics, Farm Map и UI selection context обновлены для единой семантики и двусторонней подсветки; CTA, unique IDs и connected interactions покрыты UI/E2E tests.
+
+**Problem found:** Реальный render review обнаружил англоязычные технические подписи внутри русского UI и несвязанный detail карты при выборе типа сигнала. Подписи переведены, а карта теперь выбирает первую deterministic relevant location и одновременно подсвечивает все связанные зоны. Грамматика singular-объяснения также исправлена.
+
+**Validation performed:** Реально отрендерены и проверены Evidence default/expanded на 1440 px, mobile 390 px, map-linked и empty состояния. `design-quality-review`: Critical — нет; найденные High impact языковая и linked-detail проблемы исправлены. `npm run lint` — PASS; `npm run test` — 16 файлов и 106 тестов PASS; `npm run build` — PASS; Playwright — 13 тестов PASS, включая реальный CTA target/focus, canonical contributions, формулу, unique IDs, Evidence ↔ Farm Map, empty state, пять responsive widths и reduced motion.
+
+**Outcome:** Evidence стал главным explainability layer и закрыл оба MEDIUM замечания Audit #2. Canonical Hero и подробный анализ согласованно называют новые ямки dominant source, а multi-location сценарии не получают ложную единственную location. Новые зависимости, backend, database, authentication и runtime LLM не добавлялись.

@@ -168,6 +168,19 @@
   color: var(--color-text);
   cursor: pointer;
   transform: translate(-50%, -50%);
+  transition: opacity var(--duration-micro) var(--ease-standard);
+}
+
+.farm-map[data-linked-signal] .farm-map__zone:not([data-related="true"]) {
+  opacity: 0.42;
+}
+
+.farm-map[data-linked-signal] .farm-map__zone[data-related="true"] .farm-map__beacon {
+  border-color: var(--color-sage-dark);
+  background: var(--color-surface);
+  box-shadow:
+    0 0 0 0.42rem color-mix(in srgb, var(--color-sand) 22%, transparent),
+    0 0.8rem 1.7rem rgb(34 37 31 / 13%);
 }
 
 .farm-map__zone::before {
@@ -651,7 +664,8 @@
     animation: none !important;
   }
 
-  .farm-map__beacon {
+  .farm-map__beacon,
+  .farm-map__zone {
     transition-duration: 0ms;
   }
 }

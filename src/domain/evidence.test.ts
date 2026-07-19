@@ -1,6 +1,10 @@
 import { initialSignals } from "../data/initialSignals";
 import { DEFAULT_SIGNAL_WEIGHTS } from "./constants";
-import { findLatestObservation, findStrongestEvidence } from "./evidence";
+import {
+  buildSignalEvidenceGroups,
+  findDominantEvidence,
+  findLatestObservation,
+} from "./evidence";
 import type { SignalEvent, SignalWeights } from "./types";
 
 describe("evidence selectors", () => {
@@ -8,24 +12,52 @@ describe("evidence selectors", () => {
     expect(findLatestObservation(initialSignals)).toEqual(initialSignals[2]);
   });
 
-  it("находит канонический strongest evidence динамически", () => {
-    const strongest = findStrongestEvidence(initialSignals);
+  it("определяет canonical dominant evidence по агрегированному типу", () => {
+    const dominant = findDominantEvidence(initialSignals);
 
-    expect(strongest?.signal.id).toBe("evt_002");
-    expect(strongest?.signal.event).toBe("new_hole");
-    expect(strongest?.impact).toBeCloseTo(1.96, 10);
-    expect(strongest?.contribution).toBeCloseTo((1.96 / 4.96) * 100, 10);
+    expect(dominant?.signalType).toBe("new_hole");
+    expect(dominant?.impact).toBeCloseTo(1.96, 10);
+    expect(dominant?.contribution).toBeCloseTo((1.96 / 4.96) * 100, 10);
+    expect(dominant?.strongestLocation).toBe("У забора");
   });
 
-  it("учитывает изменённые веса и не привязан к canonical типу", () => {
-    const strongest = findStrongestEvidence(initialSignals, {
+  it("строит canonical aggregated contributions без presentation rounding", () => {
+    const groups = buildSignalEvidenceGroups(initialSignals);
+
+    expect(groups.map(({ signalType }) => signalType)).toEqual([
+      "new_hole",
+      "motion_sensor",
+      "missing_carrot",
+    ]);
+    expect(groups.map(({ strength }) => strength)).toEqual([
+      "dominant",
+      "strong",
+      "supporting",
+    ]);
+    expect(groups[0]?.contribution).toBeCloseTo((1.96 / 4.96) * 100, 10);
+    expect(groups[1]?.contribution).toBeCloseTo((1.6 / 4.96) * 100, 10);
+    expect(groups[2]?.contribution).toBeCloseTo((1.4 / 4.96) * 100, 10);
+    expect(groups.reduce((total, group) => total + group.contribution, 0)).toBeCloseTo(
+      100,
+      10,
+    );
+    expect(groups[0]?.events[0]).toMatchObject({
+      effectiveCount: 2,
+      intensityFactor: 0.7,
+      weight: 1.4,
+    });
+    expect(groups[0]?.events[0]?.impact).toBeCloseTo(1.96, 10);
+  });
+
+  it("учитывает изменённые веса в агрегированном доминирующем типе", () => {
+    const dominant = findDominantEvidence(initialSignals, {
       ...DEFAULT_SIGNAL_WEIGHTS,
       missing_carrot: 3,
       new_hole: 0.1,
       motion_sensor: 0.1,
     });
 
-    expect(strongest?.signal.event).toBe("missing_carrot");
+    expect(dominant?.signalType).toBe("missing_carrot");
   });
 
   it("возвращает null для пустых данных и нулевого evidence", () => {
@@ -37,31 +69,68 @@ describe("evidence selectors", () => {
     };
 
     expect(findLatestObservation([])).toBeNull();
-    expect(findStrongestEvidence([])).toBeNull();
-    expect(findStrongestEvidence(initialSignals, zeroWeights)).toBeNull();
+    expect(findDominantEvidence([])).toBeNull();
+    expect(findDominantEvidence(initialSignals, zeroWeights)).toBeNull();
   });
 
-  it("детерминированно разрешает равный impact по id", () => {
+  it("детерминированно разрешает равный агрегированный impact по порядку типов", () => {
     const signals: SignalEvent[] = [
       {
-        id: "evt_b",
+        id: "evt_hole",
+        event: "new_hole",
+        location: "Юг",
+        count: 1,
+        intensity: 5,
+        time: "12:00",
+      },
+      {
+        id: "evt_carrot",
         event: "missing_carrot",
         location: "Север",
         count: 1,
         intensity: 10,
         time: "12:00",
       },
+    ];
+
+    expect(findDominantEvidence(signals)?.signalType).toBe("missing_carrot");
+    expect(findLatestObservation(signals)?.id).toBe("evt_hole");
+  });
+
+  it("не приписывает dominant type одну локацию при сопоставимом multi-location impact", () => {
+    const signals: SignalEvent[] = [
       {
         id: "evt_a",
-        event: "missing_carrot",
+        event: "new_hole",
+        location: "Север",
+        count: 1,
+        intensity: 8,
+        time: "09:00",
+      },
+      {
+        id: "evt_b",
+        event: "new_hole",
         location: "Юг",
         count: 1,
-        intensity: 10,
-        time: "12:00",
+        intensity: 8,
+        time: "10:00",
+      },
+      {
+        id: "evt_c",
+        event: "missing_carrot",
+        location: "Огород",
+        count: 1,
+        intensity: 2,
+        time: "11:00",
       },
     ];
 
-    expect(findStrongestEvidence(signals)?.signal.id).toBe("evt_a");
-    expect(findLatestObservation(signals)?.id).toBe("evt_b");
+    const dominant = findDominantEvidence(signals);
+    const dominantGroup = buildSignalEvidenceGroups(signals)[0];
+
+    expect(dominant).toMatchObject({ signalType: "new_hole" });
+    expect(dominant?.strongestLocation).toBeUndefined();
+    expect(dominantGroup?.locations).toEqual(["Север", "Юг"]);
+    expect(dominantGroup?.events).toHaveLength(2);
   });
 });

@@ -131,7 +131,6 @@
     background-color var(--duration-standard) var(--ease-standard);
 }
 
-.overview-evidence:target,
 .overview-evidence:focus-visible {
   border-left-color: var(--color-sage-dark);
   background: color-mix(in srgb, var(--color-secondary) 42%, transparent);

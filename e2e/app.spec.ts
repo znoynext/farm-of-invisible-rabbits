@@ -78,6 +78,12 @@ test("открывает app shell и переключает раздел", asyn
 
   await page.getByRole("link", { name: "Разобраться, почему" }).click();
   await expect(page).toHaveURL(/#evidence$/);
+  const evidence = page.locator("#evidence");
+  await expect(evidence).toBeVisible();
+  await expect(
+    evidence.getByRole("heading", { level: 2, name: "Что повлияло на оценку" }),
+  ).toBeVisible();
+  await expect(evidence).toBeFocused();
 
   await page.getByRole("link", { name: "Сигналы" }).click();
 
@@ -86,6 +92,44 @@ test("открывает app shell и переключает раздел", asyn
     page.getByRole("heading", { level: 2, name: "Сигналы фермы" }),
   ).toBeVisible();
   expect(runtimeErrors).toEqual([]);
+});
+
+test("объясняет aggregated contributions и связывает Evidence с Farm Map", async ({ page }) => {
+  await openRadar(page);
+
+  const holeEvidence = page.getByTestId("evidence-item-new_hole");
+  const motionEvidence = page.getByTestId("evidence-item-motion_sensor");
+  const carrotEvidence = page.getByTestId("evidence-item-missing_carrot");
+  await holeEvidence.scrollIntoViewIfNeeded();
+
+  await expect(holeEvidence).toContainText("Новые ямки");
+  await expect(holeEvidence).toContainText("40%");
+  await expect(motionEvidence).toContainText("32%");
+  await expect(carrotEvidence).toContainText("28%");
+  await expect(holeEvidence).toHaveAttribute("data-strength", "dominant");
+
+  await holeEvidence.getByRole("button").focus();
+  await expect(holeEvidence.getByText("Расчёт влияния")).toBeVisible();
+  await expect(holeEvidence.getByText("2 × 1,40 × 0,70 = 1,96")).toBeVisible();
+
+  const fence = page.getByRole("button", {
+    name: "У забора: Высокая активность, 1 наблюдение",
+  });
+  const garden = page.getByRole("button", {
+    name: "Огород: Умеренная активность, 1 наблюдение",
+  });
+  await expect(fence).toHaveAttribute("data-related", "true");
+  await expect(garden).toHaveAttribute("data-related", "false");
+
+  await garden.click();
+  await expect(carrotEvidence).toHaveAttribute("data-map-linked", "true");
+  await expect(holeEvidence).toHaveAttribute("data-map-linked", "false");
+
+  const duplicateIds = await page.locator("[id]").evaluateAll((elements) => {
+    const ids = elements.map((element) => element.id);
+    return ids.filter((id, index) => ids.indexOf(id) !== index);
+  });
+  expect(duplicateIds).toEqual([]);
 });
 
 test("связывает выбор зоны на карте с аналитическими деталями", async ({ page }) => {
@@ -183,6 +227,10 @@ test("показывает empty state без misleading zero estimate", async (
     page.getByRole("heading", { name: /0 предполагаемых кроликов/ }),
   ).toHaveCount(0);
   await expect(page.getByText("Пока нет наблюдений для карты")).toBeVisible();
+  await expect(
+    page.getByRole("heading", { level: 2, name: "Пока нечего анализировать" }),
+  ).toBeVisible();
+  await expect(page.locator("#evidence")).not.toContainText("0%");
 
   await page.getByRole("link", { name: "Добавить сигнал" }).click();
   await expect(page).toHaveURL(/#signals$/);

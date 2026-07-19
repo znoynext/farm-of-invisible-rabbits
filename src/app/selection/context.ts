@@ -1,8 +1,12 @@
 import { createContext, useContext } from "react";
 
+import type { SignalType } from "../../domain";
+
 export interface UiSelectionValue {
   readonly selectedLocation: string | null;
+  readonly selectedSignalType: SignalType | null;
   readonly setSelectedLocation: (location: string | null) => void;
+  readonly setSelectedSignalType: (signalType: SignalType | null) => void;
 }
 
 export const UiSelectionContext = createContext<UiSelectionValue | null>(null);

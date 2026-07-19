@@ -6,7 +6,12 @@ import { FarmMap } from "./FarmMap";
 
 export function OverviewFarmMap() {
   const analytics = useAppAnalytics();
-  const { selectedLocation, setSelectedLocation } = useUiSelection();
+  const {
+    selectedLocation,
+    selectedSignalType,
+    setSelectedLocation,
+    setSelectedSignalType,
+  } = useUiSelection();
 
   useEffect(() => {
     if (
@@ -22,8 +27,12 @@ export function OverviewFarmMap() {
   return (
     <FarmMap
       locations={analytics.locationActivity}
-      onSelectedLocationChange={setSelectedLocation}
+      onSelectedLocationChange={(location) => {
+        setSelectedSignalType(null);
+        setSelectedLocation(location);
+      }}
       selectedLocation={selectedLocation}
+      selectedSignalType={selectedSignalType}
     />
   );
 }

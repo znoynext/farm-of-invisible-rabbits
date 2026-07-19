@@ -29,9 +29,9 @@ export function OverviewHero() {
   }
 
   const latestObservation = analytics.latestObservation;
-  const strongestEvidence = analytics.strongestEvidence;
-  const strongestEvidenceText = strongestEvidence
-    ? `Основной источник активности — ${signalEvidenceLabels[strongestEvidence.signal.event]} ${formatLocation(strongestEvidence.signal.location)}.`
+  const dominantEvidence = analytics.dominantEvidence;
+  const strongestEvidenceText = dominantEvidence
+    ? `Основной источник активности — ${signalEvidenceLabels[dominantEvidence.signalType]}${dominantEvidence.strongestLocation ? ` ${formatLocation(dominantEvidence.strongestLocation)}` : ""}.`
     : "Текущие веса не выделяют основной источник активности.";
 
   return (
@@ -84,21 +84,20 @@ export function OverviewHero() {
 
         <motion.section
           animate={{ opacity: 1, x: 0 }}
-          aria-labelledby="strongest-evidence-title"
+          aria-labelledby="overview-evidence-summary-title"
           className="overview-evidence"
-          id="evidence"
+          id="overview-evidence-summary"
           initial={{
             opacity: 0,
             x: prefersReducedMotion ? 0 : 14,
           }}
-          key={`${analytics.confidence}-${strongestEvidence?.signal.id ?? "none"}`}
-          tabIndex={-1}
+          key={`${analytics.confidence}-${dominantEvidence?.signalType ?? "none"}`}
           transition={{
             duration: prefersReducedMotion ? 0 : 0.42,
             ease: [0.22, 1, 0.36, 1],
           }}
         >
-          <h2 className="visually-hidden" id="strongest-evidence-title">
+          <h2 className="visually-hidden" id="overview-evidence-summary-title">
             Основания оценки
           </h2>
           <p className="overview-confidence">

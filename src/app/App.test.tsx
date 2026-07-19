@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { App } from "./App";
@@ -130,10 +130,79 @@ describe("App", () => {
     ).toBeInTheDocument();
 
     await user.click(screen.getByRole("link", { name: "Разобраться, почему" }));
+    const evidence = document.getElementById("evidence");
+
     expect(window.location.hash).toBe("#evidence");
+    expect(evidence).toHaveAccessibleName("Что повлияло на оценку");
+    await waitFor(() => expect(evidence).toHaveFocus());
+    expect(document.getElementById("overview-evidence-summary")).toBeInTheDocument();
   });
 
-  it("вычисляет strongest evidence по изменённым данным", () => {
+  it("показывает canonical aggregated contributions и отдельную формулу события", async () => {
+    const user = userEvent.setup();
+    const storage = new MemoryStorage();
+    storage.setItem(UI_PREFERENCES_KEY, JSON.stringify({ hasSeenIntro: true }));
+    renderApp(storage);
+
+    const holeEvidence = screen.getByTestId("evidence-item-new_hole");
+    const motionEvidence = screen.getByTestId("evidence-item-motion_sensor");
+    const carrotEvidence = screen.getByTestId("evidence-item-missing_carrot");
+
+    expect(holeEvidence).toHaveAttribute("data-strength", "dominant");
+    expect(holeEvidence).toHaveTextContent("Новые ямки");
+    expect(holeEvidence).toHaveTextContent("40%");
+    expect(motionEvidence).toHaveTextContent("32%");
+    expect(carrotEvidence).toHaveTextContent("28%");
+
+    await user.click(within(holeEvidence).getByRole("button"));
+
+    expect(within(holeEvidence).getByText("Расчёт влияния")).toBeInTheDocument();
+    expect(within(holeEvidence).getByText("2 × 1,40 × 0,70 = 1,96")).toBeInTheDocument();
+    expect(within(holeEvidence).getAllByText("У забора")).toHaveLength(2);
+    expect(within(holeEvidence).getByText("7/10")).toBeInTheDocument();
+  });
+
+  it("связывает Evidence и Farm Map в обе стороны", async () => {
+    const user = userEvent.setup();
+    const storage = new MemoryStorage();
+    storage.setItem(UI_PREFERENCES_KEY, JSON.stringify({ hasSeenIntro: true }));
+    renderApp(storage);
+
+    const holeEvidence = screen.getByTestId("evidence-item-new_hole");
+    const carrotEvidence = screen.getByTestId("evidence-item-missing_carrot");
+    const holeZone = screen.getByRole("button", {
+      name: "У забора: Высокая активность, 1 наблюдение",
+    });
+    const gardenZone = screen.getByRole("button", {
+      name: "Огород: Умеренная активность, 1 наблюдение",
+    });
+
+    await user.click(within(holeEvidence).getByRole("button"));
+
+    expect(holeZone).toHaveAttribute("data-related", "true");
+    expect(gardenZone).toHaveAttribute("data-related", "false");
+
+    await user.click(gardenZone);
+
+    expect(carrotEvidence).toHaveAttribute("data-map-linked", "true");
+    expect(holeEvidence).toHaveAttribute("data-map-linked", "false");
+  });
+
+  it("не создаёт duplicate IDs в Overview flow", () => {
+    const storage = new MemoryStorage();
+    storage.setItem(UI_PREFERENCES_KEY, JSON.stringify({ hasSeenIntro: true }));
+    renderApp(storage);
+
+    const ids = [...document.querySelectorAll<HTMLElement>("[id]")].map(
+      ({ id }) => id,
+    );
+
+    expect(new Set(ids).size).toBe(ids.length);
+    expect(ids).toContain("overview-evidence-summary");
+    expect(ids).toContain("evidence");
+  });
+
+  it("вычисляет dominant evidence по изменённым данным", () => {
     const storage = new MemoryStorage();
     storage.setItem(UI_PREFERENCES_KEY, JSON.stringify({ hasSeenIntro: true }));
     storage.setItem(
@@ -150,6 +219,43 @@ describe("App", () => {
         "Основной источник активности — пропавшая морковь в зоне «Теплица».",
       ),
     ).toBeInTheDocument();
+  });
+
+  it("не добавляет ложную единственную location для multi-location dominant type", () => {
+    const storage = new MemoryStorage();
+    storage.setItem(UI_PREFERENCES_KEY, JSON.stringify({ hasSeenIntro: true }));
+    storage.setItem(
+      PERSISTED_STATE_KEY,
+      JSON.stringify({
+        ...createDefaultPersistedState(),
+        signals: [
+          {
+            id: "evt_a",
+            event: "new_hole",
+            location: "Север",
+            count: 1,
+            intensity: 8,
+            time: "09:00",
+          },
+          {
+            id: "evt_b",
+            event: "new_hole",
+            location: "Юг",
+            count: 1,
+            intensity: 8,
+            time: "10:00",
+          },
+        ],
+      }),
+    );
+    renderApp(storage);
+
+    expect(
+      screen.getByText("Основной источник активности — новые ямки."),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId("evidence-item-new_hole")).toHaveTextContent(
+      "2 локациях · Север · Юг",
+    );
   });
 
   it("показывает честный empty state без уверенного вывода о нуле", async () => {
@@ -171,6 +277,10 @@ describe("App", () => {
     expect(
       screen.queryByRole("heading", { name: /0 предполагаемых кроликов/ }),
     ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { level: 2, name: "Пока нечего анализировать" }),
+    ).toBeInTheDocument();
+    expect(document.getElementById("evidence")).not.toHaveTextContent("0%");
 
     await user.click(screen.getByRole("link", { name: "Добавить сигнал" }));
     await waitFor(() => {
