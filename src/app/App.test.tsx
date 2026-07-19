@@ -120,6 +120,14 @@ describe("App", () => {
     expect(screen.getByText(/Последнее наблюдение/)).toHaveTextContent(
       "Последнее наблюдение · 10:05 · Сарай",
     );
+    expect(
+      screen.getByRole("heading", { level: 2, name: "Где остаются следы" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", {
+        name: "У забора: Высокая активность, 1 наблюдение",
+      }),
+    ).toBeInTheDocument();
 
     await user.click(screen.getByRole("link", { name: "Разобраться, почему" }));
     expect(window.location.hash).toBe("#evidence");

@@ -267,3 +267,25 @@ Outcome:
 **Validation performed:** `npm run lint` — PASS; `npm run test` — 13 файлов и 91 тест PASS; `npm run build` — PASS; Playwright — 10 тестов PASS, включая 1440/1280/1024/768/390, canonical output, empty state и reduced motion. Domain tests подтвердили canonical estimate `5`, confidence `73`, последнее событие `evt_003` и strongest evidence `evt_002`. Проверены реальные screenshots Intro desktop/390, Overview desktop/390 и empty state; `design-quality-review`: Critical — нет, найденная High impact mobile-проблема исправлена.
 
 **Outcome:** Clear primary output готов и связан с детерминированной моделью. Основной результат читается сразу на desktop и mobile, главный фактор вычисляется из текущих данных и весов, а отсутствие наблюдений не маскируется под уверенную оценку.
+
+## Checkpoint: Интерактивная Farm Map
+
+**Stage:** Реализация spatial interface в основном Overview flow.
+
+**Task:** Показать, где на ферме происходят наблюдения, сравнить активность зон и подготовить общий выбор локации для будущей связи Farm Map → Evidence → What-if.
+
+**Prompt summary:** Создать аналитическую 2.5D-карту на SVG/CSS/Motion без внешних картографических библиотек и изображения кролика; поддержать канонические и произвольные локации, pointer/keyboard/touch, empty state, отдельную mobile-композицию и scenario-compatible входные данные.
+
+**AI suggestion:** Передавать карте готовую `locationActivity` через props, расширить pure domain aggregation составом типов и сильнейшим событием, а неперсистентный выбор вынести в отдельный UI context. Для неизвестных локаций использовать нормализованный deterministic hash и ограниченную область «Другие участки».
+
+**Decision taken:** Канонические зоны получили фиксированные anchors, произвольные — стабильные координаты только в fallback-области. Интерактивность реализована HTML-кнопками поверх декоративного SVG: это сохраняет spatial language и одновременно даёт нативные accessible names, keyboard activation и touch targets. `selectedLocation` не добавлен в persisted state; `FarmMap` не знает, получены данные из base state или scenario preview.
+
+**Reason:** Такой контракт не дублирует thresholds в React, не связывает карту с persistence и позволяет будущим Evidence/What-if использовать тот же временный выбор. Отдельная mobile-схема сохраняет смысл зон без механического уменьшения desktop SVG.
+
+**What changed:** `aggregateLocationActivity` теперь детерминированно возвращает `signalTypes` и `strongestSignal`; добавлены placement helper, shared UI selection provider, custom marks четырёх типов сигналов, `FarmMap`, отдельные responsive styles и включение карты после Overview Hero. Unit/UI/E2E tests покрывают canonical levels, unknown fallback, selection, keyboard, 390 px touch targets, empty state и передачу scenario-derived analytics через props.
+
+**Problem found:** Первый render review показал, что исходная фраза слишком точно связывала размер marker с raw impact, хотя визуальный размер кодирует semantic activity level. Текст уточнён: размер и тон показывают активность, а точный total impact остаётся в detail area. Артефакт видимого skip-link на locator screenshots отдельно проверен по bounding box и не оказался дефектом интерфейса.
+
+**Validation performed:** Реальные состояния default 1440, selected 1024, mobile 390 и empty 1440 отрендерены и визуально проверены. `design-quality-review`: Critical — нет; High impact после уточнения explainability — нет. `npm run lint` — PASS; `npm run test` — 16 файлов и 99 тестов PASS; `npm run build` — PASS; Playwright — 12 тестов PASS, включая selection, keyboard, mobile touch targets, empty state, пять responsive widths и reduced motion. Существующие domain tests сохранили canonical estimate `5`, confidence `73` и исходные impact calculations.
+
+**Outcome:** Farm Map стала основным spatial-слоем Overview и готова к будущей связи с Evidence и What-if без изменения persisted state или domain formulas. Новые зависимости, backend, database, authentication и runtime LLM не добавлялись.

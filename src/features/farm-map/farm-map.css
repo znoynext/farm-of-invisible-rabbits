@@ -1,0 +1,657 @@
+.overview-flow {
+  display: grid;
+  gap: clamp(2rem, 5vw, 4.5rem);
+}
+
+.farm-map {
+  overflow: hidden;
+  box-shadow: var(--shadow-resting);
+}
+
+.farm-map__header {
+  display: grid;
+  grid-template-columns: minmax(18rem, 0.85fr) minmax(24rem, 1.15fr);
+  gap: clamp(2rem, 6vw, 7rem);
+  align-items: end;
+  padding: clamp(2rem, 4vw, 4rem);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.farm-map__header .eyebrow {
+  margin-bottom: var(--space-4);
+}
+
+.farm-map__header h2 {
+  max-width: 10ch;
+  margin: 0;
+  font-size: clamp(2.75rem, 5vw, 5.75rem);
+  font-weight: 520;
+  letter-spacing: -0.065em;
+  line-height: 0.92;
+}
+
+.farm-map__header > p {
+  max-width: 36rem;
+  margin: 0 0 0.25rem;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-body-lg);
+  line-height: 1.55;
+}
+
+.farm-map__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.62fr) minmax(19rem, 0.68fr);
+  min-height: 39rem;
+}
+
+.farm-map__diagram {
+  position: relative;
+  min-height: 39rem;
+  overflow: hidden;
+  border-right: 1px solid var(--color-border-subtle);
+  background:
+    linear-gradient(145deg, rgb(255 255 255 / 18%), transparent 42%),
+    color-mix(in srgb, var(--color-secondary) 74%, var(--color-surface));
+}
+
+.farm-map__landscape {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.farm-map__landscape--mobile {
+  display: none;
+}
+
+.farm-map__ground {
+  fill: color-mix(in srgb, var(--color-secondary) 74%, var(--color-sand));
+  stroke: color-mix(in srgb, var(--color-text) 16%, transparent);
+  stroke-width: 1.4;
+}
+
+.farm-map__field {
+  stroke: color-mix(in srgb, var(--color-text) 13%, transparent);
+  stroke-width: 1.2;
+}
+
+.farm-map__field--garden {
+  fill: color-mix(in srgb, var(--color-sand) 28%, var(--color-surface));
+}
+
+.farm-map__field--fence {
+  fill: color-mix(in srgb, var(--color-sage) 17%, var(--color-surface));
+}
+
+.farm-map__field-lines {
+  color: var(--color-sand);
+}
+
+.farm-map__path {
+  fill: none;
+  stroke: color-mix(in srgb, var(--color-sand) 52%, transparent);
+  stroke-dasharray: 2 7;
+  stroke-linecap: round;
+  stroke-width: 19;
+}
+
+.farm-map__boundary,
+.farm-map__fence,
+.farm-map__fence-posts {
+  fill: none;
+  stroke: var(--color-sage-dark);
+  stroke-linecap: round;
+}
+
+.farm-map__boundary {
+  opacity: 0.34;
+  stroke-dasharray: 3 8;
+  stroke-width: 1.5;
+}
+
+.farm-map__fence {
+  opacity: 0.68;
+  stroke-width: 3;
+}
+
+.farm-map__fence-posts {
+  opacity: 0.5;
+  stroke-width: 2;
+}
+
+.farm-map__barn {
+  fill: color-mix(in srgb, var(--color-terracotta) 60%, var(--color-secondary));
+  stroke: color-mix(in srgb, var(--color-text) 25%, transparent);
+  stroke-linejoin: round;
+  stroke-width: 1.2;
+}
+
+.farm-map__barn-roof {
+  fill: color-mix(in srgb, var(--color-terracotta) 82%, var(--color-text));
+}
+
+.farm-map__barn-door {
+  fill: color-mix(in srgb, var(--color-sage-dark) 72%, var(--color-text));
+}
+
+.farm-map__other-band {
+  fill: color-mix(in srgb, var(--color-surface) 52%, transparent);
+  stroke: color-mix(in srgb, var(--color-text) 10%, transparent);
+  stroke-dasharray: 4 7;
+  stroke-width: 1.2;
+}
+
+.farm-map__other-label {
+  position: absolute;
+  bottom: 4.2%;
+  left: 7%;
+  color: var(--color-quiet-text);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.farm-map__zone {
+  position: absolute;
+  top: var(--zone-y);
+  left: var(--zone-x);
+  z-index: 3;
+  display: grid;
+  justify-items: center;
+  min-width: 4.5rem;
+  min-height: 4.5rem;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: var(--color-text);
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+}
+
+.farm-map__zone::before {
+  position: absolute;
+  top: 0.55rem;
+  width: 3.35rem;
+  height: 3.35rem;
+  border: 1px solid color-mix(in srgb, var(--color-sage-dark) 24%, transparent);
+  border-radius: 50%;
+  content: "";
+  opacity: 0;
+  pointer-events: none;
+}
+
+.farm-map__zone[data-active="true"][data-activity="high"]::before {
+  animation: farm-map-pulse 2.8s var(--ease-standard) infinite;
+}
+
+.farm-map__beacon {
+  position: relative;
+  display: grid;
+  width: 3.2rem;
+  height: 3.2rem;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--color-text) 18%, transparent);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+  box-shadow: 0 0.65rem 1.5rem rgb(34 37 31 / 10%);
+  color: var(--color-sage-dark);
+  transition:
+    transform var(--duration-micro) var(--ease-standard),
+    border-color var(--duration-micro) var(--ease-standard),
+    background-color var(--duration-micro) var(--ease-standard),
+    box-shadow var(--duration-micro) var(--ease-standard);
+}
+
+.farm-map__beacon svg {
+  width: 1.55rem;
+}
+
+.farm-map__zone[data-activity="moderate"] .farm-map__beacon {
+  color: var(--color-terracotta-text);
+}
+
+.farm-map__zone[data-activity="high"] .farm-map__beacon {
+  width: 3.7rem;
+  height: 3.7rem;
+  border-color: color-mix(in srgb, var(--color-terracotta) 58%, transparent);
+  color: var(--color-terracotta-text);
+}
+
+.farm-map__zone:hover .farm-map__beacon,
+.farm-map__zone[data-active="true"] .farm-map__beacon,
+.farm-map__zone[aria-pressed="true"] .farm-map__beacon {
+  border-color: var(--color-sage-dark);
+  background: var(--color-surface);
+  box-shadow:
+    0 0 0 0.34rem color-mix(in srgb, var(--color-sage) 16%, transparent),
+    0 0.8rem 1.7rem rgb(34 37 31 / 13%);
+  transform: translateY(-2px);
+}
+
+.farm-map__zone[aria-pressed="true"] .farm-map__beacon::after {
+  position: absolute;
+  inset: -0.55rem;
+  border: 1px solid var(--color-sage-dark);
+  border-radius: 50%;
+  content: "";
+  opacity: 0.68;
+}
+
+.farm-map__zone:active .farm-map__beacon {
+  transform: translateY(0) scale(0.96);
+}
+
+.farm-map__zone:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.farm-map__zone:focus-visible .farm-map__beacon {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 4px;
+  box-shadow: var(--focus-ring);
+}
+
+.farm-map__zone-label {
+  max-width: 8.75rem;
+  margin-top: 0.35rem;
+  border: 1px solid color-mix(in srgb, var(--color-text) 10%, transparent);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-surface) 91%, transparent);
+  padding: 0.35rem 0.5rem;
+  color: var(--color-text);
+  font-size: 0.6875rem;
+  font-weight: 720;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.farm-map__zone[data-placement="other"] .farm-map__beacon {
+  width: 2.85rem;
+  height: 2.85rem;
+  border-style: dashed;
+}
+
+.farm-map__details {
+  position: relative;
+  align-self: stretch;
+  padding: clamp(2rem, 4vw, 4rem) clamp(1.75rem, 3.2vw, 3.5rem);
+  background: color-mix(in srgb, var(--color-surface) 84%, var(--color-secondary));
+}
+
+.farm-map__details-heading {
+  display: grid;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.farm-map__details-index,
+.farm-map__signals > p,
+.farm-map__strongest > p {
+  margin: 0;
+  color: var(--color-quiet-text);
+  font-size: 0.625rem;
+  font-weight: 740;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.farm-map__activity {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: fit-content;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: 690;
+}
+
+.farm-map__activity::before {
+  width: 0.48rem;
+  height: 0.48rem;
+  border-radius: 50%;
+  background: var(--color-sage);
+  content: "";
+}
+
+.farm-map__activity[data-activity="moderate"]::before {
+  background: var(--color-terracotta);
+}
+
+.farm-map__activity[data-activity="high"]::before {
+  background: var(--color-danger);
+}
+
+.farm-map__details h3 {
+  max-width: 12ch;
+  margin: 0 0 var(--space-7);
+  font-size: clamp(2.25rem, 4vw, 4rem);
+  font-weight: 520;
+  letter-spacing: -0.055em;
+  line-height: 0.95;
+}
+
+.farm-map__metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0 0 var(--space-7);
+  border-block: 1px solid var(--color-border-subtle);
+}
+
+.farm-map__metrics div {
+  display: grid;
+  gap: var(--space-2);
+  padding-block: var(--space-5);
+}
+
+.farm-map__metrics div + div {
+  border-left: 1px solid var(--color-border-subtle);
+  padding-left: var(--space-5);
+}
+
+.farm-map__metrics dt {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+}
+
+.farm-map__metrics dd {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 1.65rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 560;
+  letter-spacing: -0.035em;
+}
+
+.farm-map__signals {
+  margin-bottom: var(--space-7);
+}
+
+.farm-map__signals ul {
+  display: grid;
+  gap: var(--space-3);
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.farm-map__signals li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.farm-map__signals svg {
+  flex: 0 0 auto;
+  width: 1.6rem;
+  color: var(--color-terracotta-text);
+}
+
+.farm-map__strongest {
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.farm-map__strongest strong {
+  display: block;
+  margin-top: var(--space-3);
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  font-weight: 640;
+  line-height: 1.5;
+}
+
+.farm-map__details--empty {
+  display: grid;
+  align-content: center;
+}
+
+.farm-map__details--empty h3 {
+  margin: var(--space-4) 0 var(--space-5);
+}
+
+.farm-map__details--empty > p:last-child {
+  max-width: 25rem;
+  margin: 0;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.farm-map__empty-message {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: var(--space-5);
+  padding: var(--space-6);
+  text-align: center;
+}
+
+.farm-map__empty-message span {
+  width: 7rem;
+  height: 7rem;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0 0 1.75rem color-mix(in srgb, var(--color-surface) 34%, transparent),
+    inset 0 0 0 3.45rem color-mix(in srgb, var(--color-text) 3%, transparent);
+}
+
+.farm-map__empty-message p {
+  max-width: 15rem;
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.farm-map--empty .farm-map__landscape {
+  opacity: 0.28;
+}
+
+@keyframes farm-map-pulse {
+  0%,
+  45% {
+    opacity: 0;
+    transform: scale(0.82);
+  }
+
+  72% {
+    opacity: 0.58;
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.42);
+  }
+}
+
+@media (max-width: 64rem) {
+  .farm-map__header {
+    grid-template-columns: minmax(16rem, 0.85fr) minmax(20rem, 1.15fr);
+  }
+
+  .farm-map__body {
+    grid-template-columns: 1fr;
+  }
+
+  .farm-map__diagram {
+    min-height: 34rem;
+    border-right: 0;
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+
+  .farm-map__details {
+    display: grid;
+    grid-template-columns: minmax(14rem, 0.8fr) minmax(18rem, 1.2fr);
+    column-gap: var(--space-8);
+  }
+
+  .farm-map__details-heading,
+  .farm-map__details h3 {
+    grid-column: 1;
+  }
+
+  .farm-map__metrics,
+  .farm-map__signals,
+  .farm-map__strongest {
+    grid-column: 2;
+  }
+
+  .farm-map__metrics {
+    grid-row: 1 / span 2;
+    align-self: start;
+  }
+
+  .farm-map__signals {
+    margin-top: var(--space-7);
+  }
+}
+
+@media (max-width: 48rem) {
+  .overview-flow {
+    gap: var(--space-6);
+  }
+
+  .farm-map {
+    border-radius: var(--radius-lg);
+  }
+
+  .farm-map__header {
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+    padding: var(--space-6) var(--space-5);
+  }
+
+  .farm-map__header .eyebrow {
+    margin-bottom: var(--space-3);
+  }
+
+  .farm-map__header h2 {
+    max-width: 8ch;
+    font-size: clamp(3rem, 14vw, 4rem);
+  }
+
+  .farm-map__header > p {
+    max-width: 29rem;
+    font-size: var(--font-size-sm);
+  }
+
+  .farm-map__diagram {
+    min-height: 26rem;
+    background: color-mix(in srgb, var(--color-secondary) 68%, var(--color-surface));
+  }
+
+  .farm-map__landscape--desktop {
+    display: none;
+  }
+
+  .farm-map__landscape--mobile {
+    display: block;
+  }
+
+  .farm-map__mobile-ground {
+    fill: color-mix(in srgb, var(--color-secondary) 75%, var(--color-sand));
+    stroke: var(--color-border-subtle);
+  }
+
+  .farm-map__mobile-route {
+    fill: none;
+    stroke: color-mix(in srgb, var(--color-sand) 48%, transparent);
+    stroke-dasharray: 2 7;
+    stroke-linecap: round;
+    stroke-width: 12;
+  }
+
+  .farm-map__mobile-field {
+    fill: color-mix(in srgb, var(--color-sand) 25%, var(--color-surface));
+    stroke: var(--color-border-subtle);
+  }
+
+  .farm-map__mobile-fence {
+    fill: none;
+    stroke: var(--color-sage-dark);
+    stroke-dasharray: 6 5;
+    stroke-width: 2;
+  }
+
+  .farm-map__mobile-barn {
+    fill: var(--color-terracotta);
+    opacity: 0.72;
+    stroke: var(--color-terracotta-text);
+  }
+
+  .farm-map__mobile-other {
+    fill: none;
+    stroke: var(--color-border-strong);
+    stroke-dasharray: 4 7;
+  }
+
+  .farm-map__zone {
+    top: var(--zone-mobile-y);
+    left: var(--zone-mobile-x);
+    min-width: 4rem;
+    min-height: 4rem;
+  }
+
+  .farm-map__beacon,
+  .farm-map__zone[data-activity="high"] .farm-map__beacon {
+    width: 3.25rem;
+    height: 3.25rem;
+  }
+
+  .farm-map__zone-label {
+    max-width: 7rem;
+    font-size: 0.625rem;
+  }
+
+  .farm-map__other-label {
+    bottom: 5.2%;
+    left: 8%;
+    font-size: 0.5625rem;
+  }
+
+  .farm-map__details,
+  .farm-map__details--empty {
+    display: block;
+    min-height: auto;
+    padding: var(--space-7) var(--space-5) var(--space-8);
+  }
+
+  .farm-map__details h3 {
+    margin-bottom: var(--space-6);
+    font-size: clamp(2.75rem, 13vw, 3.75rem);
+  }
+
+  .farm-map__metrics {
+    margin-bottom: var(--space-6);
+  }
+
+  .farm-map__signals {
+    margin: 0 0 var(--space-6);
+  }
+
+  .farm-map__signals ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .farm-map__signals li {
+    align-items: flex-start;
+    font-size: var(--font-size-xs);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .farm-map__zone::before {
+    animation: none !important;
+  }
+
+  .farm-map__beacon {
+    transition-duration: 0ms;
+  }
+}

@@ -14,8 +14,9 @@ import {
 } from "../data/navigation";
 import { IntroExperience } from "../features/intro/IntroExperience";
 import { PrimaryNavigation } from "../features/navigation/PrimaryNavigation";
-import { OverviewHero } from "../features/overview/OverviewHero";
+import { Overview } from "../features/overview/Overview";
 import { useHashNavigation } from "../hooks/useHashNavigation";
+import { UiSelectionProvider } from "./selection";
 import { useAppState } from "./state";
 
 export function App() {
@@ -58,10 +59,12 @@ export function App() {
           reopened={isIntroReopened}
         />
       ) : (
-        <RadarApp
-          aboutButtonRef={aboutButtonRef}
-          onOpenIntro={() => setIsIntroReopened(true)}
-        />
+        <UiSelectionProvider>
+          <RadarApp
+            aboutButtonRef={aboutButtonRef}
+            onOpenIntro={() => setIsIntroReopened(true)}
+          />
+        </UiSelectionProvider>
       )}
     </AnimatePresence>
   );
@@ -162,7 +165,7 @@ function RadarApp({ aboutButtonRef, onOpenIntro }: RadarAppProps) {
             }}
           >
             {activeSection.id === "overview" ? (
-              <OverviewHero />
+              <Overview />
             ) : (
               <Surface
                 className="section-stage placeholder-surface"

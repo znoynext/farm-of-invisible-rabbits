@@ -14,8 +14,10 @@ describe("location aggregation", () => {
     expect(garden).toMatchObject({
       eventCount: 2,
       observedCount: 7,
+      signalTypes: ["missing_carrot", "new_hole"],
     });
     expect(garden?.totalImpact).toBeCloseTo(3.36, 10);
+    expect(garden?.strongestSignal.id).toBe("evt_002");
     expect(locations.reduce((total, item) => total + item.contribution, 0)).toBeCloseTo(100, 10);
   });
 
@@ -33,6 +35,8 @@ describe("location aggregation", () => {
 
     expect(garden?.totalImpact).toBeCloseTo(1.4, 10);
     expect(garden?.activityLevel).toBe("moderate");
+    expect(garden?.signalTypes).toEqual(["missing_carrot"]);
+    expect(garden?.strongestSignal.id).toBe("evt_001");
     expect(fence?.totalImpact).toBeCloseTo(1.96, 10);
     expect(fence?.activityLevel).toBe("high");
     expect(barn?.totalImpact).toBeCloseTo(1.6, 10);
