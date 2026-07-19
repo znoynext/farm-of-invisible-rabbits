@@ -17,6 +17,14 @@ Farm of Invisible Rabbits — интерактивное статическое 
 - Не добавлять backend, database, authentication или секреты.
 - Не утверждать, что проверка выполнена, если она не запускалась.
 
+## Feature freeze
+
+После успешного Audit #4 remediation продукт находится в feature freeze.
+
+До submission разрешены только bug fixes, accessibility fixes, QA fixes, safe visual polish, documentation, release preparation и deployment.
+
+Запрещены новые product features, изменение domain formulas без подтверждённого BLOCKER/HIGH, новые dependencies без release-critical необходимости, risky redesign и architecture migration.
+
 ## AI Worklog discipline
 
 После каждой значимой задачи оценивать, содержит ли выполненная работа материал для AI Worklog. Использовать `ai-worklog-capture`, если принято важное архитектурное, расчётное, UX/UI, interaction, infrastructure, deployment или QA/release-решение; обнаружена существенная проблема; внешний AI-аудит выявил недостаток; либо завершён milestone.

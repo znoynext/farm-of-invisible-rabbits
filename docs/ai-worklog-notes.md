@@ -357,3 +357,25 @@ Outcome:
 **Validation performed:** Focused suite — 10 файлов и 89 тестов PASS. Реально отрендерены default 1440/1024/768/390, changed sensitivity, changed weights и reset; после исправления `design-quality-review`: Critical — нет, High impact — нет. Финальные `npm run lint` — PASS; `npm run test` — 21 файл и 138 тестов PASS два последовательных раза; `npm run build` — PASS; Playwright — 16 тестов PASS, включая Model journey, persistence, scenario reset, пять responsive widths и reduced motion; focused propagation recheck Hero/Map/Evidence/Recommendations — 1 тест PASS.
 
 **Outcome:** Пользователь может прозрачно настраивать интерпретацию наблюдений без изменения формул или confidence semantics. Model Settings сохраняются локально, согласованно пересчитывают продукт и не оставляют stale What-if state. Новые зависимости, backend, database, authentication и runtime LLM не добавлялись.
+
+## Checkpoint: Functional complete и feature freeze
+
+**Stage:** Завершение функциональной разработки перед release preparation.
+
+**Task:** После Audit #4 remediation подтвердить functional completeness продукта полным QA gate и зафиксировать feature freeze без добавления новых функций.
+
+**Prompt summary:** Проверить чистоту и синхронность `main`, наличие безопасного Restore, обязательные assignment-функции, публичный AI Worklog, локальные проверки и фактический CI; при полном PASS ограничить дальнейшую работу bug/accessibility/QA fixes, безопасным visual polish, документацией, release preparation и deployment.
+
+**AI suggestion:** Считать feature freeze отдельным release-phase контрактом в `AGENTS.md`, не создавать новый skill и не менять public AI Worklog только ради процессного milestone.
+
+**Decision taken:** Продукт признан FUNCTIONALLY COMPLETE после подтверждения Audit #4 со статусами BLOCKER `0` и HIGH `0`, Restore remediation и полного обязательного gate. До submission активирован feature freeze; domain formulas, архитектура и зависимости остаются закрытыми для необоснованных изменений.
+
+**Reason:** Функциональный scope задания реализован и проверен. Ограничение допустимых изменений снижает риск регрессий перед финальным README, deployment и submission, не смешивая завершённую продуктовую разработку с release preparation.
+
+**What changed:** В `AGENTS.md` добавлено компактное release-phase правило. Публичный AI Worklog остался на шести основанных на рабочих notes checkpoints; product UI, business logic, domain formulas и dependencies не менялись.
+
+**Problem found:** Первый полный Playwright запуск внутри ограниченного sandbox запустил 18 тестов, но browser runner не завершился в заданный срок. Focused Restore и полный suite повторно запущены в разрешённом Chromium runtime с одним worker и завершились успешно; дефект продукта не воспроизвёлся.
+
+**Validation performed:** `main` был чист и синхронизирован с `origin/main` на `bc2eb4f`; Restore regression file — 10/10 PASS. `npm run lint` — PASS; два последовательных `npm run test` — по 22 файла и 144/144 теста PASS; `npm run build` — PASS; focused Restore E2E — 1/1 PASS; полный Playwright suite — 18/18 PASS. Assignment review подтвердил Scenario 2, интерактивный UI, starting data, Signals CRUD, What-if, Model Settings, Farm Map, Evidence, Recommendations, clear primary output и шесть реальных public AI Worklog checkpoints. GitHub repository подтверждён как PUBLIC; CI run `29700613535` для `bc2eb4f` — PASS. Live Demo, deployment и финальная README readiness — NOT RUN до release-этапов.
+
+**Outcome:** Состояние продукта — FUNCTIONALLY COMPLETE; FEATURE FREEZE ACTIVE. Следующие этапы ограничены безопасной доводкой и подготовкой релиза.
