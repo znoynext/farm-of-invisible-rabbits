@@ -41,8 +41,8 @@ export function AiWorklogSection() {
       <div className="worklog-selection-note">
         <span>{String(publicAiWorklogCheckpoints.length).padStart(2, "0")}</span>
         <p>
-          отобранных checkpoints из полного рабочего журнала — без выдуманного
-          Final QA и без публикации приватных данных.
+          отобранных checkpoints из полного рабочего журнала — без выдуманных
+          результатов и без публикации приватных данных.
         </p>
       </div>
 

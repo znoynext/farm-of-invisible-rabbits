@@ -11,13 +11,14 @@ const documentedCheckpointTitles = [
   "Повторная сверка требований перед UI",
   "Визуальный фундамент Design System",
   "Интерактивный analytical flow",
+  "Финальная проверка качества",
 ] as const;
 
 describe("AiWorklogSection", () => {
-  it("показывает шесть отобранных реальных checkpoints", () => {
+  it("показывает семь отобранных реальных checkpoints", () => {
     render(<AiWorklogSection />);
 
-    expect(screen.getAllByTestId("ai-worklog-checkpoint")).toHaveLength(6);
+    expect(screen.getAllByTestId("ai-worklog-checkpoint")).toHaveLength(7);
     expect(publicAiWorklogCheckpoints.length).toBeGreaterThanOrEqual(5);
     expect(publicAiWorklogCheckpoints.length).toBeLessThanOrEqual(7);
     expect(publicAiWorklogCheckpoints.map(({ sourceTitle }) => sourceTitle)).toEqual(

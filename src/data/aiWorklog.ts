@@ -120,4 +120,22 @@ export const publicAiWorklogCheckpoints = [
       "Регрессионные тесты подтвердили исправления Audit #3 и #4: отмена и Escape не меняют состояние, подтверждение сбрасывает сценарий и сохраняет настройки. Диалог проверен на 1440 и 390 px; число публичных записей осталось в заданном диапазоне.",
     emphasis: "audit",
   },
+  {
+    id: "final-quality-assurance",
+    phase: "Release QA",
+    sourceTitle: "Финальная проверка качества",
+    task:
+      "Подтвердить функциональные, расчётные, persistence, accessibility и responsive-контракты на полном automated gate и production preview.",
+    promptSummary:
+      "Проверить весь пользовательский путь, каноническую модель, Restore causality, connected interactions, пять целевых ширин и runtime diagnostics, не выдавая незапущенные deployment-проверки за готовые.",
+    aiSuggestion:
+      "Сопоставить обязательства с executable tests, выполнить полный gate и отдельно пройти собранное приложение; исправлять только подтверждённые regression и accessibility defects в границах feature freeze.",
+    humanDecision:
+      "Сохранить формулы, архитектуру и scope. Исправить возврат верхней навигации к началу раздела и доступность skip link, затем защитить оба контракта regression tests.",
+    changed:
+      "Навигация получила явный scroll reset, skip link — перенос фокуса в main и устойчивую высоту 48 px; App, Dialog focus trap и E2E suite получили дополнительные проверки.",
+    validation:
+      "Lint, два запуска 145 unit/UI тестов, production build и 20 E2E прошли. Production preview проверен на пяти ширинах без overflow, duplicate IDs, broken assets и runtime errors; live demo и deployment не отмечались как выполненные.",
+    emphasis: "milestone",
+  },
 ] as const satisfies readonly PublicAiWorklogCheckpoint[];

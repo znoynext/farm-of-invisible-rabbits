@@ -379,3 +379,25 @@ Outcome:
 **Validation performed:** `main` был чист и синхронизирован с `origin/main` на `bc2eb4f`; Restore regression file — 10/10 PASS. `npm run lint` — PASS; два последовательных `npm run test` — по 22 файла и 144/144 теста PASS; `npm run build` — PASS; focused Restore E2E — 1/1 PASS; полный Playwright suite — 18/18 PASS. Assignment review подтвердил Scenario 2, интерактивный UI, starting data, Signals CRUD, What-if, Model Settings, Farm Map, Evidence, Recommendations, clear primary output и шесть реальных public AI Worklog checkpoints. GitHub repository подтверждён как PUBLIC; CI run `29700613535` для `bc2eb4f` — PASS. Live Demo, deployment и финальная README readiness — NOT RUN до release-этапов.
 
 **Outcome:** Состояние продукта — FUNCTIONALLY COMPLETE; FEATURE FREEZE ACTIVE. Следующие этапы ограничены безопасной доводкой и подготовкой релиза.
+
+## Checkpoint: Финальная проверка качества
+
+**Stage:** Полный pre-release QA после visual polish в режиме feature freeze.
+
+**Task:** Исполняемыми проверками подтвердить функциональные, domain, persistence, integration, accessibility и responsive-контракты; отдельно провести smoke production preview и честно отделить готовность продукта от ещё не выполненных README и deployment этапов.
+
+**Prompt summary:** Пройти Intro, основной analytical flow и management-разделы; проверить каноническую модель, Restore causality, local persistence, connected interactions, клавиатуру, пять целевых ширин, runtime errors и assignment compliance. Использовать только фактические статусы и не отмечать live demo, deployment smoke или final links до их реального выполнения.
+
+**AI suggestion:** Сначала сопоставить обязательства с существующими executable tests, затем выполнить полный gate и реальный production-preview smoke. Исправлять только подтверждённые regression/accessibility defects без новых функций, изменения формул или архитектурной миграции.
+
+**Decision taken:** Feature freeze сохранён. Найденные проблемы исправлены на уровне production UI: top-level navigation всегда возвращает к началу выбранного раздела, а skip link переводит фокус в основной контент и имеет устойчивую высоту 48 px. Для обоих контрактов добавлены regression tests; domain formulas и product scope не менялись.
+
+**Reason:** Первый полный E2E запуск выявил реальный сбой scroll causality, а production-preview проверка — потерю клавиатурного фокуса и subpixel touch target у skip link. Точечные исправления закрывают accessibility и navigation regressions, не увеличивая release risk.
+
+**What changed:** Обработчик primary navigation получил явный scroll reset; `main-content` стал программно фокусируемым, skip link выполняет focus/scroll transfer и использует 48 px minimum. App, Dialog focus trap и E2E suite получили дополнительные проверки. QA checklist обновлён только фактически подтверждёнными пунктами; публичная выборка AI Worklog расширена этим седьмым, основанным на working notes checkpoint.
+
+**Problem found:** Первый полный Playwright suite завершился FAIL: после возврата из длинного AI Worklog в Overview `scrollY` оставался на прежней глубине. После исправления focused и полный E2E прошли. Production preview дополнительно показал, что skip link прокручивает страницу, но оставляет фокус на ссылке, а его высота на 390 px составляет 43,38 px; после remediation фокус переходит в `main` и фактическая высота равна 48 px. Первая post-update unit-проверка публичного Worklog также нашла одно старое ожидание шести записей; assertion синхронизирован с подтверждённой выборкой из семи checkpoints, после чего полный gate повторён с начала.
+
+**Validation performed:** `npm run lint` — PASS; два последовательных `npm run test` — по 22 файла и 145/145 тестов PASS; `npm run build` — PASS; Playwright — 20/20 PASS, включая новый keyboard skip-link regression, Restore, What-if, CRUD, Model, responsive widths и reduced motion. Production preview реально проверен на 1440, 1280, 1024, 768 и 390 px: horizontal overflow и duplicate IDs отсутствуют, assets загружаются, mobile footer не перекрыт навигацией, runtime console пуста. GitHub repository отдельно подтверждён как PUBLIC. Live Demo, deployment smoke и final links — NOT RUN; README readiness остаётся незавершённой до следующего release-этапа.
+
+**Outcome:** Функциональный, domain и локальный production QA завершены без BLOCKER/HIGH дефектов. Продукт остаётся в feature freeze; submission ещё не готов из-за незавершённых README и deployment шагов.

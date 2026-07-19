@@ -38,6 +38,9 @@ export function PrimaryNavigation({
                 aria-current={isActive ? "page" : undefined}
                 className="navigation-link"
                 href={`#${item.id}`}
+                onClick={() => {
+                  window.scrollTo({ behavior: "auto", left: 0, top: 0 });
+                }}
               >
                 <Icon aria-hidden="true" size={17} strokeWidth={1.8} />
                 <span>{item.label}</span>

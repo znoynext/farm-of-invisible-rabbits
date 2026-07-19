@@ -340,7 +340,20 @@ describe("App", () => {
       ).toBeInTheDocument();
     });
     expect(window.location.hash).toBe("#ai-worklog");
-    expect(screen.getAllByTestId("ai-worklog-checkpoint")).toHaveLength(6);
+    expect(screen.getAllByTestId("ai-worklog-checkpoint")).toHaveLength(7);
     expect(screen.queryByText(/Журнал будет фиксировать/)).not.toBeInTheDocument();
+  });
+
+  it("переводит фокус к основному содержимому через skip link", async () => {
+    const user = userEvent.setup();
+    const storage = new MemoryStorage();
+    storage.setItem(UI_PREFERENCES_KEY, JSON.stringify({ hasSeenIntro: true }));
+    renderApp(storage);
+
+    await user.click(
+      screen.getByRole("link", { name: "Перейти к содержимому" }),
+    );
+
+    expect(screen.getByRole("main")).toHaveFocus();
   });
 });

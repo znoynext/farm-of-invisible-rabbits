@@ -4,123 +4,123 @@
 
 ## Assignment compliance
 
-- [ ] Scenario 2 явно указан
-- [ ] interactive interface
-- [ ] starting data
-- [ ] editable/interactable input data
-- [ ] controls affect output
-- [ ] clear primary output
-- [ ] AI Worklog inside UI
-- [ ] AI Worklog contains 5–7 selected checkpoints
-- [ ] checkpoints based on real notes
+- [x] Scenario 2 явно указан
+- [x] interactive interface
+- [x] starting data
+- [x] editable/interactable input data
+- [x] controls affect output
+- [x] clear primary output
+- [x] AI Worklog inside UI
+- [x] AI Worklog contains 5–7 selected checkpoints
+- [x] checkpoints based on real notes
 - [ ] README explains selected scenario
-- [ ] README has startup
-- [ ] README has stack
+- [x] README has startup
+- [x] README has stack
 - [ ] README has AI process explanation
-- [ ] source code publicly accessible
+- [x] source code publicly accessible
 - [ ] live demo accessible
 - [ ] final links verified
 
 ## Functional
 
-- [ ] initial data
-- [ ] add
-- [ ] edit
-- [ ] delete
-- [ ] delete all
-- [ ] reset
-- [ ] restore initial data requires explicit confirmation before replacing changed observations
-- [ ] cancel/escape restore leaves signals and active scenario unchanged
-- [ ] sensitivity
-- [ ] weights
-- [ ] what-if preview
-- [ ] what-if apply
-- [ ] recommendations
+- [x] initial data
+- [x] add
+- [x] edit
+- [x] delete
+- [x] delete all
+- [x] reset
+- [x] restore initial data requires explicit confirmation before replacing changed observations
+- [x] cancel/escape restore leaves signals and active scenario unchanged
+- [x] sensitivity
+- [x] weights
+- [x] what-if preview
+- [x] what-if apply
+- [x] recommendations
 
 ## Domain
 
-- [ ] canonical totalEvidence ≈ 4.96
-- [ ] canonical estimate = 5
-- [ ] canonical confidence = 73
-- [ ] diminishing returns
-- [ ] confidence bounds
-- [ ] contribution normalization
-- [ ] location aggregation
-- [ ] location activity boundaries
-- [ ] overall activity boundaries
-- [ ] dominant evidence deterministic
-- [ ] dominant location clear-dominance rule
-- [ ] recommendation ranking deterministic
-- [ ] maximum 3 recommendations
-- [ ] What-if default observation deterministic
-- [ ] sensitivity does not affect confidence
-- [ ] weights do not affect confidence
+- [x] canonical totalEvidence ≈ 4.96
+- [x] canonical estimate = 5
+- [x] canonical confidence = 73
+- [x] diminishing returns
+- [x] confidence bounds
+- [x] contribution normalization
+- [x] location aggregation
+- [x] location activity boundaries
+- [x] overall activity boundaries
+- [x] dominant evidence deterministic
+- [x] dominant location clear-dominance rule
+- [x] recommendation ranking deterministic
+- [x] maximum 3 recommendations
+- [x] What-if default observation deterministic
+- [x] sensitivity does not affect confidence
+- [x] weights do not affect confidence
 
 ## Integration
 
-- [ ] Map ↔ Evidence connected selection
-- [ ] initial What-if does not create shared selection
-- [ ] explicit What-if interaction connects Map/Evidence
-- [ ] preview → Hero
-- [ ] preview → Map
-- [ ] preview → Evidence
-- [ ] preview → Recommendations
-- [ ] What-if Apply changes observations only
-- [ ] CRUD clears stale scenario preview when required
-- [ ] model mutation clears stale scenario preview when required
-- [ ] invalid shared selection clears after data mutation
+- [x] Map ↔ Evidence connected selection
+- [x] initial What-if does not create shared selection
+- [x] explicit What-if interaction connects Map/Evidence
+- [x] preview → Hero
+- [x] preview → Map
+- [x] preview → Evidence
+- [x] preview → Recommendations
+- [x] What-if Apply changes observations only
+- [x] CRUD clears stale scenario preview when required
+- [x] model mutation clears stale scenario preview when required
+- [x] invalid shared selection clears after data mutation
 
 ## Persistence
 
-- [ ] schemaVersion persists
-- [ ] signals persist
-- [ ] modelSettings persist
-- [ ] intro preference persists separately
-- [ ] scenario preview does not persist
-- [ ] Map/Evidence selection does not persist
-- [ ] corrupted persistence fallback
+- [x] schemaVersion persists
+- [x] signals persist
+- [x] modelSettings persist
+- [x] intro preference persists separately
+- [x] scenario preview does not persist
+- [x] Map/Evidence selection does not persist
+- [x] corrupted persistence fallback
 
 ## UI
 
-- [ ] Intro
-- [ ] Overview
-- [ ] Map
-- [ ] Evidence
-- [ ] What-if
-- [ ] Signals
-- [ ] Model
-- [ ] AI Worklog
-- [ ] Empty state
+- [x] Intro
+- [x] Overview
+- [x] Map
+- [x] Evidence
+- [x] What-if
+- [x] Signals
+- [x] Model
+- [x] AI Worklog
+- [x] Empty state
 
 ## Responsive
 
-- [ ] 1440 px
-- [ ] 1280 px
-- [ ] 1024 px
-- [ ] 768 px
-- [ ] 390 px
+- [x] 1440 px
+- [x] 1280 px
+- [x] 1024 px
+- [x] 768 px
+- [x] 390 px
 
 ## Accessibility
 
-- [ ] keyboard
-- [ ] focus-visible
-- [ ] no critical hover-only information
-- [ ] interactive map controls accessible
-- [ ] dialog focus trap
-- [ ] Escape
-- [ ] focus restore
-- [ ] destructive confirmation keyboard accessible
-- [ ] no color-only critical meaning
-- [ ] slider names
-- [ ] touch targets
-- [ ] reduced motion
+- [x] keyboard
+- [x] focus-visible
+- [x] no critical hover-only information
+- [x] interactive map controls accessible
+- [x] dialog focus trap
+- [x] Escape
+- [x] focus restore
+- [x] destructive confirmation keyboard accessible
+- [x] no color-only critical meaning
+- [x] slider names
+- [x] touch targets
+- [x] reduced motion
 
 ## Release
 
-- [ ] lint
-- [ ] unit/UI tests
-- [ ] E2E
-- [ ] build
-- [ ] production preview
-- [ ] console errors
+- [x] lint
+- [x] unit/UI tests
+- [x] E2E
+- [x] build
+- [x] production preview
+- [x] console errors
 - [ ] deployment smoke test

@@ -94,6 +94,16 @@ test("открывает app shell и переключает раздел", asyn
   expect(runtimeErrors).toEqual([]);
 });
 
+test("skip link переводит клавиатурный фокус к основному содержимому", async ({ page }) => {
+  await openRadar(page);
+
+  const skipLink = page.getByRole("link", { name: "Перейти к содержимому" });
+  await skipLink.focus();
+  await page.keyboard.press("Enter");
+
+  await expect(page.locator("#main-content")).toBeFocused();
+});
+
 test("показывает доступный публичный AI Worklog без приватных данных", async ({ page }) => {
   await openRadar(page);
   await page.getByRole("link", { name: "Работа с ИИ" }).click();
@@ -102,7 +112,7 @@ test("показывает доступный публичный AI Worklog бе
   await expect(
     page.getByRole("heading", { level: 1, name: "Как я работал с ИИ" }),
   ).toBeVisible();
-  await expect(page.getByTestId("ai-worklog-checkpoint")).toHaveCount(6);
+  await expect(page.getByTestId("ai-worklog-checkpoint")).toHaveCount(7);
 
   const disclosure = page.locator(
     'button[aria-controls="worklog-prompt-ai-first-workflow"]',

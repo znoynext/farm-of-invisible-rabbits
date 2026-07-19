@@ -110,7 +110,16 @@ function RadarApp({ aboutButtonRef, onOpenIntro }: RadarAppProps) {
         ease: [0.22, 1, 0.36, 1],
       }}
     >
-      <a className="skip-link" href="#main-content">
+      <a
+        className="skip-link"
+        href="#main-content"
+        onClick={(event) => {
+          event.preventDefault();
+          const mainContent = document.getElementById("main-content");
+          mainContent?.focus({ preventScroll: true });
+          mainContent?.scrollIntoView({ behavior: "auto", block: "start" });
+        }}
+      >
         Перейти к содержимому
       </a>
 
@@ -144,6 +153,7 @@ function RadarApp({ aboutButtonRef, onOpenIntro }: RadarAppProps) {
       <main
         className={`content-frame${isFullWidthSection ? ` content-frame--${activeSection.id}` : ""}`}
         id="main-content"
+        tabIndex={-1}
       >
         {isFullWidthSection ? null : (
           <section aria-labelledby="product-title" className="intro-column">

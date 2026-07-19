@@ -50,6 +50,7 @@ describe("UI primitives", () => {
             title="Справка"
           >
             <p>Содержимое</p>
+            <Button>Внутреннее действие</Button>
           </Dialog>
         </>
       );
@@ -61,6 +62,14 @@ describe("UI primitives", () => {
     await user.click(trigger);
 
     expect(screen.getByRole("dialog", { name: "Справка" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Закрыть" })).toHaveFocus();
+
+    await user.tab({ shift: true });
+    expect(
+      screen.getByRole("button", { name: "Внутреннее действие" }),
+    ).toHaveFocus();
+
+    await user.tab();
     expect(screen.getByRole("button", { name: "Закрыть" })).toHaveFocus();
 
     await user.keyboard("{Escape}");
