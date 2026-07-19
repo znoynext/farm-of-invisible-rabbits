@@ -201,3 +201,25 @@ Outcome:
 **Validation performed:** Docs review подтвердил 20 обязательных assignment clauses, 16 незаполненных QA checks, корректные ссылки, YAML/front matter и scoped diff без изменений `src`. `npm run lint` — PASS; `npm run test` — 11 файлов и 77 тестов PASS; `npm run build` — PASS. GitHub Actions run `29688877554` для commit `2df0138` завершён PASS с `npm run test:run`.
 
 **Outcome:** Repository sources of truth синхронизированы с MOX assignment до начала UI. Design System, UI, domain formulas, зависимости и GitHub Pages не изменялись.
+
+## Checkpoint: Визуальный фундамент Design System
+
+**Stage:** Создание визуального и interaction-фундамента до продуктовых экранов.
+
+**Task:** Сформировать compact UI specification, реализовать ограниченные design tokens и primitives, затем проверить реальный desktop/mobile render и исправить Critical/High проблемы.
+
+**Prompt summary:** Создать спокойный, интеллектуальный, premium и тактильный визуальный язык без dashboard-first и AI SaaS эстетики; поддержать обязательные responsive widths, accessibility и reduced motion.
+
+**AI suggestion:** Построить visual center как editorial asymmetry «крупная типографика ↔ поле косвенных следов», использовать ограниченные matte surfaces и отдельный mobile порядок observation → explanation вместо KPI grid или stacked desktop.
+
+**Decision taken:** Принята стартовая природная палитра с отдельными accessibility-safe text shades; tokens разделены на color, type, space, radii, border, shadow, focus и motion. Создан только необходимый набор Button, Surface, Dialog/Sheet, TextField, Slider, Empty State и VisuallyHidden; существующая Navigation сохранена.
+
+**Reason:** Такое разделение даёт следующим экранам единый визуальный и accessibility contract, не создавая большой абстрактный component library и не смешивая Design System с domain logic.
+
+**What changed:** App shell получил новую типографическую и spatial composition, custom SVG-сигналы dots/rings/arcs/waves, доступный справочный dialog и честные Empty States. Добавлены token/primitives styles, UI components, unit tests и responsive Playwright coverage для пяти целевых ширин.
+
+**Problem found:** Первый UI test выявил, что hint/error и slider output загрязняли accessible names из-за вложения в `<label>`. Render review также обнаружил растянутый mobile close-control и недостаточный контраст quiet/terracotta мелкого текста (3.04:1 и 3.90:1). Структура labels, grid alignment и text shades исправлены.
+
+**Validation performed:** Реальные renders проверены на 1440 px и 390 px, отдельно проверен mobile dialog. `design-quality-review`: Critical — нет; две High impact группы исправлены и повторно отрендерены. `npm run lint` — PASS; `npm run test` — 12 файлов и 79 тестов PASS; `npm run build` — PASS. Playwright — 8 тестов PASS: 1440/1280/1024/768/390 без horizontal overflow, touch targets, focus-visible, Escape/focus restore, reduced motion и основной flow без console errors.
+
+**Outcome:** Custom-designed visual foundation готов к следующим крупным UI-разделам. Domain model, state semantics, зависимости, backend и runtime LLM не изменялись; push и удалённый CI не выполнялись по условию этапа.

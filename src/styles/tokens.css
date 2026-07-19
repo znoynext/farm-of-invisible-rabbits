@@ -1,0 +1,77 @@
+@theme {
+  --font-sans: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --color-background: #efeee9;
+  --color-secondary: #e7e5de;
+  --color-surface: #f8f7f3;
+  --color-text: #22251f;
+  --color-text-secondary: #63685f;
+  --color-quiet: #858a80;
+  --color-quiet-text: #686e64;
+  --color-sage: #717c6c;
+  --color-sage-dark: #3f4c42;
+  --color-terracotta: #967565;
+  --color-terracotta-text: #7f5f50;
+  --color-sand: #a99575;
+  --color-danger: #956b67;
+}
+
+:root {
+  --font-family-sans: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  --color-background: #efeee9;
+  --color-secondary: #e7e5de;
+  --color-surface: #f8f7f3;
+  --color-text: #22251f;
+  --color-text-secondary: #63685f;
+  --color-quiet: #858a80;
+  --color-quiet-text: #686e64;
+  --color-sage: #717c6c;
+  --color-sage-dark: #3f4c42;
+  --color-terracotta: #967565;
+  --color-terracotta-text: #7f5f50;
+  --color-sand: #a99575;
+  --color-danger: #956b67;
+
+  --color-border-subtle: color-mix(in srgb, var(--color-text) 12%, transparent);
+  --color-border-strong: color-mix(in srgb, var(--color-text) 22%, transparent);
+  --color-focus: var(--color-sage-dark);
+
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-body: 1rem;
+  --font-size-body-lg: 1.125rem;
+  --font-size-title: clamp(2rem, 3.2vw, 3.75rem);
+  --font-size-display: clamp(3.5rem, 6vw, 6.75rem);
+
+  --line-height-tight: 0.92;
+  --line-height-heading: 1.04;
+  --line-height-body: 1.6;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+
+  --radius-sm: 0.625rem;
+  --radius-md: 0.875rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.75rem;
+  --radius-round: 999px;
+
+  --shadow-resting: 0 1rem 2.75rem rgb(34 37 31 / 7%);
+  --shadow-elevated: 0 1.75rem 5rem rgb(34 37 31 / 13%);
+
+  --duration-micro: 140ms;
+  --duration-standard: 240ms;
+  --duration-structural: 420ms;
+  --duration-intro: 700ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-expressive: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--color-focus) 28%, transparent);
+}
