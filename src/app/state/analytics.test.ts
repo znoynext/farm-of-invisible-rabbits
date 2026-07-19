@@ -17,6 +17,8 @@ describe("derived analytics", () => {
     expect(analytics.estimate.estimatedRabbits).toBe(5);
     expect(analytics.confidence).toBe(73);
     expect(analytics.overallActivity).toBe("moderate");
+    expect(analytics.latestObservation?.id).toBe("evt_003");
+    expect(analytics.strongestEvidence?.signal.id).toBe("evt_002");
     expect(
       analytics.signalContributions.reduce(
         (total, contribution) => total + contribution.contribution,
@@ -52,5 +54,7 @@ describe("derived analytics", () => {
     expect(analytics.overallActivity).toBe("none");
     expect(analytics.eventContributions).toEqual([]);
     expect(analytics.locationActivity).toEqual([]);
+    expect(analytics.latestObservation).toBeNull();
+    expect(analytics.strongestEvidence).toBeNull();
   });
 });

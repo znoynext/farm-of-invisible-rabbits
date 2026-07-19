@@ -245,3 +245,25 @@ Outcome:
 **Validation performed:** Реальные renders проверены на 1440, 768 и 390 px; `design-quality-review`: Critical — нет, High impact accessibility-замечание исправлено. Финальные `npm run lint` — PASS; `npm run test` — 12 файлов и 83 теста PASS; `npm run build` — PASS; Playwright после исправления проверки — 9 тестов PASS, включая persistence, reopen/Escape/focus restore, пять responsive widths и reduced motion.
 
 **Outcome:** Короткое Intro готово: первый визит объясняет продукт и открывает радар, повторный визит сразу ведёт в приложение, а domain reset не сбрасывает intro preference. Новые зависимости и business logic не добавлялись; push не выполнялся по условию этапа.
+
+## Checkpoint: Ясный основной результат Overview
+
+**Stage:** Реализация clear primary output для главного экрана.
+
+**Task:** За 5–10 секунд показать оценку количества кроликов, уровень активности, уверенность модели, последнее наблюдение и главный фактор результата; отдельно спроектировать честный empty state и мобильную композицию.
+
+**Prompt summary:** Создать Overview Hero с крупным `estimatedRabbits`, domain-классификацией активности, confidence, динамическим strongest evidence и переходом к объяснению. Не подменять отсутствие данных уверенным выводом о нуле; проверить Intro, Overview и empty state реальными desktop/mobile renders.
+
+**AI suggestion:** Построить экран как единую editorial surface с ответом слева и доказательной связью справа, а не как KPI grid. Последнее наблюдение и strongest evidence вынести в чистые детерминированные domain selectors; на mobile сохранить порядок «ответ → активность → уверенность → причина → действие» и не использовать stacked desktop layout.
+
+**Decision taken:** Canonical Overview показывает `5 предполагаемых кроликов`, «Умеренная активность», «Уверенность в оценке · 73%», последнее реальное наблюдение `10:05 · Сарай` и вычисленную фразу о новых ямках у забора. При пустом массиве сигналов отображается «Пока недостаточно данных» и действие «Добавить сигнал» без misleading zero estimate.
+
+**Reason:** Primary output должен быть понятен до перехода к деталям, но оставаться проверяемым: React получает estimate, confidence, activity, latest observation и strongest evidence из domain/state analytics, а не вычисляет или hardcode-ит их в UI. Единая поверхность сохраняет спокойный visual language и объясняет причинную связь без dashboard-first композиции.
+
+**What changed:** Добавлены `findLatestObservation` и `findStrongestEvidence`, расширен analytics selector, создан responsive `OverviewHero` с custom SVG traces и empty state. UI/unit/E2E tests покрывают canonical output, динамический strongest evidence, empty state, responsive widths, CTA и reduced motion.
+
+**Problem found:** UI test выявил склеенное accessible name у составного числового заголовка; добавлена явная русская метка. Реальный render на 390 px обнаружил частичное перекрытие CTA фиксированной навигацией; мобильные вертикальные интервалы блока доказательств скорректированы и результат переснят. Первый screenshot Overview был сделан до завершения входной анимации, поэтому capture-процесс получил явную задержку до визуального review.
+
+**Validation performed:** `npm run lint` — PASS; `npm run test` — 13 файлов и 91 тест PASS; `npm run build` — PASS; Playwright — 10 тестов PASS, включая 1440/1280/1024/768/390, canonical output, empty state и reduced motion. Domain tests подтвердили canonical estimate `5`, confidence `73`, последнее событие `evt_003` и strongest evidence `evt_002`. Проверены реальные screenshots Intro desktop/390, Overview desktop/390 и empty state; `design-quality-review`: Critical — нет, найденная High impact mobile-проблема исправлена.
+
+**Outcome:** Clear primary output готов и связан с детерминированной моделью. Основной результат читается сразу на desktop и mobile, главный фактор вычисляется из текущих данных и весов, а отсутствие наблюдений не маскируется под уверенную оценку.

@@ -6,6 +6,8 @@ import {
   calculateEventContributions,
   calculateSignalContributions,
   classifyOverallActivity,
+  findLatestObservation,
+  findStrongestEvidence,
 } from "../../domain";
 import type {
   EstimationResult,
@@ -14,6 +16,8 @@ import type {
   OverallActivityLevel,
   Recommendation,
   SignalContribution,
+  SignalEvent,
+  StrongestEvidence,
 } from "../../domain";
 import type { AppState, ModelSettings, ScenarioPreview } from "./types";
 
@@ -27,6 +31,8 @@ export interface DerivedAnalytics {
   readonly recommendations: readonly Recommendation[];
   readonly locationActivity: readonly LocationActivity[];
   readonly overallActivity: OverallActivityLevel;
+  readonly latestObservation: SignalEvent | null;
+  readonly strongestEvidence: StrongestEvidence | null;
 }
 
 function estimationOptions(modelSettings: ModelSettings) {
@@ -57,6 +63,11 @@ export function deriveAnalytics(source: AnalyticsSource): DerivedAnalytics {
       source.modelSettings.weights,
     ),
     overallActivity: classifyOverallActivity(estimate.estimatedRabbits),
+    latestObservation: findLatestObservation(source.signals),
+    strongestEvidence: findStrongestEvidence(
+      source.signals,
+      source.modelSettings.weights,
+    ),
   };
 }
 

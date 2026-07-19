@@ -2,6 +2,7 @@
 @import "./tokens.css";
 @import "./primitives.css";
 @import "../features/intro/intro.css";
+@import "../features/overview/overview.css";
 
 @layer base {
   :root {
@@ -302,164 +303,12 @@ h1 {
   box-shadow: var(--shadow-resting);
 }
 
-.overview-surface {
-  display: grid;
-  grid-template-rows: auto 1fr;
-}
-
-.section-copy {
-  display: grid;
-  grid-template-columns: minmax(7rem, 0.28fr) 1fr;
-  column-gap: var(--space-6);
-  padding: clamp(2rem, 4vw, 3.5rem);
-}
-
 .eyebrow {
   margin: 0.35rem 0 0;
   color: var(--color-terracotta-text);
   font-size: 0.6875rem;
   font-weight: 760;
   letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.section-copy h2 {
-  grid-column: 2;
-  max-width: 13ch;
-  margin-bottom: var(--space-4);
-  font-size: var(--font-size-title);
-  font-weight: 540;
-  letter-spacing: -0.048em;
-  line-height: var(--line-height-heading);
-}
-
-.section-copy > p:last-child {
-  grid-column: 2;
-  max-width: 36rem;
-  margin-bottom: 0;
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-body);
-  line-height: var(--line-height-body);
-}
-
-.observation-field {
-  position: relative;
-  min-height: 18rem;
-  overflow: hidden;
-  border-top: 1px solid var(--color-border-subtle);
-  background: var(--color-secondary);
-}
-
-.evidence-constellation {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.field-path {
-  fill: none;
-  stroke: color-mix(in srgb, var(--color-sage) 32%, transparent);
-  stroke-width: 1.25;
-}
-
-.field-path--two {
-  stroke: color-mix(in srgb, var(--color-sand) 46%, transparent);
-}
-
-.signal-ring {
-  fill: none;
-  stroke: var(--color-terracotta);
-  stroke-width: 2;
-}
-
-.signal-ring--small {
-  opacity: 0.48;
-  stroke-width: 1.25;
-}
-
-.signal-dot {
-  fill: var(--color-terracotta);
-}
-
-.signal-dot--two {
-  opacity: 0.68;
-}
-
-.signal-dot--three {
-  opacity: 0.42;
-}
-
-.signal-arc {
-  fill: none;
-  stroke: var(--color-sage-dark);
-  stroke-linecap: round;
-  stroke-width: 2.25;
-}
-
-.signal-arc--outer {
-  opacity: 0.42;
-  stroke-width: 1.25;
-}
-
-.signal-wave {
-  fill: none;
-  stroke: var(--color-sand);
-  stroke-linecap: round;
-  stroke-width: 2;
-}
-
-.signal-wave--quiet {
-  opacity: 0.42;
-  stroke-width: 1.25;
-}
-
-.location-label {
-  position: absolute;
-  color: var(--color-text-secondary);
-  font-size: 0.6875rem;
-  font-weight: 680;
-  letter-spacing: 0.055em;
-  text-transform: uppercase;
-}
-
-.location-label::before {
-  display: inline-block;
-  width: 0.35rem;
-  height: 0.35rem;
-  margin-right: var(--space-2);
-  border-radius: 50%;
-  background: var(--color-sage);
-  content: "";
-  vertical-align: 0.08em;
-}
-
-.location-label--garden {
-  top: 17%;
-  left: 18%;
-}
-
-.location-label--barn {
-  top: 33%;
-  right: 16%;
-}
-
-.location-label--fence {
-  bottom: 20%;
-  left: 45%;
-}
-
-.field-caption {
-  position: absolute;
-  right: var(--space-5);
-  bottom: var(--space-4);
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  color: var(--color-text-secondary);
-  font-size: 0.6875rem;
-  font-weight: 720;
-  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
@@ -680,61 +529,6 @@ h1 {
   .section-stage {
     min-height: 31rem;
     border-radius: var(--radius-lg);
-  }
-
-  .overview-surface {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .observation-field {
-    order: -1;
-    min-height: 15rem;
-    border-top: 0;
-    border-bottom: 1px solid var(--color-border-subtle);
-  }
-
-  .section-copy {
-    display: block;
-    padding: var(--space-6) var(--space-5);
-  }
-
-  .section-copy .eyebrow {
-    margin-bottom: var(--space-3);
-  }
-
-  .section-copy h2 {
-    margin-bottom: var(--space-3);
-    font-size: clamp(2rem, 10vw, 2.65rem);
-  }
-
-  .section-copy > p:last-child {
-    font-size: 0.9375rem;
-  }
-
-  .location-label {
-    font-size: 0.5625rem;
-  }
-
-  .location-label--garden {
-    top: 15%;
-    left: 11%;
-  }
-
-  .location-label--barn {
-    top: 25%;
-    right: 9%;
-  }
-
-  .location-label--fence {
-    bottom: 15%;
-    left: 38%;
-  }
-
-  .field-caption {
-    right: var(--space-3);
-    bottom: var(--space-3);
-    font-size: 0.5625rem;
   }
 
   .placeholder-surface {

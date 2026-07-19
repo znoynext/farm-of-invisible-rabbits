@@ -59,9 +59,22 @@ test("открывает app shell и переключает раздел", asyn
   await expect(
     page.getByRole("heading", {
       level: 1,
-      name: "Farm of Invisible Rabbits",
+      name: "5 предполагаемых кроликов",
     }),
   ).toBeVisible();
+  await expect(page.getByText("Умеренная активность")).toBeVisible();
+  await expect(page.locator(".overview-confidence")).toHaveText(
+    "Уверенность в оценке · 73%",
+  );
+  await expect(
+    page.getByText(
+      "Основной источник активности — новые ямки в районе забора.",
+    ),
+  ).toBeVisible();
+  await expect(page.getByText(/Последнее наблюдение/)).toContainText("10:05");
+
+  await page.getByRole("link", { name: "Разобраться, почему" }).click();
+  await expect(page).toHaveURL(/#evidence$/);
 
   await page.getByRole("link", { name: "Сигналы" }).click();
 
@@ -90,6 +103,42 @@ test("повторно открывает Intro и возвращает focus п
   await expect(trigger).toBeFocused();
 });
 
+test("показывает empty state без misleading zero estimate", async ({ page }) => {
+  await page.addInitScript(() => {
+    window.localStorage.setItem(
+      "farm-of-invisible-rabbits:ui:v1",
+      JSON.stringify({ hasSeenIntro: true }),
+    );
+    window.localStorage.setItem(
+      "farm-of-invisible-rabbits:v1",
+      JSON.stringify({
+        schemaVersion: 1,
+        signals: [],
+        modelSettings: {
+          sensitivity: 1,
+          weights: {
+            missing_carrot: 0.7,
+            new_hole: 1.4,
+            motion_sensor: 2,
+            barn_rustling: 1.1,
+          },
+        },
+      }),
+    );
+  });
+  await page.goto("/");
+
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Пока недостаточно данных" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: /0 предполагаемых кроликов/ }),
+  ).toHaveCount(0);
+
+  await page.getByRole("link", { name: "Добавить сигнал" }).click();
+  await expect(page).toHaveURL(/#signals$/);
+});
+
 for (const viewport of targetViewports) {
   test(`не создаёт horizontal overflow на ширине ${viewport.label}`, async ({
     page,
@@ -100,7 +149,7 @@ for (const viewport of targetViewports) {
     await expect(
       page.getByRole("heading", {
         level: 1,
-        name: "Farm of Invisible Rabbits",
+        name: "5 предполагаемых кроликов",
       }),
     ).toBeVisible();
     await expect(page.getByRole("navigation", { name: "Основная навигация" })).toBeVisible();

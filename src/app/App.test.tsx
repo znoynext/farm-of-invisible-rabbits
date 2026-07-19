@@ -4,9 +4,12 @@ import userEvent from "@testing-library/user-event";
 import { App } from "./App";
 import {
   AppStateProvider,
+  createDefaultPersistedState,
+  PERSISTED_STATE_KEY,
   type StorageAdapter,
   UI_PREFERENCES_KEY,
 } from "./state";
+import { initialSignals } from "../data/initialSignals";
 
 class MemoryStorage implements StorageAdapter {
   private readonly values = new Map<string, string>();
@@ -87,6 +90,84 @@ describe("App", () => {
         name: "Их не видно. Но следы остаются.",
       }),
     ).not.toBeInTheDocument();
+  });
+
+  it("показывает canonical clear output из derived analytics", async () => {
+    const user = userEvent.setup();
+    const storage = new MemoryStorage();
+    storage.setItem(UI_PREFERENCES_KEY, JSON.stringify({ hasSeenIntro: true }));
+    renderApp(storage);
+
+    expect(
+      screen.getByRole("heading", {
+        level: 1,
+        name: "5 предполагаемых кроликов",
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Умеренная активность")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        (_content, element) =>
+          element?.classList.contains("overview-confidence") === true &&
+          element.textContent === "Уверенность в оценке · 73%",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Основной источник активности — новые ямки в районе забора.",
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/Последнее наблюдение/)).toHaveTextContent(
+      "Последнее наблюдение · 10:05 · Сарай",
+    );
+
+    await user.click(screen.getByRole("link", { name: "Разобраться, почему" }));
+    expect(window.location.hash).toBe("#evidence");
+  });
+
+  it("вычисляет strongest evidence по изменённым данным", () => {
+    const storage = new MemoryStorage();
+    storage.setItem(UI_PREFERENCES_KEY, JSON.stringify({ hasSeenIntro: true }));
+    storage.setItem(
+      PERSISTED_STATE_KEY,
+      JSON.stringify({
+        ...createDefaultPersistedState(),
+        signals: [{ ...initialSignals[0]!, location: "Теплица" }],
+      }),
+    );
+    renderApp(storage);
+
+    expect(
+      screen.getByText(
+        "Основной источник активности — пропавшая морковь в зоне «Теплица».",
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it("показывает честный empty state без уверенного вывода о нуле", async () => {
+    const user = userEvent.setup();
+    const storage = new MemoryStorage();
+    storage.setItem(UI_PREFERENCES_KEY, JSON.stringify({ hasSeenIntro: true }));
+    storage.setItem(
+      PERSISTED_STATE_KEY,
+      JSON.stringify({ ...createDefaultPersistedState(), signals: [] }),
+    );
+    renderApp(storage);
+
+    expect(
+      screen.getByRole("heading", {
+        level: 1,
+        name: "Пока недостаточно данных",
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: /0 предполагаемых кроликов/ }),
+    ).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("link", { name: "Добавить сигнал" }));
+    await waitFor(() => {
+      expect(window.location.hash).toBe("#signals");
+    });
   });
 
   it("повторно открывает Intro из «О проекте» и возвращает focus", async () => {

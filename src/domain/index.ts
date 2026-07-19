@@ -2,6 +2,7 @@ export * from "./activity";
 export * from "./confidence";
 export * from "./constants";
 export * from "./contributions";
+export * from "./evidence";
 export * from "./estimation";
 export * from "./locations";
 export * from "./recommendations";
