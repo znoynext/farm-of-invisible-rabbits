@@ -223,3 +223,25 @@ Outcome:
 **Validation performed:** Реальные renders проверены на 1440 px и 390 px, отдельно проверен mobile dialog. `design-quality-review`: Critical — нет; две High impact группы исправлены и повторно отрендерены. `npm run lint` — PASS; `npm run test` — 12 файлов и 79 тестов PASS; `npm run build` — PASS. Playwright — 8 тестов PASS: 1440/1280/1024/768/390 без horizontal overflow, touch targets, focus-visible, Escape/focus restore, reduced motion и основной flow без console errors.
 
 **Outcome:** Custom-designed visual foundation готов к следующим крупным UI-разделам. Domain model, state semantics, зависимости, backend и runtime LLM не изменялись; push и удалённый CI не выполнялись по условию этапа.
+
+## Checkpoint: Короткое Intro experience
+
+**Stage:** Реализация первого пользовательского входа в продукт.
+
+**Task:** Создать короткое Intro без rabbit imagery и marketing landing page, сохранить выбор пользователя локально и позволить повторно открыть введение из приложения.
+
+**Prompt summary:** На первом посещении показать смысл системы, четыре типа косвенных следов, один CTA и trust-сообщение; после CTA открывать приложение, на следующих посещениях пропускать Intro, а reset domain data не должен менять intro preference.
+
+**AI suggestion:** Использовать полноэкранную асимметричную композицию с одним действием и собственными SVG marks; связать её с уже существующим отдельным `hasSeenIntro`, а повторное открытие хранить только как временное UI-состояние.
+
+**Decision taken:** Intro и приложение переключаются одним Motion-переходом длительностью 640 ms. CTA выставляет `hasSeenIntro = true`; «О проекте» открывает тот же экран без изменения persistence, а закрытие возвращает focus на trigger. Для reduced motion длительность перехода и stagger равны нулю.
+
+**Reason:** Один intro-flow не дублирует объяснение продукта и сохраняет ясную границу между долговременной UI preference, временным состоянием повторного открытия и domain data.
+
+**What changed:** Добавлены `IntroExperience` и отдельные responsive styles с dots, rings, arcs и waves; app shell подключён к UI preference; прежний справочный контент заменён действием «О проекте». UI/reducer/E2E tests покрывают first visit, CTA, repeat visit, reopen, focus restore и изоляцию intro preference от reset данных.
+
+**Problem found:** В post-render review повторно открытый Intro получил focus trap для соответствия dialog-семантике. Первый E2E запуск также выявил неточную проверку `focus-visible`: программный focus после pointer-click не моделировал клавиатурную модальность Chromium; проверка заменена реальной Tab-навигацией без ослабления UI styles.
+
+**Validation performed:** Реальные renders проверены на 1440, 768 и 390 px; `design-quality-review`: Critical — нет, High impact accessibility-замечание исправлено. Финальные `npm run lint` — PASS; `npm run test` — 12 файлов и 83 теста PASS; `npm run build` — PASS; Playwright после исправления проверки — 9 тестов PASS, включая persistence, reopen/Escape/focus restore, пять responsive widths и reduced motion.
+
+**Outcome:** Короткое Intro готово: первый визит объясняет продукт и открывает радар, повторный визит сразу ведёт в приложение, а domain reset не сбрасывает intro preference. Новые зависимости и business logic не добавлялись; push не выполнялся по условию этапа.

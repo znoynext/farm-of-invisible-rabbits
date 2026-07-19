@@ -1,11 +1,10 @@
-import { useState } from "react";
+import { useEffect, useRef, useState, type RefObject } from "react";
 import { ArrowUpRight, Info } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 import { SignalMark } from "../components/SignalMark";
 import {
   Button,
-  Dialog,
   EmptyState,
   Surface,
 } from "../components/ui";
@@ -13,13 +12,68 @@ import {
   defaultSectionId,
   navigationItems,
 } from "../data/navigation";
+import { IntroExperience } from "../features/intro/IntroExperience";
 import { PrimaryNavigation } from "../features/navigation/PrimaryNavigation";
 import { useHashNavigation } from "../hooks/useHashNavigation";
+import { useAppState } from "./state";
 
 export function App() {
+  const { dispatch, state } = useAppState();
+  const [isIntroReopened, setIsIntroReopened] = useState(false);
+  const aboutButtonRef = useRef<HTMLButtonElement>(null);
+  const shouldRestoreFocus = useRef(false);
+  const shouldShowIntro = !state.uiPreferences.hasSeenIntro || isIntroReopened;
+
+  useEffect(() => {
+    if (!shouldShowIntro && shouldRestoreFocus.current) {
+      shouldRestoreFocus.current = false;
+      aboutButtonRef.current?.focus();
+    }
+  }, [shouldShowIntro]);
+
+  function closeIntro() {
+    if (isIntroReopened) {
+      shouldRestoreFocus.current = true;
+    }
+
+    if (!state.uiPreferences.hasSeenIntro) {
+      dispatch({ type: "ui/introSeen", payload: true });
+    }
+
+    setIsIntroReopened(false);
+  }
+
+  function dismissReopenedIntro() {
+    shouldRestoreFocus.current = true;
+    setIsIntroReopened(false);
+  }
+
+  return (
+    <AnimatePresence initial={false} mode="sync">
+      {shouldShowIntro ? (
+        <IntroExperience
+          onComplete={closeIntro}
+          onDismiss={dismissReopenedIntro}
+          reopened={isIntroReopened}
+        />
+      ) : (
+        <RadarApp
+          aboutButtonRef={aboutButtonRef}
+          onOpenIntro={() => setIsIntroReopened(true)}
+        />
+      )}
+    </AnimatePresence>
+  );
+}
+
+type RadarAppProps = {
+  readonly aboutButtonRef: RefObject<HTMLButtonElement | null>;
+  readonly onOpenIntro: () => void;
+};
+
+function RadarApp({ aboutButtonRef, onOpenIntro }: RadarAppProps) {
   const activeSectionId = useHashNavigation();
   const prefersReducedMotion = useReducedMotion();
-  const [isInfoOpen, setIsInfoOpen] = useState(false);
   const activeSection =
     navigationItems.find((item) => item.id === activeSectionId) ??
     navigationItems.find((item) => item.id === defaultSectionId);
@@ -29,7 +83,17 @@ export function App() {
   }
 
   return (
-    <div className="app-shell">
+    <motion.div
+      animate={{ opacity: 1, scale: 1 }}
+      className="app-shell"
+      exit={{ opacity: 0, scale: prefersReducedMotion ? 1 : 0.995 }}
+      initial={{ opacity: 0, scale: prefersReducedMotion ? 1 : 1.005 }}
+      key="radar"
+      transition={{
+        duration: prefersReducedMotion ? 0 : 0.64,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+    >
       <a className="skip-link" href="#main-content">
         Перейти к содержимому
       </a>
@@ -48,14 +112,15 @@ export function App() {
         <div className="header-cluster">
           <PrimaryNavigation activeSection={activeSectionId} />
           <Button
-            aria-label="О системе"
+            aria-label="О проекте"
             className="about-button"
-            onClick={() => setIsInfoOpen(true)}
+            onClick={onOpenIntro}
+            ref={aboutButtonRef}
             size="compact"
             variant="quiet"
           >
             <Info aria-hidden="true" size={17} strokeWidth={1.8} />
-            <span>О системе</span>
+            <span>О проекте</span>
           </Button>
         </div>
       </header>
@@ -125,37 +190,7 @@ export function App() {
         <span>Без runtime ИИ</span>
       </footer>
 
-      <Dialog
-        description="Система оценивает возможное количество кроликов по наблюдаемым следам — без скрытых вычислений и runtime AI."
-        onOpenChange={setIsInfoOpen}
-        open={isInfoOpen}
-        title="Как устроено наблюдение"
-      >
-        <ol className="dialog-principles">
-          <li>
-            <span>01</span>
-            <div>
-              <strong>Собираем наблюдения</strong>
-              <p>Пропажи моркови, новые ямки, движение и шорохи.</p>
-            </div>
-          </li>
-          <li>
-            <span>02</span>
-            <div>
-              <strong>Считаем прозрачно</strong>
-              <p>Каждый сигнал получает проверяемый вклад в общую оценку.</p>
-            </div>
-          </li>
-          <li>
-            <span>03</span>
-            <div>
-              <strong>Объясняем ответ</strong>
-              <p>Интерфейс показывает силу доказательств и причины результата.</p>
-            </div>
-          </li>
-        </ol>
-      </Dialog>
-    </div>
+    </motion.div>
   );
 }
 

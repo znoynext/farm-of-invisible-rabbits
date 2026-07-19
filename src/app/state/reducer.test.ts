@@ -188,4 +188,23 @@ describe("appStateReducer", () => {
     expect(state.uiPreferences.hasSeenIntro).toBe(true);
     expect(state.signals).toEqual(initialSignals);
   });
+
+  it("не сбрасывает intro preference при reset domain data", () => {
+    const withSeenIntro = appStateReducer(createDefaultAppState(), {
+      type: "ui/introSeen",
+      payload: true,
+    });
+    const withoutSignals = appStateReducer(withSeenIntro, {
+      type: "signals/deleteAll",
+    });
+    const resetSignals = appStateReducer(withoutSignals, {
+      type: "signals/reset",
+    });
+    const resetModel = appStateReducer(resetSignals, {
+      type: "modelSettings/reset",
+    });
+
+    expect(resetModel.uiPreferences.hasSeenIntro).toBe(true);
+    expect(resetModel.signals).toEqual(initialSignals);
+  });
 });

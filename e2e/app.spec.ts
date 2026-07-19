@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import type { Page } from "@playwright/test";
 
 const targetViewports = [
   { height: 900, label: "1440", width: 1440 },
@@ -7,6 +8,42 @@ const targetViewports = [
   { height: 900, label: "768", width: 768 },
   { height: 844, label: "390", width: 390 },
 ] as const;
+
+async function openRadar(page: Page) {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Открыть радар" }).click();
+  await expect(
+    page.getByRole("navigation", { name: "Основная навигация" }),
+  ).toBeVisible();
+}
+
+test("показывает Intro только при первом посещении", async ({ page }) => {
+  await page.goto("/");
+
+  await expect(
+    page.getByRole("heading", {
+      level: 1,
+      name: "Их не видно. Но следы остаются.",
+    }),
+  ).toBeVisible();
+
+  await page.getByRole("button", { name: "Открыть радар" }).click();
+  await expect(
+    page.getByRole("navigation", { name: "Основная навигация" }),
+  ).toBeVisible();
+
+  await page.reload();
+
+  await expect(
+    page.getByRole("navigation", { name: "Основная навигация" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      level: 1,
+      name: "Их не видно. Но следы остаются.",
+    }),
+  ).toBeHidden();
+});
 
 test("открывает app shell и переключает раздел", async ({ page }) => {
   const runtimeErrors: string[] = [];
@@ -17,7 +54,7 @@ test("открывает app shell и переключает раздел", asyn
   });
   page.on("pageerror", (error) => runtimeErrors.push(error.message));
 
-  await page.goto("/");
+  await openRadar(page);
 
   await expect(
     page.getByRole("heading", {
@@ -35,16 +72,16 @@ test("открывает app shell и переключает раздел", asyn
   expect(runtimeErrors).toEqual([]);
 });
 
-test("закрывает справочный dialog по Escape и возвращает focus", async ({
+test("повторно открывает Intro и возвращает focus после Escape", async ({
   page,
 }) => {
-  await page.goto("/");
+  await openRadar(page);
 
-  const trigger = page.getByRole("button", { name: "О системе" });
+  const trigger = page.getByRole("button", { name: "О проекте" });
   await trigger.click();
 
   await expect(
-    page.getByRole("dialog", { name: "Как устроено наблюдение" }),
+    page.getByRole("dialog", { name: "Farm of Invisible Rabbits" }),
   ).toBeVisible();
 
   await page.keyboard.press("Escape");
@@ -58,7 +95,7 @@ for (const viewport of targetViewports) {
     page,
   }) => {
     await page.setViewportSize(viewport);
-    await page.goto("/");
+    await openRadar(page);
 
     await expect(
       page.getByRole("heading", {
@@ -72,7 +109,15 @@ for (const viewport of targetViewports) {
       .getByRole("navigation", { name: "Основная навигация" })
       .getByRole("link")
       .first();
-    await firstNavigationLink.focus();
+    for (let tabIndex = 0; tabIndex < 5; tabIndex += 1) {
+      if (await firstNavigationLink.evaluate((element) => element === document.activeElement)) {
+        break;
+      }
+
+      await page.keyboard.press("Tab");
+    }
+
+    await expect(firstNavigationLink).toBeFocused();
     expect(
       await firstNavigationLink.evaluate(
         (element) => getComputedStyle(element).outlineStyle,
@@ -100,7 +145,7 @@ for (const viewport of targetViewports) {
 
 test("сохраняет навигацию при reduced motion", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/");
+  await openRadar(page);
 
   await page.getByRole("link", { name: "Модель" }).click();
 
