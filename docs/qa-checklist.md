@@ -13,10 +13,12 @@
 - [x] AI Worklog inside UI
 - [x] AI Worklog contains 5–7 selected checkpoints
 - [x] checkpoints based on real notes
-- [ ] README explains selected scenario
+- [x] README explains selected scenario
 - [x] README has startup
 - [x] README has stack
-- [ ] README has AI process explanation
+- [x] README has AI process explanation
+- [x] README describes capabilities and limitations
+- [x] README links to public repository
 - [x] source code publicly accessible
 - [ ] live demo accessible
 - [ ] final links verified
