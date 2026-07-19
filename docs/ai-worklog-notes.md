@@ -157,3 +157,25 @@ Outcome:
 **Validation performed:** Focused `npm run test:run -- src/domain src/app/state` — 10 файлов и 72 теста PASS. Финальные `npm run lint` — PASS; `npm run test:run` — 11 файлов и 77 тестов PASS; `npm run build` — PASS. Подтверждены canonical estimate `5`, confidence `73`, validation boundaries, persisted invalid-weight fallback, reducer rejection, activity thresholds, recommendation priorities и observation-only What-if apply. `npm test` отдельно не запускался, потому что выполняет ту же команду `vitest run`. E2E и responsive 390 не запускались и не отмечались PASS, так как не обязательны для этого milestone.
 
 **Outcome:** Все gaps Audit #1 закрыты без UI-изменений, новых зависимостей, remote или push. Milestone QA gate по обязательным проверкам — PASS.
+
+## Checkpoint: Публичный architecture milestone и базовый CI
+
+**Stage:** Публикация проверенного архитектурного фундамента.
+
+**Task:** Создать публичный GitHub repository, сохранить подготовленную локальную историю как первый осмысленный milestone, добавить воспроизводимый CI и закрепить дисциплину AI Worklog.
+
+**Prompt summary:** Опубликовать foundation после внешнего Audit #1.1, не начинать UI-разработку и deployment, запускать на каждом push и pull request обязательные lint, unit/UI tests и production build.
+
+**AI suggestion:** Оставить remote repository пустым до первого локального commit, использовать минимальный permission scope `contents: read`, npm cache и официальный Node setup; GitHub Pages и E2E gate отложить до соответствующего этапа.
+
+**Decision taken:** Создан PUBLIC repository `znoynext/farm-of-invisible-rabbits`; ветка `main` опубликована с root commit `96eee0c`. CI использует `actions/checkout@v6`, `actions/setup-node@v6`, Node.js 24 и последовательность `npm ci` → lint → test → build. В `AGENTS.md` добавлено постоянное правило отбора значимых AI Worklog checkpoints.
+
+**Reason:** Публичный milestone фиксирует проверяемую точку архитектуры после аудита, а CI не позволяет следующим изменениям незаметно нарушить lint, тесты или production build. Deployment остаётся отдельным решением и не смешивается с foundation milestone.
+
+**What changed:** Добавлены `.github/workflows/ci.yml`, минимальный честный `README.md`, расширенные исключения generated, environment, audit и editor artifacts в `.gitignore`; настроены `origin` и upstream `main`. В публичную историю вошли project foundation, skills, domain, state, persistence, Audit #1 fixes, tests и docs.
+
+**Problem found:** Сохранённая GitHub-аутентификация первоначально была недействительна; пользователь выполнил повторный вход. Перед публичной публикацией потребовалось явное подтверждение, а отсутствующая Git identity была настроена локально с privacy-preserving GitHub noreply после разрешения пользователя.
+
+**Validation performed:** Перед публикацией `npm run lint` — PASS; `npm run test` — 11 файлов и 77 тестов PASS; `npm run build` — PASS; canonical estimate `5` и confidence `73` подтверждены тестами. Проверка staged files не нашла секретов и незапланированных artifacts. GitHub подтвердил visibility `PUBLIC`, default branch `main` и доступность commit. GitHub Actions run `29688198881` завершён PASS: `npm ci`, lint, test и build прошли.
+
+**Outcome:** Первый стабильный architecture milestone доступен в публичном GitHub repository, автоматический CI активен. GitHub Pages, deployment и новая UI-разработка не выполнялись.
