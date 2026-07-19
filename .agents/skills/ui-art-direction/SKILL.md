@@ -82,6 +82,23 @@ description: Проектировать краткую UI/UX specification Farm 
 
 Определить semantic hierarchy, keyboard flow, `focus-visible`, touch targets, отсутствие hover-only functionality и reduced-motion behavior.
 
+### Mutation causality
+
+Для UI, изменяющего signals или model settings, заранее определить:
+
+- что относится к persistent state, а что остаётся temporary state;
+- что происходит с активным What-if preview;
+- как устраняется stale Map/Evidence selection;
+- какие связанные sections пересчитываются;
+- какой feedback подтверждает mutation;
+- как destructive action влияет на связанные empty states.
+
+Применять к Signals CRUD, delete all, restore initial, Model Settings и model reset. Не создавать скрытые side effects, выглядящие как пользовательский выбор.
+
+### Forms and controls
+
+Для Signals и Model заранее определить validation feedback, placement ошибок, destructive hierarchy, confirmation, dialog/sheet behavior, mobile keyboard/touch UX, Save/Cancel и disabled states. Не добавлять loading state для локальных synchronous operations.
+
 ## Visual principles
 
 Добиваться ощущения современного, спокойного, минималистичного, интеллектуального, premium и визуально самостоятельного продукта.

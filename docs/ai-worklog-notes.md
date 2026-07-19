@@ -48,6 +48,8 @@ Outcome:
 
 **Outcome:** AI-first среда подготовлена для следующего этапа; приложение и внешние Git-операции не создавались.
 
+**Maintenance update:** После реализации Farm Map, Evidence, What-if, Recommendations и Signals CRUD существующие `domain-model-verifier`, `ui-art-direction` и `design-quality-review` усилены вместо создания новых пересекающихся skills. QA contract дополнен domain boundaries, connected interaction, persistence и accessibility checks; product UI, domain implementation, formulas и dependencies не менялись. Все шесть project skills прошли `quick_validate.py`, а 60 focused domain tests подтвердили отражённые в verifier контракты.
+
 ## Checkpoint: Технический фундамент frontend
 
 **Stage:** Создание production-ready frontend foundation.

@@ -29,8 +29,6 @@
 - [ ] delete
 - [ ] delete all
 - [ ] reset
-- [ ] persistence
-- [ ] corrupted persistence fallback
 - [ ] sensitivity
 - [ ] weights
 - [ ] what-if preview
@@ -39,12 +37,46 @@
 
 ## Domain
 
+- [ ] canonical totalEvidence ≈ 4.96
 - [ ] canonical estimate = 5
 - [ ] canonical confidence = 73
 - [ ] diminishing returns
 - [ ] confidence bounds
 - [ ] contribution normalization
 - [ ] location aggregation
+- [ ] location activity boundaries
+- [ ] overall activity boundaries
+- [ ] dominant evidence deterministic
+- [ ] dominant location clear-dominance rule
+- [ ] recommendation ranking deterministic
+- [ ] maximum 3 recommendations
+- [ ] What-if default observation deterministic
+- [ ] sensitivity does not affect confidence
+- [ ] weights do not affect confidence
+
+## Integration
+
+- [ ] Map ↔ Evidence connected selection
+- [ ] initial What-if does not create shared selection
+- [ ] explicit What-if interaction connects Map/Evidence
+- [ ] preview → Hero
+- [ ] preview → Map
+- [ ] preview → Evidence
+- [ ] preview → Recommendations
+- [ ] What-if Apply changes observations only
+- [ ] CRUD clears stale scenario preview when required
+- [ ] model mutation clears stale scenario preview when required
+- [ ] invalid shared selection clears after data mutation
+
+## Persistence
+
+- [ ] schemaVersion persists
+- [ ] signals persist
+- [ ] modelSettings persist
+- [ ] intro preference persists separately
+- [ ] scenario preview does not persist
+- [ ] Map/Evidence selection does not persist
+- [ ] corrupted persistence fallback
 
 ## UI
 
@@ -70,9 +102,13 @@
 
 - [ ] keyboard
 - [ ] focus-visible
-- [ ] dialogs
+- [ ] no critical hover-only information
+- [ ] interactive map controls accessible
+- [ ] dialog focus trap
 - [ ] Escape
 - [ ] focus restore
+- [ ] destructive confirmation keyboard accessible
+- [ ] no color-only critical meaning
 - [ ] slider names
 - [ ] touch targets
 - [ ] reduced motion
