@@ -9,6 +9,7 @@
 @import "../features/recommendations/recommendations.css";
 @import "../features/signals/signals.css";
 @import "../features/model/model-settings.css";
+@import "../features/ai-worklog/ai-worklog.css";
 
 @layer base {
   :root {

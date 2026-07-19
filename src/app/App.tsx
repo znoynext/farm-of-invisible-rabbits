@@ -3,16 +3,13 @@ import { Info } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 import { SignalMark } from "../components/SignalMark";
-import {
-  Button,
-  EmptyState,
-  Surface,
-} from "../components/ui";
+import { Button } from "../components/ui";
 import {
   defaultSectionId,
   navigationItems,
 } from "../data/navigation";
 import { IntroExperience } from "../features/intro/IntroExperience";
+import { AiWorklogSection } from "../features/ai-worklog/AiWorklogSection";
 import { PrimaryNavigation } from "../features/navigation/PrimaryNavigation";
 import { ModelSettingsSection } from "../features/model/ModelSettingsSection";
 import { Overview } from "../features/overview/Overview";
@@ -91,7 +88,8 @@ function RadarApp({ aboutButtonRef, onOpenIntro }: RadarAppProps) {
   const isFullWidthSection =
     activeSection.id === "overview" ||
     activeSection.id === "signals" ||
-    activeSection.id === "model";
+    activeSection.id === "model" ||
+    activeSection.id === "ai-worklog";
 
   return (
     <motion.div
@@ -178,20 +176,7 @@ function RadarApp({ aboutButtonRef, onOpenIntro }: RadarAppProps) {
             ) : activeSection.id === "model" ? (
               <ModelSettingsSection />
             ) : (
-              <Surface
-                className="section-stage placeholder-surface"
-                tone="secondary"
-              >
-                <EmptyState
-                  description={activeSection.description}
-                  eyebrow={activeSection.eyebrow}
-                  title={activeSection.title}
-                  titleId="section-title"
-                />
-                <div aria-hidden="true" className="placeholder-trace">
-                  <SignalMark />
-                </div>
-              </Surface>
+              <AiWorklogSection />
             )}
           </motion.section>
         </AnimatePresence>

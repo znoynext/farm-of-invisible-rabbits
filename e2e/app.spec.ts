@@ -94,6 +94,32 @@ test("открывает app shell и переключает раздел", asyn
   expect(runtimeErrors).toEqual([]);
 });
 
+test("показывает доступный публичный AI Worklog без приватных данных", async ({ page }) => {
+  await openRadar(page);
+  await page.getByRole("link", { name: "Работа с ИИ" }).click();
+
+  await expect(page).toHaveURL(/#ai-worklog$/);
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Как я работал с ИИ" }),
+  ).toBeVisible();
+  await expect(page.getByTestId("ai-worklog-checkpoint")).toHaveCount(6);
+
+  const disclosure = page.locator(
+    'button[aria-controls="worklog-prompt-ai-first-workflow"]',
+  );
+  await disclosure.focus();
+  await page.keyboard.press("Enter");
+
+  await expect(disclosure).toHaveAttribute("aria-expanded", "true");
+  const controlledId = await disclosure.getAttribute("aria-controls");
+  expect(controlledId).toBeTruthy();
+  await expect(page.locator(`#${controlledId}`)).toBeVisible();
+
+  const publicText = await page.locator("#ai-worklog").innerText();
+  expect(publicText).not.toMatch(/[A-Z]:\\Users\\/i);
+  expect(publicText).not.toMatch(/(?:github_pat_|ghp_|sk-)[A-Za-z0-9_-]{8,}/);
+});
+
 test("объясняет aggregated contributions и связывает Evidence с Farm Map", async ({ page }) => {
   await openRadar(page);
 

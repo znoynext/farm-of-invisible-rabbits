@@ -1,0 +1,428 @@
+.content-frame.content-frame--ai-worklog {
+  display: block;
+  padding-block: clamp(2rem, 5vh, 4rem);
+}
+
+.content-frame--ai-worklog .section-transition {
+  width: 100%;
+}
+
+.worklog-section {
+  padding: clamp(2rem, 4.2vw, 4.75rem);
+}
+
+.worklog-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(20rem, 0.9fr);
+  gap: var(--space-8);
+  align-items: end;
+  padding-bottom: var(--space-8);
+}
+
+.worklog-hero h1 {
+  max-width: 10ch;
+  margin: var(--space-4) 0 0;
+  font-size: clamp(3rem, 6vw, 6.25rem);
+}
+
+.worklog-hero__introduction {
+  display: grid;
+  gap: var(--space-4);
+  max-width: 35rem;
+  justify-self: end;
+}
+
+.worklog-hero__introduction p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  line-height: 1.65;
+}
+
+.worklog-hero__introduction p:first-child {
+  color: var(--color-text);
+  font-size: clamp(1.15rem, 1.7vw, 1.45rem);
+  line-height: 1.45;
+}
+
+.worklog-process {
+  display: grid;
+  grid-template-columns: repeat(7, auto);
+  gap: var(--space-4);
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-5) var(--space-6);
+  border-block: 1px solid var(--color-border-strong);
+  color: var(--color-sage-dark);
+  font-size: var(--font-size-xs);
+  font-weight: 720;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.worklog-process span:nth-child(even) {
+  color: var(--color-terracotta-text);
+  font-size: var(--font-size-body);
+  font-weight: 500;
+}
+
+.worklog-selection-note {
+  display: grid;
+  grid-template-columns: 7rem minmax(0, 38rem);
+  gap: var(--space-6);
+  align-items: center;
+  padding-block: clamp(2.5rem, 5vw, 4rem);
+}
+
+.worklog-selection-note > span {
+  color: var(--color-terracotta-text);
+  font-size: clamp(3.25rem, 6vw, 5.75rem);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.06em;
+  line-height: 0.8;
+}
+
+.worklog-selection-note p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.worklog-timeline {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--color-border-strong);
+  list-style: none;
+}
+
+.worklog-entry {
+  display: grid;
+  grid-template-columns: 7rem minmax(0, 1fr);
+  gap: var(--space-6);
+  padding-block: clamp(3rem, 6vw, 5.5rem);
+  border-bottom: 1px solid var(--color-border-strong);
+}
+
+.worklog-entry[data-emphasis="audit"] {
+  background: linear-gradient(
+    90deg,
+    transparent 0,
+    color-mix(in srgb, var(--color-terracotta) 7%, transparent) 7rem,
+    transparent 78%
+  );
+}
+
+.worklog-entry__marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  color: var(--color-quiet-text);
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+}
+
+.worklog-entry__marker i {
+  width: 1px;
+  min-height: 4.5rem;
+  flex: 1;
+  background: var(--color-border-strong);
+}
+
+.worklog-entry[data-emphasis="audit"] .worklog-entry__marker i {
+  background: var(--color-terracotta);
+}
+
+.worklog-entry__header {
+  display: grid;
+  grid-template-columns: minmax(0, 0.72fr) minmax(18rem, 1.28fr);
+  gap: var(--space-4) var(--space-8);
+  align-items: start;
+  margin-bottom: var(--space-7);
+}
+
+.worklog-entry__header > p:first-child {
+  margin: 0.35rem 0 0;
+  color: var(--color-terracotta-text);
+  font-size: 0.6875rem;
+  font-weight: 750;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.worklog-entry__header h2 {
+  margin: 0;
+  font-size: clamp(2rem, 3.2vw, 3.65rem);
+  font-weight: 535;
+  letter-spacing: -0.052em;
+  line-height: 1.02;
+}
+
+.worklog-entry__task {
+  grid-column: 2;
+  max-width: 49rem;
+  margin: var(--space-3) 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-body-lg);
+  line-height: 1.58;
+}
+
+.worklog-decision-flow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: var(--space-5);
+  align-items: start;
+  padding-block: var(--space-6);
+  border-block: 1px solid var(--color-border-subtle);
+}
+
+.worklog-decision-flow section {
+  min-width: 0;
+}
+
+.worklog-decision-flow section:last-child {
+  padding-left: var(--space-5);
+  border-left: 2px solid var(--color-sage);
+}
+
+.worklog-decision-flow section > p:last-child,
+.worklog-prompt > p:last-child {
+  margin: 0;
+  line-height: 1.65;
+}
+
+.worklog-decision-flow__arrow {
+  padding-top: 1.8rem;
+  color: var(--color-terracotta-text);
+}
+
+.worklog-label,
+.worklog-result dt {
+  margin: 0 0 var(--space-3);
+  color: var(--color-quiet-text);
+  font-size: var(--font-size-xs);
+  font-weight: 740;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.worklog-result {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: var(--space-7);
+  margin: 0;
+  padding-block: var(--space-6);
+}
+
+.worklog-result div {
+  min-width: 0;
+}
+
+.worklog-result dd {
+  margin: 0;
+  color: var(--color-text-secondary);
+  line-height: 1.62;
+}
+
+.worklog-result div:last-child dd {
+  color: var(--color-sage-dark);
+}
+
+.worklog-disclosure {
+  border-top: 1px solid var(--color-border-subtle);
+  padding-top: var(--space-4);
+}
+
+.worklog-disclosure > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: 3rem;
+  border: 0;
+  background: transparent;
+  padding: 0.65rem 0;
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  font-weight: 690;
+  cursor: pointer;
+}
+
+.worklog-disclosure > button svg {
+  color: var(--color-terracotta-text);
+  transition: transform var(--duration-micro) var(--ease-standard);
+}
+
+.worklog-disclosure > button[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+
+.worklog-prompt {
+  max-width: 52rem;
+  margin-top: var(--space-4);
+  border-left: 2px solid var(--color-terracotta);
+  background: color-mix(in srgb, var(--color-secondary) 58%, transparent);
+  padding: var(--space-5) var(--space-6);
+}
+
+.worklog-footer-note {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6);
+  margin-top: clamp(3rem, 6vw, 5rem);
+  padding: var(--space-6) 0 0 8.5rem;
+  border-top: 1px solid var(--color-border-strong);
+}
+
+.worklog-footer-note p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  line-height: 1.55;
+}
+
+.worklog-footer-note p:last-child {
+  color: var(--color-text);
+  font-weight: 630;
+}
+
+@media (max-width: 64rem) {
+  .worklog-hero {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  .worklog-hero__introduction {
+    max-width: 46rem;
+    justify-self: start;
+  }
+
+  .worklog-entry__header {
+    grid-template-columns: minmax(10rem, 0.55fr) minmax(0, 1.45fr);
+    gap: var(--space-4) var(--space-6);
+  }
+}
+
+@media (max-width: 48rem) {
+  .content-frame.content-frame--ai-worklog {
+    padding-top: var(--space-4);
+  }
+
+  .worklog-section {
+    padding: var(--space-6) var(--space-5) var(--space-7);
+  }
+
+  .worklog-hero {
+    padding-bottom: var(--space-6);
+  }
+
+  .worklog-hero h1 {
+    max-width: 8ch;
+    font-size: clamp(3.1rem, 15vw, 4.45rem);
+  }
+
+  .worklog-hero__introduction p:first-child {
+    font-size: var(--font-size-body-lg);
+  }
+
+  .worklog-process {
+    grid-template-columns: 1fr auto;
+    gap: var(--space-2) var(--space-4);
+    justify-content: stretch;
+    padding-inline: 0;
+  }
+
+  .worklog-process span:nth-child(even) {
+    transform: rotate(90deg);
+  }
+
+  .worklog-selection-note {
+    grid-template-columns: 4.5rem minmax(0, 1fr);
+    gap: var(--space-4);
+  }
+
+  .worklog-selection-note > span {
+    font-size: 3.5rem;
+  }
+
+  .worklog-entry {
+    display: block;
+    padding-block: var(--space-7);
+  }
+
+  .worklog-entry[data-emphasis="audit"] {
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--color-terracotta) 7%, transparent),
+      transparent 88%
+    );
+  }
+
+  .worklog-entry__marker {
+    flex-direction: row;
+    margin-bottom: var(--space-5);
+  }
+
+  .worklog-entry__marker i {
+    min-width: 3rem;
+    min-height: 1px;
+  }
+
+  .worklog-entry__header {
+    display: block;
+    margin-bottom: var(--space-6);
+  }
+
+  .worklog-entry__header > p:first-child {
+    margin-bottom: var(--space-3);
+  }
+
+  .worklog-entry__header h2 {
+    font-size: clamp(2rem, 10vw, 2.8rem);
+  }
+
+  .worklog-entry__task {
+    margin-top: var(--space-4);
+    font-size: var(--font-size-body);
+  }
+
+  .worklog-decision-flow {
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+  }
+
+  .worklog-decision-flow__arrow {
+    justify-self: start;
+    padding: 0;
+    transform: rotate(90deg);
+  }
+
+  .worklog-decision-flow section:last-child {
+    padding: var(--space-5) 0 0;
+    border-top: 2px solid var(--color-sage);
+    border-left: 0;
+  }
+
+  .worklog-result,
+  .worklog-footer-note {
+    grid-template-columns: 1fr;
+  }
+
+  .worklog-disclosure > button {
+    width: 100%;
+  }
+
+  .worklog-prompt {
+    padding: var(--space-5);
+  }
+
+  .worklog-footer-note {
+    padding-left: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .worklog-disclosure > button svg {
+    transition-duration: 0ms;
+  }
+}

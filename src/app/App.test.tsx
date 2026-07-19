@@ -331,5 +331,16 @@ describe("App", () => {
       ).toBeInTheDocument();
     });
     expect(window.location.hash).toBe("#model");
+
+    await user.click(screen.getByRole("link", { name: "Работа с ИИ" }));
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("heading", { level: 1, name: "Как я работал с ИИ" }),
+      ).toBeInTheDocument();
+    });
+    expect(window.location.hash).toBe("#ai-worklog");
+    expect(screen.getAllByTestId("ai-worklog-checkpoint")).toHaveLength(6);
+    expect(screen.queryByText(/Журнал будет фиксировать/)).not.toBeInTheDocument();
   });
 });
