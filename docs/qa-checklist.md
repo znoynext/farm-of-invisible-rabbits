@@ -2,6 +2,25 @@
 
 Отмечать каждый пункт только по фактически выполненной проверке.
 
+## Assignment compliance
+
+- [ ] Scenario 2 явно указан
+- [ ] interactive interface
+- [ ] starting data
+- [ ] editable/interactable input data
+- [ ] controls affect output
+- [ ] clear primary output
+- [ ] AI Worklog inside UI
+- [ ] AI Worklog contains 5–7 selected checkpoints
+- [ ] checkpoints based on real notes
+- [ ] README explains selected scenario
+- [ ] README has startup
+- [ ] README has stack
+- [ ] README has AI process explanation
+- [ ] source code publicly accessible
+- [ ] live demo accessible
+- [ ] final links verified
+
 ## Functional
 
 - [ ] initial data

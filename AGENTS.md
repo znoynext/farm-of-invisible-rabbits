@@ -4,7 +4,9 @@
 
 Farm of Invisible Rabbits — интерактивное статическое SPA для тестового задания MOX Creative Studio. Пользовательский интерфейс полностью на русском языке; название продукта остаётся на английском.
 
-Источники истины: `docs/product-brief.md`, `docs/domain-model.md`, `docs/design-direction.md`, `docs/qa-checklist.md` и `docs/ai-worklog-notes.md`.
+Источники истины: `docs/assignment-requirements.md`, `docs/product-brief.md`, `docs/domain-model.md`, `docs/design-direction.md`, `docs/qa-checklist.md` и `docs/ai-worklog-notes.md`.
+
+Перед major product milestone, release QA и submission сверять результат с `docs/assignment-requirements.md`.
 
 ## Working principles
 
