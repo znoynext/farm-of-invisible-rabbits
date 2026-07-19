@@ -174,7 +174,9 @@ npm run build
 
 ## Deployment и Live Demo
 
-Production deployment выполняется через GitHub Pages на финальном release-этапе. До подтверждённого deployment Live Demo не заявляется как доступный; ссылка будет добавлена после production smoke test.
+Live Demo: [znoynext.github.io/farm-of-invisible-rabbits](https://znoynext.github.io/farm-of-invisible-rabbits/)
+
+Production-сборка публикуется официальным GitHub Pages Actions flow из `main`. Vite использует project-site base `/farm-of-invisible-rabbits/`; после deployment проверены загрузка приложения и assets, hash-навигация, основной пользовательский flow, runtime console и mobile viewport 390 px.
 
 ## Repository
 

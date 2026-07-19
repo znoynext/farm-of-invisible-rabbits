@@ -401,3 +401,25 @@ Outcome:
 **Validation performed:** `npm run lint` — PASS; два последовательных `npm run test` — по 22 файла и 145/145 тестов PASS; `npm run build` — PASS; Playwright — 20/20 PASS, включая новый keyboard skip-link regression, Restore, What-if, CRUD, Model, responsive widths и reduced motion. Production preview реально проверен на 1440, 1280, 1024, 768 и 390 px: horizontal overflow и duplicate IDs отсутствуют, assets загружаются, mobile footer не перекрыт навигацией, runtime console пуста. GitHub repository отдельно подтверждён как PUBLIC. Live Demo, deployment smoke и final links — NOT RUN; README readiness остаётся незавершённой до следующего release-этапа.
 
 **Outcome:** Функциональный, domain и локальный production QA завершены без BLOCKER/HIGH дефектов. Продукт остаётся в feature freeze; submission ещё не готов из-за незавершённых README и deployment шагов.
+
+## Checkpoint: Публикация проверенной production-версии
+
+**Stage:** Финальный технический release-этап перед внешним аудитом.
+
+**Task:** Опубликовать статическое SPA на GitHub Pages официальным Actions flow, проверить project-site base, фактический deployment и реальный production URL, затем добавить подтверждённые ссылки в release-документацию.
+
+**Prompt summary:** Сверить актуальные официальные GitHub Pages рекомендации, повторить обязательный локальный gate, настроить Vite для repository subpath, создать build/deploy workflow без сторонних deploy actions, выполнить production smoke на desktop и 390 px и не заявлять Live Demo до успешного deployment job.
+
+**AI suggestion:** Централизовать production base в Vite, разделить создание Pages artifact и deployment на связанные jobs, использовать GitHub-provided permissions и официальный `github-pages` environment. Не дублировать Playwright в deploy workflow после полного pre-deployment E2E gate и проводить smoke в изолированных browser contexts без сохранения тестовых production-данных.
+
+**Decision taken:** Для production выбран base `/farm-of-invisible-rabbits/`; local development и tests сохраняют root base. Workflow использует `actions/checkout@v6`, `actions/setup-node@v6`, `actions/configure-pages@v5`, `actions/upload-pages-artifact@v4` и `actions/deploy-pages@v4`, Node.js 24, npm cache, минимальные job permissions, `github-pages` environment и concurrency group `pages`. Pages source включён в режиме `workflow` через официальный GitHub API. Публичная выборка AI Worklog оставлена на семи существующих checkpoints; deployment зафиксирован только в working notes.
+
+**Reason:** Project-site base устраняет 404 для production assets под repository subpath, а официальный artifact/deploy contract даёт проверяемый environment URL без personal tokens и сторонней публикации. Разделение jobs не позволяет deployment начаться до успешных lint, unit/UI tests и build.
+
+**What changed:** `vite.config.ts` получил production base, добавлен `.github/workflows/deploy.yml`. После успешного deployment README получил проверенный Live Demo URL, а QA checklist отмечает только фактически выполненные deployment smoke и final-link checks.
+
+**Problem found:** Локальный Playwright runner в этой Windows-среде не завершал cleanup автоматически поднятого Vite web server, хотя assertions успевали выполниться. Тот же suite был повторён с заранее запущенным и затем изолированно остановленным Vite server: 20/20 tests PASS. Первый production browser request завершился transient `ERR_CONNECTION_RESET`; отдельная HTTP-проверка сразу подтвердила страницу и JavaScript asset с `200`, после чего smoke с ограниченными retries прошёл. GitHub также выдал non-blocking deprecation annotation для Node 20 runtime внутри текущих официальных Pages actions; оба jobs завершились успешно.
+
+**Validation performed:** До и после release-конфигурации `npm run lint` — PASS; `npm run test:run` — 22 файла и 145/145 тестов PASS; `npm run test:e2e` — 20/20 PASS; `npm run build` — PASS. Локальный production preview подтвердил `#overview`, `#signals`, `#model`, `#ai-worklog`, reload, JS/CSS assets и отсутствие console/request errors. CI run `29705280773` для `8b44a46635f42711a696a6181c42ca9e2c4cba6b` — PASS. Pages run `29705280781`, включая build artifact и deploy job, — PASS; deployment environment вернул `https://znoynext.github.io/farm-of-invisible-rabbits/`. Production smoke подтвердил HTTP `200`, canonical `5 / 73%`, Intro, Map/Evidence, What-if preview, Recommendations, Signals dialog, Model hash/reload, семь public AI Worklog checkpoints, keyboard skip/disclosure/dialog behavior, отсутствие runtime errors и 4xx, а на 390 px — отсутствие horizontal overflow, navigation touch targets не меньше 53,59 px и Map targets 64 × 81,78 px.
+
+**Outcome:** Публичная production-версия доступна и проверена, Repository и Live Demo links подтверждены. Feature freeze сохранён; product features, domain formulas, architecture, dependencies и публичная выборка AI Worklog не менялись.

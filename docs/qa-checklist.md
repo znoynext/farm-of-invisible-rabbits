@@ -20,8 +20,8 @@
 - [x] README describes capabilities and limitations
 - [x] README links to public repository
 - [x] source code publicly accessible
-- [ ] live demo accessible
-- [ ] final links verified
+- [x] live demo accessible
+- [x] final links verified
 
 ## Functional
 
@@ -125,4 +125,4 @@
 - [x] build
 - [x] production preview
 - [x] console errors
-- [ ] deployment smoke test
+- [x] deployment smoke test
