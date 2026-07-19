@@ -45,7 +45,7 @@ describe("App", () => {
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: "Их не видно. Но следы остаются.",
+        name: "Farm of Invisible Rabbits",
       }),
     ).toBeInTheDocument();
     expect(
@@ -105,7 +105,7 @@ describe("App", () => {
     expect(
       screen.queryByRole("heading", {
         level: 1,
-        name: "Их не видно. Но следы остаются.",
+        name: "Farm of Invisible Rabbits",
       }),
     ).not.toBeInTheDocument();
   });

@@ -25,7 +25,7 @@ test("показывает Intro только при первом посещен
   await expect(
     page.getByRole("heading", {
       level: 1,
-      name: "Их не видно. Но следы остаются.",
+      name: "Farm of Invisible Rabbits",
     }),
   ).toBeVisible();
   await expect(
@@ -57,7 +57,7 @@ test("показывает Intro только при первом посещен
   await expect(
     page.getByRole("heading", {
       level: 1,
-      name: "Их не видно. Но следы остаются.",
+      name: "Farm of Invisible Rabbits",
     }),
   ).toBeHidden();
 });

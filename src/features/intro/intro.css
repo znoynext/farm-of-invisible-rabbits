@@ -68,21 +68,14 @@
 }
 
 .product-intro__product {
+  max-width: none;
   margin-bottom: clamp(1.5rem, 3vh, 2.75rem);
   color: var(--color-terracotta-text);
   font-size: var(--font-size-xs);
   font-weight: 740;
   letter-spacing: 0.08em;
+  line-height: 1.2;
   text-transform: uppercase;
-}
-
-.product-intro h1 {
-  max-width: 10.5ch;
-  margin-bottom: var(--space-6);
-  font-size: clamp(3.15rem, 4.8vw, 5rem);
-  font-weight: 520;
-  letter-spacing: -0.065em;
-  line-height: 0.9;
 }
 
 .product-intro__explanation {
@@ -391,10 +384,6 @@
     gap: var(--space-7);
   }
 
-  .product-intro h1 {
-    font-size: clamp(3rem, 5.2vw, 4.35rem);
-  }
-
   .product-intro__actions {
     align-items: flex-start;
     flex-direction: column;
@@ -421,19 +410,12 @@
   }
 
   .product-intro__product,
-  .product-intro h1,
   .product-intro__explanation {
     grid-column: 1;
   }
 
   .product-intro__product {
     margin-bottom: var(--space-6);
-  }
-
-  .product-intro h1 {
-    align-self: end;
-    margin-bottom: var(--space-5);
-    font-size: clamp(3.1rem, 6.4vw, 4.2rem);
   }
 
   .product-intro__explanation {
@@ -524,30 +506,22 @@
     font-size: 0.625rem;
   }
 
-  .product-intro h1 {
-    order: 1;
-    max-width: 9ch;
-    margin-bottom: var(--space-5);
-    font-size: clamp(2.8rem, 13vw, 3.65rem);
-    line-height: 0.92;
-  }
-
   .product-intro__explanation {
-    order: 2;
+    order: 3;
     margin-bottom: var(--space-5);
     font-size: 0.9375rem;
     line-height: 1.55;
   }
 
   .product-intro__prompt {
-    order: 3;
+    order: 4;
     margin-bottom: var(--space-5);
     font-size: 0.875rem;
     line-height: 1.55;
   }
 
   .product-intro__actions {
-    order: 4;
+    order: 5;
     align-items: stretch;
     gap: var(--space-4);
     margin-bottom: var(--space-7);
@@ -562,7 +536,7 @@
   }
 
   .product-intro__guide {
-    order: 5;
+    order: 1;
     margin: 0 0 var(--space-6);
   }
 
@@ -586,7 +560,7 @@
   }
 
   .product-intro__sections {
-    order: 6;
+    order: 2;
     margin-bottom: var(--space-6);
   }
 
@@ -601,7 +575,7 @@
   }
 
   .intro-signal-list {
-    order: 7;
+    order: 6;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     width: 100%;
     margin: 0;

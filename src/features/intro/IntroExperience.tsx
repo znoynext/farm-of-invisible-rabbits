@@ -75,55 +75,9 @@ export function IntroExperience({
 
       <div className="product-intro__layout">
         <section className="product-intro__copy">
-          <p className="product-intro__product" id="intro-product-title">
+          <h1 className="product-intro__product" id="intro-product-title">
             Farm of Invisible Rabbits
-          </p>
-          <h1>Их не видно. Но следы остаются.</h1>
-          <p className="product-intro__explanation">
-            Farm of Invisible Rabbits анализирует косвенные сигналы на ферме и
-            помогает оценить возможное количество невидимых кроликов.
-          </p>
-
-          <ul aria-label="Наблюдаемые сигналы" className="intro-signal-list">
-            {signals.map((signal, index) => (
-              <motion.li
-                animate={{ opacity: 1, y: 0 }}
-                initial={{
-                  opacity: 0,
-                  y: prefersReducedMotion ? 0 : 8,
-                }}
-                key={signal.type}
-                transition={{
-                  delay: prefersReducedMotion ? 0 : 0.16 + index * 0.07,
-                  duration: prefersReducedMotion ? 0 : 0.44,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-              >
-                <TraceMark type={signal.type} />
-                <span>{signal.label}</span>
-              </motion.li>
-            ))}
-          </ul>
-
-          <p className="product-intro__prompt">
-            Начните с текущей оценки. Затем измените наблюдения или настройки и
-            сравните, как меняются вывод и рекомендации.
-          </p>
-
-          <div className="product-intro__actions">
-            <Button
-              className="product-intro__cta"
-              onClick={onComplete}
-              ref={actionRef}
-            >
-              Посмотреть текущую оценку
-              <span aria-hidden="true">↗</span>
-            </Button>
-            <p className="product-intro__trust">
-              <span aria-hidden="true" className="product-intro__trust-mark" />
-              Все расчёты прозрачны и воспроизводимы
-            </p>
-          </div>
+          </h1>
 
           <section
             aria-labelledby="intro-guide-title"
@@ -179,6 +133,52 @@ export function IntroExperience({
               </div>
             </dl>
           </section>
+
+          <p className="product-intro__explanation">
+            Farm of Invisible Rabbits анализирует косвенные сигналы на ферме и
+            помогает оценить возможное количество невидимых кроликов.
+          </p>
+
+          <ul aria-label="Наблюдаемые сигналы" className="intro-signal-list">
+            {signals.map((signal, index) => (
+              <motion.li
+                animate={{ opacity: 1, y: 0 }}
+                initial={{
+                  opacity: 0,
+                  y: prefersReducedMotion ? 0 : 8,
+                }}
+                key={signal.type}
+                transition={{
+                  delay: prefersReducedMotion ? 0 : 0.16 + index * 0.07,
+                  duration: prefersReducedMotion ? 0 : 0.44,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+              >
+                <TraceMark type={signal.type} />
+                <span>{signal.label}</span>
+              </motion.li>
+            ))}
+          </ul>
+
+          <p className="product-intro__prompt">
+            Начните с текущей оценки. Затем измените наблюдения или настройки и
+            сравните, как меняются вывод и рекомендации.
+          </p>
+
+          <div className="product-intro__actions">
+            <Button
+              className="product-intro__cta"
+              onClick={onComplete}
+              ref={actionRef}
+            >
+              Посмотреть текущую оценку
+              <span aria-hidden="true">↗</span>
+            </Button>
+            <p className="product-intro__trust">
+              <span aria-hidden="true" className="product-intro__trust-mark" />
+              Все расчёты прозрачны и воспроизводимы
+            </p>
+          </div>
 
         </section>
 
