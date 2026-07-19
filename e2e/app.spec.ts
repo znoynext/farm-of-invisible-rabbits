@@ -120,6 +120,25 @@ test("показывает доступный публичный AI Worklog бе
   expect(publicText).not.toMatch(/(?:github_pat_|ghp_|sk-)[A-Za-z0-9_-]{8,}/);
 });
 
+test("верхнеуровневая навигация возвращает к началу выбранного раздела", async ({
+  page,
+}) => {
+  await page.setViewportSize({ height: 844, width: 390 });
+  await openRadar(page);
+  await page.getByRole("link", { name: "Работа с ИИ" }).click();
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await expect(page.locator(".site-footer")).toBeVisible();
+
+  await page.getByRole("link", { name: "Обзор" }).click();
+
+  const primaryAnswer = page.getByRole("heading", {
+    level: 1,
+    name: "5 предполагаемых кроликов",
+  });
+  await expect(primaryAnswer).toBeInViewport();
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThan(80);
+});
+
 test("объясняет aggregated contributions и связывает Evidence с Farm Map", async ({ page }) => {
   await openRadar(page);
 

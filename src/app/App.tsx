@@ -1,4 +1,10 @@
-import { useEffect, useRef, useState, type RefObject } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type RefObject,
+} from "react";
 import { Info } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
@@ -7,6 +13,7 @@ import { Button } from "../components/ui";
 import {
   defaultSectionId,
   navigationItems,
+  type SectionId,
 } from "../data/navigation";
 import { IntroExperience } from "../features/intro/IntroExperience";
 import { AiWorklogSection } from "../features/ai-worklog/AiWorklogSection";
@@ -169,15 +176,7 @@ function RadarApp({ aboutButtonRef, onOpenIntro }: RadarAppProps) {
               ease: [0.22, 1, 0.36, 1],
             }}
           >
-            {activeSection.id === "overview" ? (
-              <Overview />
-            ) : activeSection.id === "signals" ? (
-              <SignalsSection />
-            ) : activeSection.id === "model" ? (
-              <ModelSettingsSection />
-            ) : (
-              <AiWorklogSection />
-            )}
+            <ActiveSectionContent sectionId={activeSection.id} />
           </motion.section>
         </AnimatePresence>
       </main>
@@ -185,9 +184,27 @@ function RadarApp({ aboutButtonRef, onOpenIntro }: RadarAppProps) {
       <footer className="site-footer">
         <span>Детерминированная модель</span>
         <span>Локальные данные</span>
-        <span>Без runtime ИИ</span>
+        <span>Расчёты без ИИ</span>
       </footer>
 
     </motion.div>
+  );
+}
+
+function ActiveSectionContent({ sectionId }: { readonly sectionId: SectionId }) {
+  useLayoutEffect(() => {
+    if (window.location.hash === `#${sectionId}`) {
+      window.scrollTo({ behavior: "auto", left: 0, top: 0 });
+    }
+  }, [sectionId]);
+
+  return sectionId === "overview" ? (
+    <Overview />
+  ) : sectionId === "signals" ? (
+    <SignalsSection />
+  ) : sectionId === "model" ? (
+    <ModelSettingsSection />
+  ) : (
+    <AiWorklogSection />
   );
 }
